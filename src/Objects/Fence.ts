@@ -1,0 +1,33 @@
+import PlaceableObject from "./PlaceableObject";
+import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
+import { InteractiveArea } from "./InteractiveArea";
+import { AxesHelper, Object3D } from "three";
+import GUI from "three/examples/jsm/libs/lil-gui.module.min.js";
+import { Helpers } from "../Helpers";
+
+export default class Fence extends PlaceableObject {
+  constructor() {
+    super();
+  }
+
+  async init() {
+    await super.init(ObjectsMeshEnum.Fence);
+    this.add(new AxesHelper(1));
+
+    const positions = [
+      { x: 1.6, z: 2.95, r:0 },
+      { x: -0.2, z: -2.3, r:0.67 },
+      { x: -1.5, z: 2.65, r:-0.23 },
+    ];
+        
+    // const gui = new GUI({ title: 'Ground Areas' });
+    for (let i = 0; i < 3; i++) {
+      const area = new InteractiveArea();
+      this.add(area);
+      this.interactiveAreas.push(area);
+      area.position.set(positions[i].x, 0, positions[i].z);
+      area.rotation.set(0, positions[i].r, 0);
+      // Helpers.setupObjectGUI(area, `Area ${i + 1}`, gui);
+    }
+  }
+}

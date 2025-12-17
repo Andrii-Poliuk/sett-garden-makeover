@@ -1,0 +1,85 @@
+import { Container } from "pixi.js";
+import SpriteButton from "./SpriteButton";
+import PixiAssetsLoader, { PixiAsset } from "./PixiAssetsLoader";
+
+export default class CropPlacementMenu extends Container {
+  private cornButton!: SpriteButton;
+  private tomatoButton!: SpriteButton;
+  private grapeButton!: SpriteButton;
+  private strawberryButton!: SpriteButton;
+  private backButton!: SpriteButton;
+
+  public onCornClick?: () => void;
+  public onTomatoClick?: () => void;
+  public onGrapeClick?: () => void;
+  public onStrawberryClick?: () => void;
+  public onBackClick?: () => void;
+
+  constructor() {
+    super();
+    this.label = "CropPlacementMenu";
+    this.interactive = true;
+  }
+
+  public init(): void {
+    const assets = PixiAssetsLoader.instance;
+    const spacing = 80;
+
+    this.cornButton = new SpriteButton({
+      texture: assets.getTexture(PixiAsset.Corn),
+      text: "Corn",
+      onClick: () => this.onCornClick?.(),
+    });
+    this.cornButton.position.set(0, 0);
+    this.addChild(this.cornButton);
+
+    this.tomatoButton = new SpriteButton({
+      texture: assets.getTexture(PixiAsset.Tomato),
+      text: "Tomato",
+      onClick: () => this.onTomatoClick?.(),
+    });
+    this.tomatoButton.position.set(0, spacing);
+    this.addChild(this.tomatoButton);
+
+    this.grapeButton = new SpriteButton({
+      texture: assets.getTexture(PixiAsset.Grape),
+      text: "Grape",
+      onClick: () => this.onGrapeClick?.(),
+    });
+    this.grapeButton.position.set(0, spacing * 2);
+    this.addChild(this.grapeButton);
+
+    this.strawberryButton = new SpriteButton({
+      texture: assets.getTexture(PixiAsset.Strawberry),
+      text: "Strawberry",
+      onClick: () => this.onStrawberryClick?.(),
+    });
+    this.strawberryButton.position.set(0, spacing * 3);
+    this.addChild(this.strawberryButton);
+
+    this.backButton = new SpriteButton({
+      texture: assets.getTexture(PixiAsset.SkipDay),
+      text: "Back",
+      onClick: () => this.onBackClick?.(),
+    });
+    this.backButton.position.set(0, spacing * 4);
+    this.addChild(this.backButton);
+    const backButtonScale = this.backButton.sprite.scale;
+    this.backButton.sprite.scale.set(-backButtonScale.x,backButtonScale.y);
+  }
+
+  public static readonly CORN = 1 << 0;
+  public static readonly TOMATO = 1 << 1;
+  public static readonly GRAPE = 1 << 2;
+  public static readonly STRAWBERRY = 1 << 3;
+  public static readonly BACK = 1 << 4;
+  public static readonly ALL = CropPlacementMenu.CORN | CropPlacementMenu.TOMATO | CropPlacementMenu.GRAPE | CropPlacementMenu.STRAWBERRY | CropPlacementMenu.BACK;
+
+  public setEnabled(enabled: boolean, mask: number = CropPlacementMenu.ALL): void {
+    if (mask & CropPlacementMenu.CORN) this.cornButton.setEnabled(enabled);
+    if (mask & CropPlacementMenu.TOMATO) this.tomatoButton.setEnabled(enabled);
+    if (mask & CropPlacementMenu.GRAPE) this.grapeButton.setEnabled(enabled);
+    if (mask & CropPlacementMenu.STRAWBERRY) this.strawberryButton.setEnabled(enabled);
+    if (mask & CropPlacementMenu.BACK) this.backButton.setEnabled(enabled);
+  }
+}
