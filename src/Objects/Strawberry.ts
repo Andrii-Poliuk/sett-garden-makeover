@@ -12,5 +12,8 @@ export default class Strawberry extends MultiStageObject {
       ObjectsMeshEnum.Strawberry2,
       ObjectsMeshEnum.Strawberry3,
     ]);
+    if (this.interactiveArea) {
+      this.interactiveArea.setScale(3, 2, 3);
+    }
   }
 }

@@ -12,5 +12,8 @@ export default class Tomato extends MultiStageObject {
       ObjectsMeshEnum.Tomato2,
       ObjectsMeshEnum.Tomato3,
     ]);
+    if (this.interactiveArea) {
+      this.interactiveArea.setScale(3, 3, 3);
+    }
   }
 }

@@ -12,5 +12,8 @@ export default class Grape extends MultiStageObject {
       ObjectsMeshEnum.Grape2,
       ObjectsMeshEnum.Grape3,
     ]);
+    if (this.interactiveArea) {
+      this.interactiveArea.setScale(3, 3, 3);
+    }
   }
 }
