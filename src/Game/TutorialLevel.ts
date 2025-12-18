@@ -64,28 +64,29 @@ export default class TutorialLevel extends GameLevel {
         console.log(corn.position, corn.scale);
         corn.setStage3();
         this.corn.push(corn);
+        corn.placedAtArea = area;
       }
-    }
 
-    const chickenLocations = [
-      { x: 12.4, z: -8.7, r: Math.PI },
-      { x: 9.9, z: -5, r: -Math.PI / 4 },
-      { x: 9, z: -7, r: Math.PI * 1.2 },
-    ];
-    for (let i = 0; i < 3; i++) {
-      const chicken = await Game.instance.createChicken();
-      const location = chickenLocations[i];
-      chicken.position.set(location.x, -0.28, location.z);
-      chicken.rotation.set(0, location.r, 0);
-      if (i == 0) {
-        chicken.playAction();
+      const chickenLocations = [
+        { x: 12.4, z: -8.7, r: Math.PI },
+        { x: 9.9, z: -5, r: -Math.PI / 4 },
+        { x: 9, z: -7, r: Math.PI * 1.2 },
+      ];
+      for (let i = 0; i < 3; i++) {
+        const chicken = await Game.instance.createChicken();
+        const location = chickenLocations[i];
+        chicken.position.set(location.x, -0.28, location.z);
+        chicken.rotation.set(0, location.r, 0);
+        if (i == 0) {
+          chicken.playAction();
+        }
       }
-    }
 
-    this.sheep = await Game.instance.createSheep();
-    this.sheep.position.set(-8.2, 0, 8.05);
-    this.sheep.rotation.set(0, 0.36, 0);
-    this.sheep.playAction();
+      this.sheep = await Game.instance.createSheep();
+      this.sheep.position.set(-8.2, 0, 8.05);
+      this.sheep.rotation.set(0, 0.36, 0);
+      this.sheep.playAction();
+    }
     // Helpers.setupObjectGUI(this.sheep, "Sheep");
 
     //#endregion
@@ -147,7 +148,10 @@ export default class TutorialLevel extends GameLevel {
     Game.instance.UIScene.homeMenu.setEnabled(false);
     Game.instance.UIScene.homeMenu.setEnabled(true, HomeMenu.LAND);
     Game.instance.UIScene.landPlacementMenu.setEnabled(false);
-    Game.instance.UIScene.landPlacementMenu.setEnabled(true, LandPlacementMenu.CATTLE_PEN);
+    Game.instance.UIScene.landPlacementMenu.setEnabled(
+      true,
+      LandPlacementMenu.CATTLE_PEN
+    );
     Game.instance.UIScene.landPlacementMenu.onCattlePenClick = () => {
       this.createFencePlacement();
       Game.instance.UIScene.landPlacementMenu.onCattlePenClick = undefined;
@@ -166,17 +170,13 @@ export default class TutorialLevel extends GameLevel {
     this.targetSheep?.rotation.set(0, area.rotation.y, 0);
     const sheepHighlight = new ObjectHighlight();
     await sheepHighlight.init(ObjectsMeshEnum.Sheep);
-    this.targetSheep.enableInteractiveArea(
-      true,
-      sheepHighlight,
-      async (sender) => {
-        await this.placeSheep(sender);
-        this.targetSheep?.disableInteractiveArea();
-        Game.instance.removeInteractiveArea(this.targetSheep!);
-        this.targetSheep = null;
-        this.gameQuestResolved?.();
-      }
-    );
+    this.targetSheep.enableInteractiveArea(sheepHighlight, async (sender) => {
+      await this.placeSheep(sender);
+      this.targetSheep?.disableInteractiveArea();
+      Game.instance.removeInteractiveArea(this.targetSheep!);
+      this.targetSheep = null;
+      this.gameQuestResolved?.();
+    });
 
     await new Promise<void>((resolve) => {
       this.gameQuestResolved = resolve;
@@ -198,14 +198,59 @@ export default class TutorialLevel extends GameLevel {
       target: new Vector3(5.3, -10.5, -7),
     };
     this.cameraPosition.updatePosition(cameraCropHarvestPosition);
-    Helpers.setupCameraPositionGUI(this.cameraPosition);
 
     await DialogPopup.instance.showPopup(
       "Now, when the Sheep was stopped,\nyou can collect what's left of your Harvest"
     );
     Game.instance.toggleChickenGuide(false);
 
+    this.corn.forEach((corn) => {
+      corn.enableInteraction(async (obj) => {
+        console.log("clicked");
+        this.collectCorn(corn);
+      });
+    });
+
+    await new Promise<void>((resolve) => {
+      this.gameQuestResolved = resolve;
+    });
     //#endregion
+
+    //#region Final Words
+    const cameraFarmFarView: CameraPositionData = {
+      position: new Vector3(-9.1, 30, 23.4),
+      target: new Vector3(3.8, -18, -13.4),
+    };
+    this.cameraPosition.updatePosition(cameraFarmFarView);
+    this.cameraPosition.lerpSpeed = 0.02;
+
+    Game.instance.toggleChickenGuide(true, true);
+    await DialogPopup.instance.showPopup(
+      "This is all for now!\nYou can coninue without henholding"
+    );
+    await DialogPopup.instance.showPopup(
+      "You can rest till morning\nby pressing Next Day button.\nOr plant more Crops"
+    );
+    await DialogPopup.instance.showPopup(
+      "Crops take 3 days to mature.\nIf you get enough Cattle to cover Rent\nconsider your problems solved"
+    );
+    await DialogPopup.instance.showPopup(
+      "Be wary of Rent pay every morning\nIt was 300 I believe?\nGood luck!"
+    );
+    Game.instance.toggleChickenGuide(false);
+
+    Helpers.setupCameraPositionGUI(this.cameraPosition);
+
+    //#endregion
+  }
+
+  private collectCorn(corn: Corn) {
+    const index = this.corn.indexOf(corn);
+    this.corn.splice(index, 1);
+    Game.instance.destroyMultiStageObject(corn);
+    if (this.corn.length <= 0) {
+      this.gameQuestResolved?.();
+    }
   }
 
   private async createFencePlacement() {
@@ -214,16 +259,12 @@ export default class TutorialLevel extends GameLevel {
     this.targetFence.rotation.set(0, Math.PI / 2, 0);
     const fenceHighlight = new ObjectHighlight();
     await fenceHighlight.init(ObjectsMeshEnum.Fence);
-    this.targetFence.enableInteractiveArea(
-      true,
-      fenceHighlight,
-      async (sender) => {
-        this.placeFence(sender);
-        this.targetFence?.disableInteractiveArea();
-        Game.instance.removeInteractiveArea(this.targetFence!);
-        this.targetFence = null;
-      }
-    );
+    this.targetFence.enableInteractiveArea(fenceHighlight, async (sender) => {
+      this.placeFence(sender);
+      this.targetFence?.disableInteractiveArea();
+      Game.instance.removeInteractiveArea(this.targetFence!);
+      this.targetFence = null;
+    });
 
     const cameraShowFencePosition: CameraPositionData = {
       position: new Vector3(-1, 10.5, 17.5),
@@ -237,7 +278,7 @@ export default class TutorialLevel extends GameLevel {
     this.sheep?.rotation.set(0, location.rotation.y, 0);
     this.sheep?.playIdle();
     const interactiveAreas = this.fence!.getInteractiveAreas();
-    this.fence!.removeInteractiveArea(interactiveAreas[1]);
+    interactiveAreas[1].blocked = true;
     this.sheep?.playEffect();
   }
 

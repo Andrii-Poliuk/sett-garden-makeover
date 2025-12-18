@@ -33,9 +33,9 @@ export default class PlaceableObject extends Object3D {
     });
   }
 
-  public enableInteraction(enabled: boolean, hint: Object3D, onPress?: (sender: Object3D) => Promise<void>): void {
+  public enableInteraction(hint: Object3D, onPress?: (sender: Object3D) => Promise<void>): void {
     this.interactiveAreas.forEach((area) => {
-      area.enableInteractiveArea(enabled, hint, onPress);
+      area.enableInteractiveArea(hint, onPress);
     });
   }
 

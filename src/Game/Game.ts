@@ -18,6 +18,7 @@ import CameraPosition from "./CameraPosition";
 import { InteractiveArea } from "../Objects/InteractiveArea";
 import UIScene from "../UI/UIScene";
 import { Helpers } from "../Helpers";
+import MultiStageObject from "../Objects/MultiStageObject";
 
 export default class Game {
   private static _instance: Game;
@@ -206,6 +207,15 @@ export default class Game {
     }
     this.gameScene?.scene.remove(interactiveArea);
     interactiveArea.disableInteractiveArea();
+  }
+
+  public destroyMultiStageObject(object: MultiStageObject): void {
+    const index = this.createdObjects.indexOf(object);
+    if (index !== -1) {
+      this.createdObjects.splice(index, 1);
+    }
+    this.gameScene?.scene.remove(object);
+    object.destroy();
   }
 
   // #endregion

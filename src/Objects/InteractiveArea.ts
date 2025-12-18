@@ -12,7 +12,17 @@ import { RaycastManager } from "../RaycastManager";
 
 export class InteractiveArea extends Mesh {
   public hovered = false;
+  private _blocked = false;
   public onPress?: (sender: Object3D) => Promise<void>;
+
+  public get blocked(): boolean {
+    return this._blocked;
+  }
+
+  public set blocked(value: boolean) {
+    this._blocked = value;
+    this.visible = !this._blocked;
+  }
 
   geometry: BufferGeometry;
   material: MeshBasicMaterial;
@@ -26,7 +36,7 @@ export class InteractiveArea extends Mesh {
     super();
     this.geometry = new BoxGeometry();
     this.geometry.scale(scaleX, scaleY, scaleZ);
-    this.geometry.translate(0, scaleY/2, 0);
+    this.geometry.translate(0, scaleY / 2, 0);
     this.material = new MeshBasicMaterial();
     this.material.visible = false;
 
@@ -46,8 +56,7 @@ export class InteractiveArea extends Mesh {
 
   // TODO: remove enabled
   public enableInteractiveArea(
-    enabled: boolean,
-    hint: Object3D,
+    hint?: Object3D,
     onPress?: (sender: Object3D) => Promise<void>
   ): void {
     if (this.hint) {
@@ -55,16 +64,13 @@ export class InteractiveArea extends Mesh {
       this.remove(this.hint);
       this.hint = undefined;
     }
-    if (enabled) {
+    if (hint) {
       this.hint = SkeletonUtils.clone(hint);
       this.hint.visible = true;
       this.add(this.hint);
-      this.onPress = onPress;
-      RaycastManager.instance.addInteractiveArea(this);
-    } else {
-      this.onPress = undefined;
-      RaycastManager.instance.removeInteractiveArea(this);
     }
+    this.onPress = onPress;
+    RaycastManager.instance.addInteractiveArea(this);
   }
 
   update(delta: number) {
@@ -77,5 +83,13 @@ export class InteractiveArea extends Mesh {
 
     // this.clicked ? this.v.set(1.5, 1.5, 1.5) : this.v.set(1.0, 1.0, 1.0)
     // this.scale.lerp(this.v, delta * 5)
+  }
+
+  public destroy(): void {
+    this.disableInteractiveArea();
+    if (this.hint) {
+      this.remove(this.hint);
+      this.hint = undefined;
+    }
   }
 }
