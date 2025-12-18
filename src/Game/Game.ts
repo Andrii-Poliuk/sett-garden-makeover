@@ -105,6 +105,13 @@ export default class Game {
     tutorialLevel.init();
     const mainLevel = new MainLevel();
     mainLevel.init();
+
+// TODO: remove
+    // this.currentLevel = mainLevel;
+    // await mainLevel.startLevel();
+    //   return;
+      //<<<<<<<<<<<<<<<<<<
+
     tutorialLevel.onLevelFinished = async () => {
       this.currentLevel = mainLevel;
       await mainLevel.startLevel();

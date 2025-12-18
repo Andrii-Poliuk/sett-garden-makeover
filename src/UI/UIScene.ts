@@ -6,6 +6,7 @@ import CropPlacementMenu from "./CropPlacementMenu";
 import CattlePlacementMenu from "./CattlePlacementMenu";
 import HomeMenu from "./HomeMenu";
 import LandPlacementMenu from "./LandPlacementMenu";
+import GameControls from "./GameControls";
 
 export default class UIScene {
   stage: Container;
@@ -14,6 +15,7 @@ export default class UIScene {
   private _cropPlacementMenu!: CropPlacementMenu;
   private _cattlePlacementMenu!: CattlePlacementMenu;
   private _landPlacementMenu!: LandPlacementMenu;
+  private _gameControls!: GameControls;
   private dialogPopup!: DialogPopup;
   private confirmationPopup!: ConfirmationPopup;
 
@@ -31,6 +33,10 @@ export default class UIScene {
 
   public get landPlacementMenu(): LandPlacementMenu {
     return this._landPlacementMenu;
+  }
+
+  public get gameControls(): GameControls {
+    return this._gameControls;
   }
 
   public showHomeMenu() {
@@ -68,6 +74,14 @@ export default class UIScene {
     this._landPlacementMenu.visible = false;
   }
 
+  public showGameControls(mask: number = GameControls.ALL): void {
+    this._gameControls.show(mask);
+  }
+
+  public hideGameControls(mask: number = GameControls.ALL): void {
+    this._gameControls.hide(mask);
+  }
+
   constructor() {
     this.stage = new Container();
   }
@@ -79,7 +93,6 @@ export default class UIScene {
     this._homeMenu.position.set(60, 120);
     this._homeMenu.init();
     this.stage.addChild(this._homeMenu);
-    this._homeMenu.visible = false;
     this.homeMenu.onCropClick = () => {
       this.showCropMenu();
     };
@@ -117,6 +130,11 @@ export default class UIScene {
       this.showHomeMenu();
     };
 
+    this._gameControls = new GameControls();
+    this._gameControls.init();
+    this._gameControls.position.set(window.innerWidth - 180, 40);
+    this.stage.addChild(this._gameControls);
+
     this.dialogPopup = DialogPopup.instance;
     this.dialogPopup.init(window.innerWidth, window.innerHeight);
     this.stage.addChild(this.dialogPopup);
@@ -124,11 +142,15 @@ export default class UIScene {
     this.confirmationPopup = ConfirmationPopup.instance;
     this.confirmationPopup.init(window.innerWidth, window.innerHeight);
     this.stage.addChild(this.confirmationPopup);
+
+    this.hideMenu();
+    this.gameControls.hide();
   }
 
   public resize(width: number, height: number): void {
     this.dialogPopup.resize(width, height);
     this.confirmationPopup.resize(width, height);
+    this._gameControls.position.set(width - 180, 40);
   }
 
   public update(delta: number): void {}

@@ -7,6 +7,9 @@ import Game from "./Game";
 import GameLevel from "./GameLevel";
 import LandPlacementMenu from "../UI/LandPlacementMenu";
 import HomeMenu from "../UI/HomeMenu";
+import ConfirmationPopup from "../UI/ConfirmationPopup";
+import DialogPopup from "../UI/DialogPopup";
+import MultiStageObject from "../Objects/MultiStageObject";
 
 export enum CropType {
   Corn,
@@ -37,15 +40,19 @@ export default class MainLevel extends GameLevel {
   public async startLevel(): Promise<void> {
     this.bindUI();
     this.createLandPlacementPoints();
+
+    Game.instance.UIScene.showHomeMenu();
+    Game.instance.UIScene.showGameControls();
+    Game.instance.UIScene.gameControls.setEnabled(true);
   }
 
   public async finishLevel(): Promise<void> {}
 
   public update(delta: number): void {}
 
-private async enableCropPlacement(cropType: CropType) {
+  private async enableCropPlacement(cropType: CropType) {
     let highlight: ObjectHighlight = new ObjectHighlight();
-    if (cropType == CropType.Corn) { 
+    if (cropType == CropType.Corn) {
       highlight.init(ObjectsMeshEnum.Corn1);
     } else if (cropType == CropType.Tomato) {
       highlight.init(ObjectsMeshEnum.Tomato1);
@@ -64,7 +71,7 @@ private async enableCropPlacement(cropType: CropType) {
         area.enableInteractiveArea(highlight, async (sender) => {
           area?.disableInteractiveArea();
 
-          if (cropType == CropType.Corn) { 
+          if (cropType == CropType.Corn) {
             await this.placeCorn(area);
           } else if (cropType == CropType.Tomato) {
             await this.placeTomato(area);
@@ -79,6 +86,30 @@ private async enableCropPlacement(cropType: CropType) {
         });
       }
     }
+  }
+
+  private async finishDay() {
+    ConfirmationPopup.instance.showPopup("FINISH THE DAY?", () => {
+      this.growCrops();
+    });
+  }
+
+  private async growCrops() {
+    const crops = Game.instance.getCrops();
+    crops.forEach((crop) => {
+      crop.advanceStage();
+      const readyToHarvest = crop.currentStage >= 3;
+      if (readyToHarvest) {
+        crop.enableInteraction(async (_sender) => {
+          await this.harvestCrop(crop);
+        })
+      }
+    });
+  }
+
+  private async harvestCrop(crop: MultiStageObject) {
+    crop.playEffect();
+    Game.instance.destroyMultiStageObject(crop);
   }
 
   private async enableCattlePlacement(cattleType: CattleType) {
@@ -162,7 +193,6 @@ private async enableCropPlacement(cropType: CropType) {
   private checkBlockCropUiButtons() {
     // TODO
   }
-
 
   private async placeCorn(location: InteractiveArea) {
     const corn = await Game.instance.createCorn();
@@ -258,6 +288,9 @@ private async enableCropPlacement(cropType: CropType) {
     };
     Game.instance.UIScene.landPlacementMenu.onCroplandClick = () => {
       this.enableLandPlacement(LandType.Ground);
+    };
+    Game.instance.UIScene.gameControls.onSkipDayClick = () => {
+      this.finishDay();
     };
   }
 }

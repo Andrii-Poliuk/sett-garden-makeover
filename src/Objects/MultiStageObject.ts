@@ -15,7 +15,12 @@ export default class MultiStageObject extends Object3D {
   protected particlesEffect?: SpriteParticleEffect;
   protected interactiveArea?: InteractiveArea;
 
+  private _currentStage: number = 0;
   private _placedAtArea?: InteractiveArea;
+
+  public get currentStage(): number {
+    return this._currentStage;
+  }
 
   public get placedAtArea(): InteractiveArea | undefined {
     return this._placedAtArea;
@@ -80,21 +85,38 @@ export default class MultiStageObject extends Object3D {
   }
 
   public setStage1() {
+    this._currentStage = 1;
     this.stage1Model && this.setStage(this.stage1Model);
     if (this.interactiveArea) {
       this.interactiveArea.visible = false;
     }
   }
   public setStage2() {
+    this._currentStage = 2;
     this.stage2Model && this.setStage(this.stage2Model);
     if (this.interactiveArea) {
       this.interactiveArea.visible = false;
     }
   }
   public setStage3() {
+    this._currentStage = 3;
     this.stage3Model && this.setStage(this.stage3Model);
     if (this.interactiveArea) {
       this.interactiveArea.visible = true;
+    }
+  }
+
+  public advanceStage(): void {
+    if (this._currentStage >= 3) return;
+
+    switch (this._currentStage) {
+      case 0:
+      case 1:
+        this.setStage2();
+        break;
+      case 2:
+        this.setStage3();
+        break;
     }
   }
 
@@ -111,6 +133,9 @@ export default class MultiStageObject extends Object3D {
   }
 
   public destroy(): void {
+    if (this.interactiveArea) {
+      this.interactiveArea.destroy();
+    }
     if (this._placedAtArea) {
       this._placedAtArea.blocked = false;
       this._placedAtArea = undefined;

@@ -1,4 +1,12 @@
-import { Container, Graphics, Sprite, Text, Texture, TextStyle, ColorMatrixFilter } from "pixi.js";
+import {
+  Container,
+  Graphics,
+  Sprite,
+  Text,
+  Texture,
+  TextStyle,
+  ColorMatrixFilter,
+} from "pixi.js";
 
 export interface SpriteButtonOptions {
   texture: Texture;
@@ -18,14 +26,14 @@ export default class SpriteButton extends Container {
   private hitZone: Graphics;
   private onClick: (() => void) | undefined;
 
-public setEnabled(enabled: boolean) {
-this.interactive = enabled;
-if (enabled) {
-  this.sprite.filters = undefined;
-} else {
-  this.sprite.filters = this.disabledColorMatrix;
-}
-}
+  public setEnabled(enabled: boolean) {
+    this.interactive = enabled;
+    if (enabled) {
+      this.sprite.filters = undefined;
+    } else {
+      this.sprite.filters = this.disabledColorMatrix;
+    }
+  }
 
   constructor(options: SpriteButtonOptions) {
     super();
