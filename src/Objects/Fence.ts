@@ -4,10 +4,12 @@ import { InteractiveArea } from "./InteractiveArea";
 import { AxesHelper, Object3D } from "three";
 import GUI from "three/examples/jsm/libs/lil-gui.module.min.js";
 import { Helpers } from "../Helpers";
+import { LandType } from "../Game/Game";
 
 export default class Fence extends PlaceableObject {
   constructor() {
     super();
+    this._landType = LandType.Fence;
   }
 
   async init() {

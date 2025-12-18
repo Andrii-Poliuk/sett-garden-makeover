@@ -1,9 +1,11 @@
 import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import MultiStageObject from "./MultiStageObject";
+import { CropType } from "../Game/Game";
 
 export default class Tomato extends MultiStageObject {
   constructor() {
     super();
+    this._cropType = CropType.Tomato;
   }
 
   async init() {

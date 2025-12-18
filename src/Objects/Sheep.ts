@@ -2,10 +2,12 @@ import { Group, Object3D, Object3DEventMap } from "three";
 import MeshLoader from "./MeshLoader";
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import AnimatedObject from "./AnimatedObject";
+import { CattleType } from "../Game/Game";
 
 export default class Sheep extends AnimatedObject {
   constructor() {
     super();
+    this._cattleType = CattleType.Sheep;
   }
 
   async init() {

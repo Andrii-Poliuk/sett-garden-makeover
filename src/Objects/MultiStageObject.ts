@@ -4,8 +4,14 @@ import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
 import { InteractiveArea } from "./InteractiveArea";
+import { CropType } from "../Game/Game";
 
 export default class MultiStageObject extends Object3D {
+  protected _cropType: CropType = CropType.Corn;
+
+  public get cropType(): CropType {
+    return this._cropType;
+  }
   stage1Model?: Object3D<Object3DEventMap>;
   stage2Model?: Object3D<Object3DEventMap>;
   stage3Model?: Object3D<Object3DEventMap>;

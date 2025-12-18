@@ -14,6 +14,7 @@ import {
 } from "./ObjectsMeshEnum";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
+import { CattleType } from "../Game/Game";
 
 export default class AnimatedObject extends Object3D {
   mixer?: AnimationMixer;
@@ -22,6 +23,11 @@ export default class AnimatedObject extends Object3D {
   activeAction?: AnimationAction;
 
   protected particlesEffect?: SpriteParticleEffect;
+  protected _cattleType: CattleType = CattleType.Chicken;
+
+  public get cattleType(): CattleType {
+    return this._cattleType;
+  }
 
   constructor() {
     super();

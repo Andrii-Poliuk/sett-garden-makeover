@@ -1,9 +1,10 @@
 import { Container } from "pixi.js";
 import SpriteButton from "./SpriteButton";
 import PixiAssetsLoader, { PixiAsset } from "./PixiAssetsLoader";
+import MoneyDisplay from "./MoneyDisplay";
 
 export default class GameControls extends Container {
-  private moneyContainer!: Container;
+  private moneyDisplay!: MoneyDisplay;
   private skipDayButton!: SpriteButton;
   private incomeContainer!: Container;
 
@@ -18,10 +19,10 @@ export default class GameControls extends Container {
     const assets = PixiAssetsLoader.instance;
     const spacing = 80;
 
-    this.moneyContainer = new Container();
-    this.moneyContainer.label = "MoneyContainer";
-    this.moneyContainer.position.set(0, 0);
-    this.addChild(this.moneyContainer);
+    this.moneyDisplay = new MoneyDisplay();
+    this.moneyDisplay.init();
+    this.moneyDisplay.position.set(0, 0);
+    this.addChild(this.moneyDisplay);
 
     this.skipDayButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.SkipDay),
@@ -47,14 +48,18 @@ export default class GameControls extends Container {
   public static readonly ALL = GameControls.MONEY | GameControls.SKIP_DAY | GameControls.INCOME;
 
   public show(mask: number = GameControls.ALL): void {
-    if (mask & GameControls.MONEY) this.moneyContainer.visible = true;
+    if (mask & GameControls.MONEY) this.moneyDisplay.visible = true;
     if (mask & GameControls.SKIP_DAY) this.skipDayButton.visible = true;
     if (mask & GameControls.INCOME) this.incomeContainer.visible = true;
   }
 
   public hide(mask: number = GameControls.ALL): void {
-    if (mask & GameControls.MONEY) this.moneyContainer.visible = false;
+    if (mask & GameControls.MONEY) this.moneyDisplay.visible = false;
     if (mask & GameControls.SKIP_DAY) this.skipDayButton.visible = false;
     if (mask & GameControls.INCOME) this.incomeContainer.visible = false;
+  }
+
+  public setMoney(amount: number): void {
+    this.moneyDisplay.setAmount(amount);
   }
 }

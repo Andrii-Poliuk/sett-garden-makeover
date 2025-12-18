@@ -19,6 +19,24 @@ import MultiStageObject from "../Objects/MultiStageObject";
 import AnimatedObject from "../Objects/AnimatedObject";
 import MainLevel from "./MainLevel";
 
+export enum CropType {
+  Corn,
+  Grape,
+  Strawberry,
+  Tomato,
+}
+
+export enum CattleType {
+  Chicken,
+  Cow,
+  Sheep,
+}
+
+export enum LandType {
+  Fence,
+  Ground,
+}
+
 export default class Game {
   private static _instance: Game;
 
@@ -38,6 +56,17 @@ export default class Game {
   private cameraPositions: CameraPosition[] = [];
 
   private chickenGuide?: Chicken;
+
+  private _money: number = 0;
+
+  public get money(): number {
+    return this._money;
+  }
+
+  public set money(value: number) {
+    this._money = value;
+    this.uiScene?.gameControls.setMoney(value);
+  }
 
   private constructor() {}
 
@@ -105,6 +134,8 @@ export default class Game {
     tutorialLevel.init();
     const mainLevel = new MainLevel();
     mainLevel.init();
+
+    this.money = 1000;
 
 // TODO: remove
     // this.currentLevel = mainLevel;

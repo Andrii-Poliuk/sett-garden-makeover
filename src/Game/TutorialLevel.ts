@@ -14,6 +14,8 @@ import Corn from "../Objects/Corn";
 import UIScene from "../UI/UIScene";
 import HomeMenu from "../UI/HomeMenu";
 import LandPlacementMenu from "../UI/LandPlacementMenu";
+import MoneyCost, { MoneyCostType } from "./MoneyCost";
+import GameControls from "../UI/GameControls";
 
 export default class TutorialLevel extends GameLevel {
   private cameraPosition?: CameraPosition;
@@ -24,6 +26,10 @@ export default class TutorialLevel extends GameLevel {
   private targetSheep?: InteractiveArea | null;
   private gameQuestResolved?: () => void;
   private corn: Corn[] = [];
+
+  private tickingDamage : number = 0;
+  private damageTick : number = 3.0;
+  private damageTimer: number = 0;
 
   constructor() {
     super();
@@ -49,88 +55,68 @@ export default class TutorialLevel extends GameLevel {
   public override async startLevel(): Promise<void> {
     await super.startLevel();
 
-    //#region create initial Farm
-    {
-      this.ground = await Game.instance.createGround();
-      this.ground.position.set(10, 0, 0);
-      this.ground.rotation.set(0, Math.PI / 2, 0);
+    await this.farmSetup();
+    await this.playFarmTour();
 
-      const groundLocations = this.ground.getInteractiveAreas();
-      for (let i = 0; i < groundLocations.length; i++) {
-        const area = groundLocations[i];
-        const position = area.getWorldPosition(new Vector3());
-        const corn = await Game.instance.createCorn();
-        corn.position.set(position.x, position.y, position.z);
-        console.log(corn.position, corn.scale);
-        corn.setStage3();
-        this.corn.push(corn);
-        corn.placedAtArea = area;
-      }
+    await this.playSheepEncounter();
 
-      const chickenLocations = [
-        { x: 12.4, z: -8.7, r: Math.PI },
-        { x: 9.9, z: -5, r: -Math.PI / 4 },
-        { x: 9, z: -7, r: Math.PI * 1.2 },
-      ];
-      for (let i = 0; i < 3; i++) {
-        const chicken = await Game.instance.createChicken();
-        const location = chickenLocations[i];
-        chicken.position.set(location.x, -0.28, location.z);
-        chicken.rotation.set(0, location.r, 0);
-        if (i == 0) {
-          chicken.playAction();
-        }
-      }
+    await this.playCropHarvesting();
 
-      this.sheep = await Game.instance.createSheep();
-      this.sheep.position.set(-8.2, 0, 8.05);
-      this.sheep.rotation.set(0, 0.36, 0);
-      this.sheep.playAction();
-    }
-    // Helpers.setupObjectGUI(this.sheep, "Sheep");
+    await this.playFinalWords();
 
-    //#endregion
+    await this.finishLevel();
+  }
 
-    //#region Farm Tour
-    const cameraFarmOverview: CameraPositionData = {
-      position: new Vector3(0, 14.5, 22),
-      target: new Vector3(0, -18, -20),
+  private async playFinalWords() {
+    const cameraFarmFarView: CameraPositionData = {
+      position: new Vector3(-9.1, 30, 23.4),
+      target: new Vector3(3.8, -18, -13.4),
     };
-    this.cameraPosition!.updatePosition(cameraFarmOverview);
-    this.cameraPosition!.lerpSpeed = 0.01;
+    this.cameraPosition!.updatePosition(cameraFarmFarView);
+    this.cameraPosition!.lerpSpeed = 0.02;
 
     Game.instance.toggleChickenGuide(true, true);
     await DialogPopup.instance.showPopup(
-      "This is your Farm!\nSmall but cozy\nAlthought..."
+      "This is all for now!\nYou can coninue without henholding"
+    );
+    Game.instance.UIScene.showGameControls(GameControls.SKIP_DAY);
+    await DialogPopup.instance.showPopup(
+      "You can rest till morning\nby pressing Next Day button.\nOr plant more Crops"
     );
     await DialogPopup.instance.showPopup(
-      "You still have to pay the rent\nand it could use some management"
+      "Crops take 2 nights to mature.\nIf you get enough Cattle to cover Rent\nconsider your problems solved"
     );
+    await DialogPopup.instance.showPopup(
+      "Be wary of Rent pay every morning\nIt was 300 greens I believe?\nGood luck!"
+    );
+    Game.instance.toggleChickenGuide(false);
+  }
 
-    const cameraCornView: CameraPositionData = {
-      position: new Vector3(-3.9, 10.1, 3.5),
-      target: new Vector3(20, -12.9, -4.6),
+  private async playCropHarvesting() {
+    const cameraCropHarvestPosition: CameraPositionData = {
+      position: new Vector3(0, 18.2, 12.3),
+      target: new Vector3(5.3, -10.5, -7),
     };
-    this.cameraPosition!.lerpSpeed = 0.015;
-    this.cameraPosition!.updatePosition(cameraCornView);
-    Game.instance.toggleChickenGuide(true, false);
-    await DialogPopup.instance.showPopup(
-      "You've already got some grown Corn\nready to be picked for profit"
-    );
+    this.cameraPosition!.updatePosition(cameraCropHarvestPosition);
 
-    const cameraChickenView: CameraPositionData = {
-      position: new Vector3(2, 8.6, -3.2),
-      target: new Vector3(12.6, -18.6, -7),
-    };
-    this.cameraPosition!.lerpSpeed = 0.015;
-    this.cameraPosition!.updatePosition(cameraChickenView);
     await DialogPopup.instance.showPopup(
-      "Animals are the source of daily income.\nIn your Fence already placed\nChickens and a Sheep"
+      "Now, when the Sheep's put in place,\nyou can collect what's left of your Harvest"
     );
-    await DialogPopup.instance.showPopup("By the way... Where's...");
-    //#endregion
+    Game.instance.toggleChickenGuide(false);
 
-    //#region Sheep encounter
+    this.corn.forEach((corn) => {
+      corn.enableInteraction(async (obj) => {
+        console.log("clicked");
+        this.collectCorn(corn);
+      });
+    });
+
+    await new Promise<void>((resolve) => {
+      this.gameQuestResolved = resolve;
+    });
+  }
+
+  private async playSheepEncounter() {
     const cameraStartPosition: CameraPositionData = {
       position: new Vector3(0, 10.5, 14.5),
       target: new Vector3(-10, -10.5, -7),
@@ -139,6 +125,10 @@ export default class TutorialLevel extends GameLevel {
     this.cameraPosition!.updatePosition(cameraStartPosition);
 
     await DialogPopup.instance.showPopup("Oh no... Your sheep has run amok!");
+
+    Game.instance.UIScene.showGameControls(GameControls.MONEY);
+    this.tickingDamage = MoneyCost[MoneyCostType.SheepDamage];
+
     await DialogPopup.instance.showPopup(
       "And it's already causing damage\nPlace a fence, quick!"
     );
@@ -182,6 +172,8 @@ export default class TutorialLevel extends GameLevel {
       this.gameQuestResolved = resolve;
     });
 
+    this.tickingDamage = 0;
+
     Game.instance.UIScene.showHomeMenu();
     Game.instance.UIScene.homeMenu.setEnabled(false);
 
@@ -189,64 +181,87 @@ export default class TutorialLevel extends GameLevel {
     await DialogPopup.instance.showPopup(
       "Cattle in the Pens provide income every morning"
     );
-    //#endregion
+  }
 
-    //#region Crop Harvesting
-
-    const cameraCropHarvestPosition: CameraPositionData = {
-      position: new Vector3(0, 18.2, 12.3),
-      target: new Vector3(5.3, -10.5, -7),
+  private async playFarmTour() {
+    const cameraFarmOverview: CameraPositionData = {
+      position: new Vector3(0, 14.5, 22),
+      target: new Vector3(0, -18, -20),
     };
-    this.cameraPosition!.updatePosition(cameraCropHarvestPosition);
-
-    await DialogPopup.instance.showPopup(
-      "Now, when the Sheep was stopped,\nyou can collect what's left of your Harvest"
-    );
-    Game.instance.toggleChickenGuide(false);
-
-    this.corn.forEach((corn) => {
-      corn.enableInteraction(async (obj) => {
-        console.log("clicked");
-        this.collectCorn(corn);
-      });
-    });
-
-    await new Promise<void>((resolve) => {
-      this.gameQuestResolved = resolve;
-    });
-    //#endregion
-
-    //#region Final Words
-    const cameraFarmFarView: CameraPositionData = {
-      position: new Vector3(-9.1, 30, 23.4),
-      target: new Vector3(3.8, -18, -13.4),
-    };
-    this.cameraPosition!.updatePosition(cameraFarmFarView);
-    this.cameraPosition!.lerpSpeed = 0.02;
+    this.cameraPosition!.updatePosition(cameraFarmOverview);
+    this.cameraPosition!.lerpSpeed = 0.01;
 
     Game.instance.toggleChickenGuide(true, true);
     await DialogPopup.instance.showPopup(
-      "This is all for now!\nYou can coninue without henholding"
+      "This is your Farm!\nSmall but cozy\nAlthought..."
     );
     await DialogPopup.instance.showPopup(
-      "You can rest till morning\nby pressing Next Day button.\nOr plant more Crops"
+      "You still have to pay the rent\nand it could use some management"
     );
+
+    const cameraCornView: CameraPositionData = {
+      position: new Vector3(-3.9, 10.1, 3.5),
+      target: new Vector3(20, -12.9, -4.6),
+    };
+    this.cameraPosition!.lerpSpeed = 0.015;
+    this.cameraPosition!.updatePosition(cameraCornView);
+    Game.instance.toggleChickenGuide(true, false);
     await DialogPopup.instance.showPopup(
-      "Crops take 3 days to mature.\nIf you get enough Cattle to cover Rent\nconsider your problems solved"
+      "You've already got some grown Corn\nready to be picked for profit"
     );
+
+    const cameraChickenView: CameraPositionData = {
+      position: new Vector3(2, 8.6, -3.2),
+      target: new Vector3(12.6, -18.6, -7),
+    };
+    this.cameraPosition!.lerpSpeed = 0.015;
+    this.cameraPosition!.updatePosition(cameraChickenView);
     await DialogPopup.instance.showPopup(
-      "Be wary of Rent pay every morning\nIt was 300 greens I believe?\nGood luck!"
+      "Animals are the source of daily income.\nIn your Fence already placed\nChickens and a Sheep"
     );
-    Game.instance.toggleChickenGuide(false);
+    await DialogPopup.instance.showPopup("By the way... Where's...");
+  }
 
-    // Helpers.setupCameraPositionGUI(this.cameraPosition);
+  private async farmSetup() {
+    this.ground = await Game.instance.createGround();
+    this.ground.position.set(10, 0, 0);
+    this.ground.rotation.set(0, Math.PI / 2, 0);
 
-    //#endregion
+    const groundLocations = this.ground.getInteractiveAreas();
+    for (let i = 0; i < groundLocations.length; i++) {
+      const area = groundLocations[i];
+      const position = area.getWorldPosition(new Vector3());
+      const corn = await Game.instance.createCorn();
+      corn.position.set(position.x, position.y, position.z);
+      console.log(corn.position, corn.scale);
+      corn.setStage3();
+      this.corn.push(corn);
+      corn.placedAtArea = area;
+    }
 
-    await this.finishLevel();
+    const chickenLocations = [
+      { x: 12.4, z: -8.7, r: Math.PI },
+      { x: 9.9, z: -5, r: -Math.PI / 4 },
+      { x: 9, z: -7, r: Math.PI * 1.2 },
+    ];
+    for (let i = 0; i < 3; i++) {
+      const chicken = await Game.instance.createChicken();
+      const location = chickenLocations[i];
+      chicken.position.set(location.x, -0.28, location.z);
+      chicken.rotation.set(0, location.r, 0);
+      if (i == 0) {
+        chicken.playAction();
+      }
+    }
+
+    this.sheep = await Game.instance.createSheep();
+    this.sheep.position.set(-8.2, 0, 8.05);
+    this.sheep.rotation.set(0, 0.36, 0);
+    this.sheep.playAction();
   }
 
   private collectCorn(corn: Corn) {
+    Game.instance.money += MoneyCost[MoneyCostType.CornHarvest];
     const index = this.corn.indexOf(corn);
     this.corn.splice(index, 1);
     Game.instance.destroyMultiStageObject(corn);
@@ -292,8 +307,6 @@ export default class TutorialLevel extends GameLevel {
       location.position.y,
       location.position.z
     );
-    // const interactiveAreas = this.fence.getInteractiveAreas();
-    // this.fence.removeInteractiveArea(interactiveAreas[1]);
     this.gameQuestResolved?.();
   }
 
@@ -315,5 +328,11 @@ export default class TutorialLevel extends GameLevel {
     super.update(delta);
     this.targetFence?.update(delta);
     this.targetSheep?.update(delta);
+
+    this.damageTimer += delta;
+    if (this.damageTimer > this.damageTick) {
+      this.damageTimer = 0;
+      Game.instance.money += this.tickingDamage;
+    }
   }
 }

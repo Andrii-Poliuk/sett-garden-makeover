@@ -3,30 +3,14 @@ import { InteractiveArea } from "../Objects/InteractiveArea";
 import ObjectHighlight from "../Objects/ObjectHighlight";
 import { ObjectsMeshEnum } from "../Objects/ObjectsMeshEnum";
 import PlaceableObject from "../Objects/PlaceableObject";
-import Game from "./Game";
+import Game, { CropType, CattleType, LandType } from "./Game";
 import GameLevel from "./GameLevel";
 import LandPlacementMenu from "../UI/LandPlacementMenu";
 import HomeMenu from "../UI/HomeMenu";
 import ConfirmationPopup from "../UI/ConfirmationPopup";
 import DialogPopup from "../UI/DialogPopup";
 import MultiStageObject from "../Objects/MultiStageObject";
-
-export enum CropType {
-  Corn,
-  Grape,
-  Strawberry,
-  Tomato,
-}
-
-export enum CattleType {
-  Cow,
-  Sheep,
-}
-
-export enum LandType {
-  Fence,
-  Ground,
-}
+import MoneyCost, { MoneyCostType } from "./MoneyCost";
 
 export default class MainLevel extends GameLevel {
   private landPlacements: InteractiveArea[] = [];
@@ -90,7 +74,27 @@ export default class MainLevel extends GameLevel {
 
   private async finishDay() {
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", () => {
+      this.collectCattleIncome();
       this.growCrops();
+    });
+
+    Game.instance.money += MoneyCost[MoneyCostType.RentDaily];
+  }
+
+  private collectCattleIncome() {
+    const cattle = Game.instance.getCattle();
+    cattle.forEach((animal) => {
+      switch (animal.cattleType) {
+        case CattleType.Chicken:
+          Game.instance.money += MoneyCost[MoneyCostType.ChickenDaily];
+          break;
+        case CattleType.Cow:
+          Game.instance.money += MoneyCost[MoneyCostType.CowDaily];
+          break;
+        case CattleType.Sheep:
+          Game.instance.money += MoneyCost[MoneyCostType.SheepDaily];
+          break;
+      }
     });
   }
 
@@ -108,6 +112,20 @@ export default class MainLevel extends GameLevel {
   }
 
   private async harvestCrop(crop: MultiStageObject) {
+    switch (crop.cropType) {
+      case CropType.Corn:
+        Game.instance.money += MoneyCost[MoneyCostType.CornHarvest];
+        break;
+      case CropType.Tomato:
+        Game.instance.money += MoneyCost[MoneyCostType.TomatoHarvest];
+        break;
+      case CropType.Grape:
+        Game.instance.money += MoneyCost[MoneyCostType.GrapeHarvest];
+        break;
+      case CropType.Strawberry:
+        Game.instance.money += MoneyCost[MoneyCostType.StrawberryHarvest];
+        break;
+    }
     crop.playEffect();
     Game.instance.destroyMultiStageObject(crop);
   }
@@ -195,24 +213,28 @@ export default class MainLevel extends GameLevel {
   }
 
   private async placeCorn(location: InteractiveArea) {
+    Game.instance.money += MoneyCost[MoneyCostType.CornPlant];
     const corn = await Game.instance.createCorn();
     corn.setStage1();
     corn.placedAtArea = location;
     this.setNewObjectLocationWorld(corn, location);
   }
   private async placeTomato(location: InteractiveArea) {
+    Game.instance.money += MoneyCost[MoneyCostType.TomatoPlant];
     const tomato = await Game.instance.createTomato();
     tomato.setStage1();
     tomato.placedAtArea = location;
     this.setNewObjectLocationWorld(tomato, location);
   }
   private async placeGrape(location: InteractiveArea) {
+    Game.instance.money += MoneyCost[MoneyCostType.GrapePlant];
     const grape = await Game.instance.createGrape();
     grape.setStage1();
     grape.placedAtArea = location;
     this.setNewObjectLocationWorld(grape, location);
   }
   private async placeStrawberry(location: InteractiveArea) {
+    Game.instance.money += MoneyCost[MoneyCostType.StrawberryPlant];
     const strawberry = await Game.instance.createStrawberry();
     strawberry.setStage1();
     strawberry.placedAtArea = location;
@@ -220,18 +242,22 @@ export default class MainLevel extends GameLevel {
   }
 
   private async placeCow(location: InteractiveArea) {
+    Game.instance.money += MoneyCost[MoneyCostType.CowBuy];
     const cow = await Game.instance.createCow();
     this.setNewObjectLocationWorld(cow, location);
   }
   private async placeSheep(location: InteractiveArea) {
+    Game.instance.money += MoneyCost[MoneyCostType.SheepBuy];
     const sheep = await Game.instance.createSheep();
     this.setNewObjectLocationWorld(sheep, location);
   }
   private async placeFence(location: InteractiveArea) {
+    Game.instance.money += MoneyCost[MoneyCostType.FenceMake];
     const fence = await Game.instance.createFence();
     this.setNewObjectLocation(fence, location);
   }
   private async placeGround(location: InteractiveArea) {
+    Game.instance.money += MoneyCost[MoneyCostType.GroundMake];
     const ground = await Game.instance.createGround();
     this.setNewObjectLocation(ground, location);
   }

@@ -3,10 +3,16 @@ import MeshLoader from "./MeshLoader";
 import { ObjectsMeshEnum, OjectPivotFix } from "./ObjectsMeshEnum";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { InteractiveArea } from "./InteractiveArea";
+import { LandType } from "../Game/Game";
 
 export default class PlaceableObject extends Object3D {
   protected interactiveAreas: InteractiveArea[] = [];
-  
+  protected _landType: LandType = LandType.Ground;
+
+  public get landType(): LandType {
+    return this._landType;
+  }
+
   constructor() {
     super();
   }
