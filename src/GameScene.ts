@@ -49,37 +49,11 @@ export default class GameScene {
     this.scene.add(Game.instance.getBatchRenderer());
     // this.scene.add(MeshLoader.Instance.objects!.scene);
 
-    // const fence1 = await Game.createFence();
-    // fence1.position.set(-5, 0, 0);
-    // this.scene.add(fence1);
-
-    // const fence2 = await Game.createFence();
-    // fence2.position.set(5, 0, 0);
-    // this.scene.add(fence2);
-
     // const ambientLight = new THREE.AmbientLight(0xffffff, Math.PI);
     // this.scene.add(ambientLight);
 
     const axesHelper = new THREE.AxesHelper(5);
     this.scene.add(axesHelper);
-
-    // const ground = await Game.instance.createGround();
-    // ground.position.set(0, 0, 0);
-    // this.scene.add(ground);
-
-    // const tomato = await Game.createTomato();
-    // tomato.position.set(0, 0, 0);
-    // this.scene.add(tomato);
-    // tomato.setStage1();
-    // Helpers.setupMultiStageGUI(tomato, "Tomato");
-
-    // const cowHighlight = new ObjectHighlight();
-    // await cowHighlight.init(ObjectsMeshEnum.Cow);
-
-    // const tomatoHighlight = new ObjectHighlight();
-    // await tomatoHighlight.init(ObjectsMeshEnum.Tomato1);
-
-    // this.enablePlacement([ground], true, tomatoHighlight);
   }
 
   public resize(width: number, height: number): void {
@@ -90,17 +64,4 @@ export default class GameScene {
   public update(delta: number): void {
     this.controls.update();
   }
-
-  // public enablePlacement(placeableObjects: PlaceableObject[], enabled: boolean, hint: Object3D): void {
-  //   placeableObjects.forEach(obj => {
-  //     obj.enableInteraction(enabled, hint, async (sender: Object3D) => {
-  //       const cow = await Game.instance.createCow();
-  //       console.log(cow);
-  //       cow.position.set(sender.position.x, sender.position.y, sender.position.z);
-  //       cow.rotation.set(sender.rotation.x, sender.rotation.y, sender.rotation.z);
-  //       obj.add(cow);
-  //       (sender as InteractiveArea).disableInteractiveArea();
-  //     });
-  //   });
-  // }
 }

@@ -146,5 +146,8 @@ export default class MultiStageObject extends Object3D {
       this._placedAtArea.blocked = false;
       this._placedAtArea = undefined;
     }
+    if (this.particlesEffect) {
+      this.particlesEffect.destroy();
+    }
   }
 }

@@ -96,4 +96,10 @@ export default class AnimatedObject extends Object3D {
       this.activeAction = action;
     }
   }
+
+  public destroy(): void {
+    if (this.particlesEffect) {
+      this.particlesEffect.destroy();
+    }
+  }
 }

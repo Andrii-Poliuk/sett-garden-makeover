@@ -16,13 +16,31 @@ import {
 } from "three.quarks";
 import Game from "../Game/Game";
 
+// Shared material cache to prevent VFXBatch duplication
+const sharedMaterials: Map<string, THREE.MeshBasicMaterial> = new Map();
+
 export class SpriteParticleEffect extends THREE.Object3D {
   private particleSystem?: ParticleSystem;
-  private texture?: THREE.Texture;
+  private materialKey?: string;
   private colorRange?: ColorRange;
 
   constructor() {
     super();
+  }
+
+  private getOrCreateMaterial(image: string, texture: THREE.Texture): THREE.MeshBasicMaterial {
+    this.materialKey = image;
+
+    let material = sharedMaterials.get(image);
+    if (!material) {
+      material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+      });
+      sharedMaterials.set(image, material);
+    }
+
+    return material;
   }
 
   public async init(image: string, colorRange: {
@@ -33,13 +51,14 @@ export class SpriteParticleEffect extends THREE.Object3D {
       new Vector4(colorRange.color1.r, colorRange.color1.g, colorRange.color1.b, 1),
       new Vector4(colorRange.color2.r, colorRange.color2.g, colorRange.color2.b, 1),
     );
-    this.texture = await new THREE.TextureLoader().loadAsync(image);
-    this.particleSystem = this.createParticleSystem();
+    const texture = await new THREE.TextureLoader().loadAsync(image);
+    const material = this.getOrCreateMaterial(image, texture);
+    this.particleSystem = this.createParticleSystem(material);
     this.add(this.particleSystem.emitter);
     Game.instance.getBatchRenderer().addSystem(this.particleSystem);
   } 
 
-  protected createParticleSystem(): ParticleSystem {
+  protected createParticleSystem(material: THREE.MeshBasicMaterial): ParticleSystem {
     const system = new ParticleSystem({
       duration: 0.5,
       looping: false,
@@ -48,10 +67,6 @@ export class SpriteParticleEffect extends THREE.Object3D {
       startSize: new IntervalValue(1, 1.5),
       startRotation: new IntervalValue(0, Math.PI * 2),
       startColor: this.colorRange,
-      // new ColorRange(
-      //   new Vector4(0.1, 0.6, 0.1, 1),
-      //   new Vector4(0.2, 0.7, 0.2, 1)
-      // ),
       worldSpace: false,
       emissionOverTime: new ConstantValue(0),
       emissionBursts: [
@@ -67,10 +82,7 @@ export class SpriteParticleEffect extends THREE.Object3D {
         radius: 0.5,
         thickness: 1,
       }),
-      material: new THREE.MeshBasicMaterial({
-        map: this.texture,
-        transparent: true,
-      }),
+      material: material,
       renderMode: RenderMode.BillBoard,
       rendererEmitterSettings: {
         startTileIndex: new ConstantValue(0),
@@ -122,10 +134,13 @@ export class SpriteParticleEffect extends THREE.Object3D {
     }
   }
 
-  public dispose(): void {
+  public destroy(): void {
     if (this.particleSystem) {
+      this.particleSystem.pause();
+      this.remove(this.particleSystem.emitter);
       Game.instance.getBatchRenderer().deleteSystem(this.particleSystem);
       this.particleSystem.dispose();
+      this.particleSystem = undefined;
     }
   }
 }
