@@ -5,6 +5,7 @@ import Stats from 'three/addons/libs/stats.module.js'
 import GameScene from './GameScene';
 import UIScene from './UI/UIScene';
 import Game from './Game/Game';
+import { RaycastManager } from './RaycastManager';
 
 (async () => {
   let WIDTH = window.innerWidth;
@@ -34,6 +35,9 @@ import Game from './Game/Game';
   await threeScene.init();
 
   Game.instance.init(threeScene, uiScene);
+
+  // Set up UI stage for RaycastManager to check UI hits
+  RaycastManager.instance.setUIStage(uiScene.stage);
 
   // PixiJS DevTools support
   (globalThis as any).__PIXI_STAGE__ = uiScene.stage;

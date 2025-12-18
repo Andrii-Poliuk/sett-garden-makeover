@@ -1,5 +1,6 @@
 import { Camera, Raycaster, Vector2, WebGLRenderer } from "three";
 import { InteractiveArea } from "./Objects/InteractiveArea";
+import { Container, EventBoundary, Point } from "pixi.js";
 
 export class RaycastManager {
   private static _instance: RaycastManager | null = null;
@@ -9,11 +10,32 @@ export class RaycastManager {
   private renderer?: WebGLRenderer;
   private camera?: Camera;
 
+  public enabled: boolean = true;
+
+  private uiStage?: Container;
+  private eventBoundary?: EventBoundary;
+
+  public setUIStage(stage: Container): void {
+    this.uiStage = stage;
+    this.eventBoundary = new EventBoundary(stage);
+  }
+
+  private isOverUI(x: number, y: number): boolean {
+    if (!this.eventBoundary || !this.uiStage) return false;
+
+    const point = new Point(x, y);
+    const hit = this.eventBoundary.hitTest(point.x, point.y);
+
+    return hit !== null && hit !== this.uiStage;
+  }
+
   public init(renderer: WebGLRenderer, camera: Camera) {
     this.renderer = renderer;
     this.camera = camera;
 
     renderer.domElement.addEventListener("mousemove", (e) => {
+      if (!this.enabled) return;
+
       let mouse: Vector2 = new Vector2();
       mouse.set(
         (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
@@ -30,7 +52,12 @@ export class RaycastManager {
     });
 
     renderer.domElement.addEventListener("pointerdown", (e) => {
-        let mouse: Vector2 = new Vector2();
+      if (!this.enabled) return;
+
+      // Check if click is over UI element
+      if (this.isOverUI(e.clientX, e.clientY)) return;
+
+      let mouse: Vector2 = new Vector2();
       mouse.set(
         (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
         -(e.clientY / renderer.domElement.clientHeight) * 2 + 1
