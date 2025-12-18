@@ -14,8 +14,7 @@ export default class Corn extends MultiStageObject {
       ObjectsMeshEnum.Corn3,
     ]);
     if (this.interactiveArea) {
-      const areaScale = this.interactiveArea.scale.clone();
-      this.interactiveArea.scale.set(areaScale.x * 1.5, areaScale.y * 4, areaScale.z * 1.5);
+      this.interactiveArea.setScale(1.5, 4, 1.5);
     }
   }
 }

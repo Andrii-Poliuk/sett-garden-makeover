@@ -16,7 +16,7 @@ import HomeMenu from "../UI/HomeMenu";
 import LandPlacementMenu from "../UI/LandPlacementMenu";
 
 export default class TutorialLevel extends GameLevel {
-  private cameraPosition!: CameraPosition;
+  private cameraPosition?: CameraPosition;
   private sheep?: Sheep;
   private ground?: Ground;
   private fence?: Fence;
@@ -96,8 +96,8 @@ export default class TutorialLevel extends GameLevel {
       position: new Vector3(0, 14.5, 22),
       target: new Vector3(0, -18, -20),
     };
-    this.cameraPosition.updatePosition(cameraFarmOverview);
-    this.cameraPosition.lerpSpeed = 0.01;
+    this.cameraPosition!.updatePosition(cameraFarmOverview);
+    this.cameraPosition!.lerpSpeed = 0.01;
 
     Game.instance.toggleChickenGuide(true, true);
     await DialogPopup.instance.showPopup(
@@ -111,8 +111,8 @@ export default class TutorialLevel extends GameLevel {
       position: new Vector3(-3.9, 10.1, 3.5),
       target: new Vector3(20, -12.9, -4.6),
     };
-    this.cameraPosition.lerpSpeed = 0.015;
-    this.cameraPosition.updatePosition(cameraCornView);
+    this.cameraPosition!.lerpSpeed = 0.015;
+    this.cameraPosition!.updatePosition(cameraCornView);
     Game.instance.toggleChickenGuide(true, false);
     await DialogPopup.instance.showPopup(
       "You've already got some grown Corn\nready to be picked for profit"
@@ -122,8 +122,8 @@ export default class TutorialLevel extends GameLevel {
       position: new Vector3(2, 8.6, -3.2),
       target: new Vector3(12.6, -18.6, -7),
     };
-    this.cameraPosition.lerpSpeed = 0.015;
-    this.cameraPosition.updatePosition(cameraChickenView);
+    this.cameraPosition!.lerpSpeed = 0.015;
+    this.cameraPosition!.updatePosition(cameraChickenView);
     await DialogPopup.instance.showPopup(
       "Animals are the source of daily income.\nIn your Fence already placed\nChickens and a Sheep"
     );
@@ -135,8 +135,8 @@ export default class TutorialLevel extends GameLevel {
       position: new Vector3(0, 10.5, 14.5),
       target: new Vector3(-10, -10.5, -7),
     };
-    this.cameraPosition.lerpSpeed = 0.03;
-    this.cameraPosition?.updatePosition(cameraStartPosition);
+    this.cameraPosition!.lerpSpeed = 0.03;
+    this.cameraPosition!.updatePosition(cameraStartPosition);
 
     await DialogPopup.instance.showPopup("Oh no... Your sheep has run amok!");
     await DialogPopup.instance.showPopup(
@@ -197,7 +197,7 @@ export default class TutorialLevel extends GameLevel {
       position: new Vector3(0, 18.2, 12.3),
       target: new Vector3(5.3, -10.5, -7),
     };
-    this.cameraPosition.updatePosition(cameraCropHarvestPosition);
+    this.cameraPosition!.updatePosition(cameraCropHarvestPosition);
 
     await DialogPopup.instance.showPopup(
       "Now, when the Sheep was stopped,\nyou can collect what's left of your Harvest"
@@ -221,8 +221,8 @@ export default class TutorialLevel extends GameLevel {
       position: new Vector3(-9.1, 30, 23.4),
       target: new Vector3(3.8, -18, -13.4),
     };
-    this.cameraPosition.updatePosition(cameraFarmFarView);
-    this.cameraPosition.lerpSpeed = 0.02;
+    this.cameraPosition!.updatePosition(cameraFarmFarView);
+    this.cameraPosition!.lerpSpeed = 0.02;
 
     Game.instance.toggleChickenGuide(true, true);
     await DialogPopup.instance.showPopup(
@@ -235,13 +235,15 @@ export default class TutorialLevel extends GameLevel {
       "Crops take 3 days to mature.\nIf you get enough Cattle to cover Rent\nconsider your problems solved"
     );
     await DialogPopup.instance.showPopup(
-      "Be wary of Rent pay every morning\nIt was 300 I believe?\nGood luck!"
+      "Be wary of Rent pay every morning\nIt was 300 greens I believe?\nGood luck!"
     );
     Game.instance.toggleChickenGuide(false);
 
-    Helpers.setupCameraPositionGUI(this.cameraPosition);
+    // Helpers.setupCameraPositionGUI(this.cameraPosition);
 
     //#endregion
+
+    await this.finishLevel();
   }
 
   private collectCorn(corn: Corn) {
@@ -297,6 +299,16 @@ export default class TutorialLevel extends GameLevel {
 
   public override async finishLevel(): Promise<void> {
     await super.finishLevel();
+
+    Game.instance.UIScene.homeMenu.setEnabled(true);
+    Game.instance.UIScene.cattlePlacementMenu.setEnabled(true);
+    Game.instance.UIScene.cropPlacementMenu.setEnabled(true);
+    Game.instance.UIScene.landPlacementMenu.setEnabled(true);
+
+    if (this.cameraPosition) {
+      Game.instance.removeCameraPosition(this.cameraPosition);
+      this.cameraPosition = undefined;
+    }
   }
 
   public override update(delta: number): void {

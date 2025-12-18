@@ -1,34 +1,36 @@
 import { BatchedRenderer } from "three.quarks";
-import AnimatedObject from "../Objects/AnimatedObject";
 import Chicken from "../Objects/Chicken";
 import Corn from "../Objects/Corn";
 import Cow from "../Objects/Cow";
 import Fence from "../Objects/Fence";
 import Grape from "../Objects/Grape";
 import Ground from "../Objects/Ground";
-import PlaceableObject from "../Objects/PlaceableObject";
 import Sheep from "../Objects/Sheep";
 import Strawberry from "../Objects/Strawberry";
 import Tomato from "../Objects/Tomato";
 import GameLevel from "./GameLevel";
 import TutorialLevel from "./TutorialLevel";
 import GameScene from "../GameScene";
-import { Object3D, PerspectiveCamera } from "three";
+import { PerspectiveCamera } from "three";
 import CameraPosition from "./CameraPosition";
 import { InteractiveArea } from "../Objects/InteractiveArea";
 import UIScene from "../UI/UIScene";
-import { Helpers } from "../Helpers";
 import MultiStageObject from "../Objects/MultiStageObject";
+import AnimatedObject from "../Objects/AnimatedObject";
+import MainLevel from "./MainLevel";
 
 export default class Game {
   private static _instance: Game;
 
-  private createdObjects: Object3D[] = [];
-  private animatedObjects: AnimatedObject[] = [];
-  private placeableObjects: PlaceableObject[] = [];
+  private interactiveAreas: InteractiveArea[] = [];
+  private cattle: (AnimatedObject)[] = [];
+  private crops: (MultiStageObject)[] = [];
+  private fences: Fence[] = [];
+  private grounds: Ground[] = [];
+
   private batchRenderer: BatchedRenderer = new BatchedRenderer();
 
-  private levels: GameLevel[] = [];
+  // private levels: GameLevel[] = [];
   private currentLevel: GameLevel | null = null;
   private gameScene: GameScene | null = null;
   private uiScene: UIScene | null = null;
@@ -49,16 +51,13 @@ export default class Game {
   public async init(gameScene: GameScene, uiScene: UIScene): Promise<void> {
     this.gameScene = gameScene;
     this.uiScene = uiScene;
-   
+
     const chicken = new Chicken();
     await chicken.init();
-    this.createdObjects.push(chicken);
-    this.animatedObjects.push(chicken);
     const camera = this.getCamera();
     camera!.add(chicken);
     this.chickenGuide = chicken;
     this.toggleChickenGuide(false);
-    Helpers.setupObjectGUI(chicken, "Guide");
   }
 
   public toggleChickenGuide(visible: boolean, left: boolean = true) {
@@ -81,6 +80,22 @@ export default class Game {
     return this.uiScene!;
   }
 
+  public getCattle(): AnimatedObject[] {
+    return this.cattle;
+  }
+
+  public getCrops(): MultiStageObject[] {
+    return this.crops;
+  }
+
+  public getFences(): Fence[] {
+    return this.fences;
+  }
+
+  public getGrounds(): Ground[] {
+    return this.grounds;
+  }
+
   public getCamera(): PerspectiveCamera | undefined {
     return this.gameScene?.camera;
   }
@@ -88,18 +103,16 @@ export default class Game {
   public async startGame(): Promise<void> {
     const tutorialLevel = new TutorialLevel();
     tutorialLevel.init();
-    this.levels.push(tutorialLevel);
+    const mainLevel = new MainLevel();
+    mainLevel.init();
+    tutorialLevel.onLevelFinished = async () => {
+      this.currentLevel = mainLevel;
+      await mainLevel.startLevel();
+    }
     this.currentLevel = tutorialLevel;
-    console.log("START GAME");
-    await this.currentLevel.startLevel();
-  }
-
-  public getCurrentLevel(): GameLevel | null {
-    return this.currentLevel;
-  }
-
-  public getLevels(): GameLevel[] {
-    return this.levels;
+    await tutorialLevel.startLevel();
+    // this.levels.push(tutorialLevel);
+    // await this.currentLevel.startLevel();
   }
 
   public getBatchRenderer(): BatchedRenderer {
@@ -111,8 +124,7 @@ export default class Game {
   public async createCow(): Promise<Cow> {
     const cow = new Cow();
     await cow.init();
-    this.createdObjects.push(cow);
-    this.animatedObjects.push(cow);
+    this.cattle.push(cow);
     this.gameScene?.scene.add(cow);
     return cow;
   }
@@ -120,8 +132,7 @@ export default class Game {
   public async createChicken(): Promise<Chicken> {
     const chicken = new Chicken();
     await chicken.init();
-    this.createdObjects.push(chicken);
-    this.animatedObjects.push(chicken);
+    this.cattle.push(chicken);
     this.gameScene?.scene.add(chicken);
     return chicken;
   }
@@ -129,8 +140,7 @@ export default class Game {
   public async createSheep(): Promise<Sheep> {
     const sheep = new Sheep();
     await sheep.init();
-    this.createdObjects.push(sheep);
-    this.animatedObjects.push(sheep);
+    this.cattle.push(sheep);
     this.gameScene?.scene.add(sheep);
     return sheep;
   }
@@ -138,8 +148,7 @@ export default class Game {
   public async createFence(): Promise<Fence> {
     const fence = new Fence();
     await fence.init();
-    this.createdObjects.push(fence);
-    this.placeableObjects.push(fence);
+    this.fences.push(fence);
     this.gameScene?.scene.add(fence);
     return fence;
   }
@@ -147,8 +156,7 @@ export default class Game {
   public async createGround(): Promise<Ground> {
     const ground = new Ground();
     await ground.init();
-    this.createdObjects.push(ground);
-    this.placeableObjects.push(ground);
+    this.grounds.push(ground);
     this.gameScene?.scene.add(ground);
     return ground;
   }
@@ -156,7 +164,7 @@ export default class Game {
   public async createTomato(): Promise<Tomato> {
     const tomato = new Tomato();
     await tomato.init();
-    this.createdObjects.push(tomato);
+    this.crops.push(tomato);
     this.gameScene?.scene.add(tomato);
     return tomato;
   }
@@ -164,7 +172,7 @@ export default class Game {
   public async createGrape(): Promise<Grape> {
     const grape = new Grape();
     await grape.init();
-    this.createdObjects.push(grape);
+    this.crops.push(grape);
     this.gameScene?.scene.add(grape);
     return grape;
   }
@@ -172,7 +180,7 @@ export default class Game {
   public async createStrawberry(): Promise<Strawberry> {
     const strawberry = new Strawberry();
     await strawberry.init();
-    this.createdObjects.push(strawberry);
+    this.crops.push(strawberry);
     this.gameScene?.scene.add(strawberry);
     return strawberry;
   }
@@ -180,14 +188,13 @@ export default class Game {
   public async createCorn(): Promise<Corn> {
     const corn = new Corn();
     await corn.init();
-    this.createdObjects.push(corn);
+    this.crops.push(corn);
     this.gameScene?.scene.add(corn);
     return corn;
   }
 
   public createCameraPosition(): CameraPosition {
     const cameraPosition = new CameraPosition();
-    this.createdObjects.push(cameraPosition);
     this.gameScene?.scene.add(cameraPosition);
     this.cameraPositions.push(cameraPosition);
     return cameraPosition;
@@ -195,41 +202,55 @@ export default class Game {
 
   public createInteractiveArea(scaleX: number = 2, scaleY: number = 2, scaleZ: number = 2): InteractiveArea {
     const interactiveArea = new InteractiveArea(scaleX, scaleY, scaleZ);
-    this.createdObjects.push(interactiveArea);
+    this.interactiveAreas.push(interactiveArea);
     this.gameScene?.scene.add(interactiveArea);
     return interactiveArea;
   }
 
   public removeInteractiveArea(interactiveArea: InteractiveArea): void {
-    const index = this.createdObjects.indexOf(interactiveArea);
+    const index = this.interactiveAreas.indexOf(interactiveArea);
     if (index !== -1) {
-      this.createdObjects.splice(index, 1);
+      this.interactiveAreas.splice(index, 1);
     }
     this.gameScene?.scene.remove(interactiveArea);
     interactiveArea.disableInteractiveArea();
   }
 
   public destroyMultiStageObject(object: MultiStageObject): void {
-    const index = this.createdObjects.indexOf(object);
+    const index = this.crops.indexOf(object);
     if (index !== -1) {
-      this.createdObjects.splice(index, 1);
+      this.crops.splice(index, 1);
     }
     this.gameScene?.scene.remove(object);
     object.destroy();
   }
 
+  public removeCameraPosition(cameraPosition: CameraPosition): void {
+    const index = this.cameraPositions.indexOf(cameraPosition);
+    if (index !== -1) {
+      this.cameraPositions.splice(index, 1);
+    }
+    this.gameScene?.scene.remove(cameraPosition);
+  }
+
   // #endregion
 
   public update(delta: number): void {
-    this.animatedObjects.forEach((object) => {
+    this.chickenGuide?.update(delta);
+
+    this.cattle.forEach((object) => {
       object.update(delta);
     });
-    this.placeableObjects.forEach((object) => {
+    this.crops.forEach((object) => {
       object.update(delta);
     });
-    this.levels.forEach((object) => {
+    this.fences.forEach((object) => {
       object.update(delta);
     });
+    this.grounds.forEach((object) => {
+      object.update(delta);
+    });
+    this.currentLevel?.update(delta);
     this.cameraPositions.forEach((object) => {
       object.update();
     });

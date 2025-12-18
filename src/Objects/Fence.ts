@@ -20,14 +20,12 @@ export default class Fence extends PlaceableObject {
       { x: -1.5, z: 2.65, r:-0.23 },
     ];
         
-    // const gui = new GUI({ title: 'Ground Areas' });
     for (let i = 0; i < 3; i++) {
       const area = new InteractiveArea();
       this.add(area);
       this.interactiveAreas.push(area);
       area.position.set(positions[i].x, 0, positions[i].z);
       area.rotation.set(0, positions[i].r, 0);
-      // Helpers.setupObjectGUI(area, `Area ${i + 1}`, gui);
     }
   }
 }

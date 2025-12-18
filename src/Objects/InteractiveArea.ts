@@ -41,11 +41,18 @@ export class InteractiveArea extends Mesh {
     this.material.visible = false;
 
     this.originalScale = this.scale.clone();
-    this.hoveredScale = this.scale.clone().multiplyScalar(1.05);
+    this.hoveredScale = this.originalScale.clone().multiplyScalar(1.05);
+    // this.scale.copy(this.originalScale);
 
     //TODO: remove
     this.material.wireframe = true;
     this.material.visible = true;
+  }
+
+  public setScale(x: number, y: number, z: number): void {
+    this.originalScale.set(x, y, z);
+    this.hoveredScale.set(x * 1.05, y * 1.05, z * 1.05);
+    this.scale.set(x, y, z);
   }
 
   public disableInteractiveArea() {
