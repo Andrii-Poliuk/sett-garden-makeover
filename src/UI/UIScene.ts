@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
 import PixiAssetsLoader from "./PixiAssetsLoader";
 import DialogPopup from "./DialogPopup";
+import ConfirmationPopup from "./ConfirmationPopup";
 import CropPlacementMenu from "./CropPlacementMenu";
 import CattlePlacementMenu from "./CattlePlacementMenu";
 import HomeMenu from "./HomeMenu";
@@ -14,6 +15,7 @@ export default class UIScene {
   private _cattlePlacementMenu!: CattlePlacementMenu;
   private _landPlacementMenu!: LandPlacementMenu;
   private dialogPopup!: DialogPopup;
+  private confirmationPopup!: ConfirmationPopup;
 
   public get homeMenu(): HomeMenu {
     return this._homeMenu;
@@ -118,10 +120,15 @@ export default class UIScene {
     this.dialogPopup = DialogPopup.instance;
     this.dialogPopup.init(window.innerWidth, window.innerHeight);
     this.stage.addChild(this.dialogPopup);
+
+    this.confirmationPopup = ConfirmationPopup.instance;
+    this.confirmationPopup.init(window.innerWidth, window.innerHeight);
+    this.stage.addChild(this.confirmationPopup);
   }
 
   public resize(width: number, height: number): void {
     this.dialogPopup.resize(width, height);
+    this.confirmationPopup.resize(width, height);
   }
 
   public update(delta: number): void {}
