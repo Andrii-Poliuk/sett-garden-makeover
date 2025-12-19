@@ -21,7 +21,6 @@ const sharedMaterials: Map<string, THREE.MeshBasicMaterial> = new Map();
 
 export class SpriteParticleEffect extends THREE.Object3D {
   private particleSystem?: ParticleSystem;
-  private materialKey?: string;
   private colorRange?: ColorRange;
 
   constructor() {
@@ -29,8 +28,6 @@ export class SpriteParticleEffect extends THREE.Object3D {
   }
 
   private getOrCreateMaterial(image: string, texture: THREE.Texture): THREE.MeshBasicMaterial {
-    this.materialKey = image;
-
     let material = sharedMaterials.get(image);
     if (!material) {
       material = new THREE.MeshBasicMaterial({
@@ -91,17 +88,14 @@ export class SpriteParticleEffect extends THREE.Object3D {
       },
     });
 
-    // Add slight gravity
     system.addBehavior(
       new ApplyForce(new Vector3(0, -6, 0), new ConstantValue(1))
     );
 
-    // Add rotation over lifetime
     system.addBehavior(
       new RotationOverLife(new IntervalValue(-Math.PI, Math.PI))
     );
 
-    // Scale down and fade out over lifetime
     system.addBehavior(
       new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.8, 0.3, 0), 0]]))
     );

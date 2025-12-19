@@ -5,14 +5,12 @@ import {
   Sprite,
   Text,
   Texture,
-  TextStyle,
   ColorMatrixFilter,
 } from "pixi.js";
 
 export interface SpriteButtonOptions {
   texture: Texture;
   text?: string;
-  textStyle?: Partial<TextStyle>;
   onClick?: () => void;
 }
 
@@ -26,8 +24,8 @@ export default class SpriteButton extends Container {
   }
   private hitZone: Graphics;
   private onClick: (() => void) | undefined;
-  private originalScale: number = 0.3;
-  private pressedScale: number = 0.31;
+  private originalScale: number = 1;
+  private pressedScale: number = 1.03;
 
   public setEnabled(enabled: boolean) {
     this.interactive = enabled;
@@ -46,8 +44,6 @@ export default class SpriteButton extends Container {
     }
 
     this.onClick = options.onClick;
-    this.onHover = options.onHover;
-    this.onHoverEnd = options.onHoverEnd;
 
     this.interactive = true;
     this.hitZone = new Graphics();
@@ -71,7 +67,7 @@ export default class SpriteButton extends Container {
         fontFamily: "Arial",
         fontSize: 24,
         fill: "white",
-        ...options.textStyle,
+        stroke: { color: "#303030", width: 1 },
       },
     });
     this.buttonLabel.anchor.set(0, 0.5);
@@ -93,12 +89,12 @@ export default class SpriteButton extends Container {
 
   private handlePointerDown(event: FederatedPointerEvent): void {
     if (!this.isValidPointer(event)) return;
-    this._sprite.scale.set(this.pressedScale);
+    this.scale.set(this.pressedScale);
   }
 
   private handlePointerUp(event: FederatedPointerEvent): void {
     if (!this.isValidPointer(event)) return;
-    this._sprite.scale.set(this.originalScale);
+    this.scale.set(this.originalScale);
     this.onClick?.();
   }
 
@@ -108,7 +104,7 @@ export default class SpriteButton extends Container {
 
   private handleHoverEnd(): void {
     this.hitZone.alpha = 0;
-    this._sprite.scale.set(this.originalScale);
+    this.scale.set(this.originalScale);
   }
 
   public setTexture(texture: Texture): void {

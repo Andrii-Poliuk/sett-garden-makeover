@@ -22,6 +22,7 @@ export default class GameControls extends Container {
     this.moneyDisplay = new MoneyDisplay();
     this.moneyDisplay.init();
     this.moneyDisplay.position.set(0, 0);
+    this.moneyDisplay.setOriginalPosition(0);
     this.addChild(this.moneyDisplay);
 
     this.skipDayButton = new SpriteButton({
