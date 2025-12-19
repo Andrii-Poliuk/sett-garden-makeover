@@ -3,6 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import MultiStageObject from "./Objects/MultiStageObject";
 import CameraPosition from "./Game/CameraPosition";
+import DayNightController from "./Game/DayNightController";
 
 export namespace Helpers {
   export function setupMultiStageGUI(obj: MultiStageObject, name: string = "Stages"): GUI {
@@ -102,6 +103,24 @@ export namespace Helpers {
     //   }
     // };
     // targetRotFolder.add(targetRotDisplay, 'value').name('Display').listen().disable();
+
+    return gui;
+  }
+
+  export function setupDayNightGUI(controller: DayNightController, name: string = "Day/Night"): GUI {
+    const gui = new GUI({ title: name });
+
+    const actions = {
+      setMorning: () => controller.setMorning(),
+      setDay: () => controller.setDay(),
+      setEvening: () => controller.setEvening(),
+      setNight: () => controller.setNight(),
+    };
+
+    gui.add(actions, 'setMorning').name('Morning');
+    gui.add(actions, 'setDay').name('Day');
+    gui.add(actions, 'setEvening').name('Evening');
+    gui.add(actions, 'setNight').name('Night');
 
     return gui;
   }

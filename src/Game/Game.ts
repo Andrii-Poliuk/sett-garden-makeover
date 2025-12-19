@@ -13,11 +13,13 @@ import TutorialLevel from "./TutorialLevel";
 import GameScene from "../GameScene";
 import { PerspectiveCamera } from "three";
 import CameraPosition from "./CameraPosition";
+import DayNightController from "./DayNightController";
 import { InteractiveArea } from "../Objects/InteractiveArea";
 import UIScene from "../UI/UIScene";
 import MultiStageObject from "../Objects/MultiStageObject";
 import AnimatedObject from "../Objects/AnimatedObject";
 import MainLevel from "./MainLevel";
+import { Helpers } from "../Helpers";
 
 export enum CropType {
   Corn,
@@ -52,6 +54,7 @@ export default class Game {
   private currentLevel: GameLevel | null = null;
   private gameScene: GameScene | null = null;
   private uiScene: UIScene | null = null;
+  private _dayNightController: DayNightController | null = null;
 
   private cameraPositions: CameraPosition[] = [];
 
@@ -80,6 +83,8 @@ export default class Game {
   public async init(gameScene: GameScene, uiScene: UIScene): Promise<void> {
     this.gameScene = gameScene;
     this.uiScene = uiScene;
+    this._dayNightController = new DayNightController(gameScene);
+    this.dayNightController.setDay();
 
     const chicken = new Chicken();
     await chicken.init();
@@ -107,6 +112,10 @@ export default class Game {
 
   public get UIScene(): UIScene {
     return this.uiScene!;
+  }
+
+  public get dayNightController(): DayNightController {
+    return this._dayNightController!;
   }
 
   public getCattle(): AnimatedObject[] {

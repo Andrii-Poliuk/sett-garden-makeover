@@ -18,6 +18,7 @@ export default class GameScene {
   camera: PerspectiveCamera;
   renderer: WebGLRenderer;
   controls: OrbitControls;
+  ambientLight?: THREE.AmbientLight;
 
   constructor(renderer: WebGLRenderer) {
     const width = window.innerWidth;
@@ -33,9 +34,8 @@ export default class GameScene {
     this.renderer = renderer;
     this.controls = setupOrbitControls(threeCamera, renderer);
 
-    const environmentTexture = new THREE.CubeTextureLoader().setPath('https://sbcode.net/img/').load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'])
-    scene.environment = environmentTexture
-    scene.background = environmentTexture
+
+    scene.background = new THREE.Color(0.3,0.5,1);
   }
 
   public async init() {
@@ -49,8 +49,8 @@ export default class GameScene {
     this.scene.add(Game.instance.getBatchRenderer());
     // this.scene.add(MeshLoader.Instance.objects!.scene);
 
-    // const ambientLight = new THREE.AmbientLight(0xffffff, Math.PI);
-    // this.scene.add(ambientLight);
+    this.ambientLight = new THREE.AmbientLight(0xFFFFFF, 1.5);
+    this.scene.add(this.ambientLight);
 
     const axesHelper = new THREE.AxesHelper(5);
     this.scene.add(axesHelper);
@@ -63,5 +63,23 @@ export default class GameScene {
 
   public update(delta: number): void {
     this.controls.update();
+  }
+
+  public setEnvironmentColors(
+    lightR: number,
+    lightG: number,
+    lightB: number,
+    lightIntensity: number,
+    skyR: number,
+    skyG: number,
+    skyB: number
+  ): void {
+    if (this.ambientLight) {
+      this.ambientLight.color.setRGB(lightR, lightG, lightB);
+      this.ambientLight.intensity = lightIntensity;
+    }
+    if (this.scene.background instanceof THREE.Color) {
+      this.scene.background.setRGB(skyR, skyG, skyB);
+    }
   }
 }

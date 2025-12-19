@@ -45,9 +45,10 @@ export default class MeshLoader {
     const gltfLoader = new GLTFLoader();
     const [objects, ground] = await Promise.all([
       gltfLoader.loadAsync("models/objects2.glb"),
-      gltfLoader.loadAsync("models/ground.glb"),
+      gltfLoader.loadAsync("models/ground2.glb"),
     ]);
     ground.scene.static = true;
+    // objects.scene.static = true;
     MeshLoader.Instance.objects = objects;
     MeshLoader.Instance.ground = ground;
     console.log(objects);

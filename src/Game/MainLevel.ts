@@ -34,7 +34,7 @@ export default class MainLevel extends GameLevel {
   public async finishLevel(): Promise<void> {}
 
   public update(delta: number): void {
-    this.landPlacements
+    this.landPlacements;
   }
 
   private async enableCropPlacement(cropType: CropType) {
@@ -77,14 +77,26 @@ export default class MainLevel extends GameLevel {
 
   private async finishDay() {
     this.disablePlacement();
-    ConfirmationPopup.instance.showPopup("FINISH THE DAY?", () => {
+    await Game.instance.dayNightController.setEvening();
+    ConfirmationPopup.instance.showPopup("FINISH THE DAY?", async () => {
       this.collectCattleIncome();
+      await Game.instance.dayNightController.setNight();
+      await Game.instance.dayNightController.setMorning();
       this.growCrops();
 
-      const rent = MoneyCost[MoneyCostType.RentDaily];
-      Game.instance.money += rent;
-      FloatingText.playEffect(rent, new Vector3(0, 0, 0));
+      await this.rentCheck();
+
+      await Game.instance.dayNightController.setDay();
     });
+  }
+
+  private async rentCheck() {
+    Game.instance.toggleChickenGuide(true,true);
+    await DialogPopup.instance.showPopup("Rent Time!")
+    const rent = MoneyCost[MoneyCostType.RentDaily];
+    Game.instance.toggleChickenGuide(false);
+    Game.instance.money += rent;
+    FloatingText.playEffect(rent, new Vector3(0, 0, 0));
   }
 
   private collectCattleIncome() {
