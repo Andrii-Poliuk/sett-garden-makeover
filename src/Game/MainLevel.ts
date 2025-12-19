@@ -112,7 +112,9 @@ export default class MainLevel extends GameLevel {
 
   private async rentCheck() {
     Game.instance.toggleChickenGuide(true, true);
-    const randomIndex = Math.floor(Math.random() * MainLevel.RENT_MESSAGES.length);
+    const randomIndex = Math.floor(
+      Math.random() * MainLevel.RENT_MESSAGES.length
+    );
     const message = MainLevel.RENT_MESSAGES[randomIndex];
     await DialogPopup.instance.showPopup(message);
     const rent = MoneyCost[MoneyCostType.RentDaily];
@@ -123,12 +125,14 @@ export default class MainLevel extends GameLevel {
         "You were defeated by the Rent.\nYou can try again, or check the Sources\n",
         true,
         () => {
-          // TODO: restart game
+          Game.instance.resetGame();
+          Game.instance.startGame();
         }
       );
+    } else {
+      Game.instance.money += rent;
+      FloatingText.playEffect(rent, new Vector3(0, 0, 0));
     }
-    Game.instance.money += rent;
-    FloatingText.playEffect(rent, new Vector3(0, 0, 0));
   }
 
   private collectCattleIncome(): number {

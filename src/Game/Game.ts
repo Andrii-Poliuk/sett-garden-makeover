@@ -178,6 +178,45 @@ export default class Game {
     // await this.currentLevel.startLevel();
   }
 
+  public resetGame(): void {
+    this.interactiveAreas.forEach((area) => {
+      area.disableInteractiveArea();
+      this.gameScene?.scene.remove(area);
+    });
+    this.interactiveAreas = [];
+
+    this.cattle.forEach((animal) => {
+      animal.destroy();
+      this.gameScene?.scene.remove(animal);
+    });
+    this.cattle = [];
+
+    this.crops.forEach((crop) => {
+      crop.destroy();
+      this.gameScene?.scene.remove(crop);
+    });
+    this.crops = [];
+
+    this.fences.forEach((fence) => {
+      fence.destroy();
+      this.gameScene?.scene.remove(fence);
+    });
+    this.fences = [];
+
+    this.grounds.forEach((ground) => {
+      ground.destroy();
+      this.gameScene?.scene.remove(ground);
+    });
+    this.grounds = [];
+
+    this.cameraPositions.forEach((cameraPosition) => {
+      this.gameScene?.scene.remove(cameraPosition);
+    });
+    this.cameraPositions = [];
+
+    this.currentLevel = null;
+  }
+
   public getBatchRenderer(): BatchedRenderer {
     return this.batchRenderer;
   }

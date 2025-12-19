@@ -59,4 +59,11 @@ export default class PlaceableObject extends Object3D {
       area.update(delta);
     });
   }
+
+  public destroy(): void {
+    this.interactiveAreas.forEach((area) => {
+      area.disableInteractiveArea();
+    });
+    this.interactiveAreas = [];
+  }
 }
