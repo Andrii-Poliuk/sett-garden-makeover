@@ -1,5 +1,6 @@
 import {
   Container,
+  FederatedPointerEvent,
   Graphics,
   Sprite,
   Text,
@@ -25,6 +26,8 @@ export default class SpriteButton extends Container {
   }
   private hitZone: Graphics;
   private onClick: (() => void) | undefined;
+  private originalScale: number = 0.3;
+  private pressedScale: number = 0.31;
 
   public setEnabled(enabled: boolean) {
     this.interactive = enabled;
@@ -43,11 +46,14 @@ export default class SpriteButton extends Container {
     }
 
     this.onClick = options.onClick;
+    this.onHover = options.onHover;
+    this.onHoverEnd = options.onHoverEnd;
 
     this.interactive = true;
     this.hitZone = new Graphics();
-    this.hitZone.rect(-30, -30, 200, 60);
-    this.hitZone.fill({ color: 0xffffff, alpha: 0.1 });
+    this.hitZone.rect(-40, -35, 220, 70);
+    this.hitZone.fill({ color: 0xffffff, alpha: 1 });
+    this.hitZone.alpha = 0;
     this.addChild(this.hitZone);
 
     this._sprite = new Sprite(options.texture);
@@ -75,12 +81,34 @@ export default class SpriteButton extends Container {
     this.eventMode = "static";
     // this.cursor = "pointer";
 
-    this.on("pointerdown", this.handleClick, this);
+    this.on("pointerdown", this.handlePointerDown, this);
+    this.on("pointerup", this.handlePointerUp, this);
+    this.on("pointerover", this.handleHover, this);
+    this.on("pointerout", this.handleHoverEnd, this);
   }
 
-  private handleClick(): void {
-    console.log(this);
+  private isValidPointer(event: FederatedPointerEvent): boolean {
+    return event.pointerType === "touch" || event.button === 0;
+  }
+
+  private handlePointerDown(event: FederatedPointerEvent): void {
+    if (!this.isValidPointer(event)) return;
+    this._sprite.scale.set(this.pressedScale);
+  }
+
+  private handlePointerUp(event: FederatedPointerEvent): void {
+    if (!this.isValidPointer(event)) return;
+    this._sprite.scale.set(this.originalScale);
     this.onClick?.();
+  }
+
+  private handleHover(): void {
+    this.hitZone.alpha = 0.1;
+  }
+
+  private handleHoverEnd(): void {
+    this.hitZone.alpha = 0;
+    this._sprite.scale.set(this.originalScale);
   }
 
   public setTexture(texture: Texture): void {
