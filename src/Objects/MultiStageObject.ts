@@ -86,8 +86,9 @@ export default class MultiStageObject extends Object3D {
     }
   }
 
-  public playEffect() {
+  public async playEffect(): Promise<void> {
     this.particlesEffect?.restart();
+    await new Promise(resolve => setTimeout(resolve, 300));
   }
 
   public setStage1() {

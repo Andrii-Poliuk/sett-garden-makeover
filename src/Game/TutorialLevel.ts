@@ -261,13 +261,14 @@ export default class TutorialLevel extends GameLevel {
     this.sheep.playAction();
   }
 
-  private collectCorn(corn: Corn) {
+  private async collectCorn(corn: Corn) {
     const income = MoneyCost[MoneyCostType.CornHarvest];
     const cornPosition = corn.getWorldPosition(new Vector3());
     FloatingText.playEffect(income, cornPosition);
     Game.instance.money += income;
     const index = this.corn.indexOf(corn);
     this.corn.splice(index, 1);
+    await corn.playEffect();
     Game.instance.destroyMultiStageObject(corn);
     if (this.corn.length <= 0) {
       this.gameQuestResolved?.();

@@ -140,7 +140,7 @@ export default class MainLevel extends GameLevel {
     const cropPosition = crop.getWorldPosition(new Vector3());
     Game.instance.money += income;
     FloatingText.playEffect(income, cropPosition);
-    crop.playEffect();
+    await crop.playEffect();
     Game.instance.destroyMultiStageObject(crop);
   }
 
