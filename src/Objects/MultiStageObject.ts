@@ -92,8 +92,6 @@ export default class MultiStageObject extends Object3D {
   public setStage1() {
     this._currentStage = 1;
     this.stage1Model && this.setStage(this.stage1Model);
-      this.setStage(this.stage1Model);
-    }
     if (this.interactiveArea) {
       this.interactiveArea.visible = false;
     }

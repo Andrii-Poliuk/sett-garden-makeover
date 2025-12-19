@@ -2,6 +2,7 @@ import { Container } from "pixi.js";
 import DialogPopup from "./DialogPopup";
 import ConfirmationPopup from "./ConfirmationPopup";
 import GameOverPopup from "./GameOverPopup";
+import LoadingPopup from "./LoadingPopup";
 import CropPlacementMenu from "./CropPlacementMenu";
 import CattlePlacementMenu from "./CattlePlacementMenu";
 import HomeMenu from "./HomeMenu";
@@ -20,6 +21,7 @@ export default class UIScene {
   private dialogPopup!: DialogPopup;
   private confirmationPopup!: ConfirmationPopup;
   private gameOverPopup!: GameOverPopup;
+  private loadingPopup!: LoadingPopup;
   private floatingTextContainer!: Container;
 
   private originalWidth: number = 0;
@@ -154,6 +156,10 @@ export default class UIScene {
     this.gameOverPopup.init(window.innerWidth, window.innerHeight);
     this.stage.addChild(this.gameOverPopup);
 
+    this.loadingPopup = LoadingPopup.instance;
+    this.loadingPopup.init(window.innerWidth, window.innerHeight);
+    this.stage.addChild(this.loadingPopup);
+
     this.floatingTextContainer = new Container();
     this.stage.addChild(this.floatingTextContainer);
     FloatingText.init(this.floatingTextContainer);
@@ -173,6 +179,7 @@ export default class UIScene {
     this.dialogPopup.resize(width, height, flexibleScale);
     this.confirmationPopup.resize(width, height, flexibleScale);
     this.gameOverPopup.resize(width, height, flexibleScale);
+    this.loadingPopup.resize(width, height, flexibleScale);
 
     this._gameControls.resize(width, height, flexibleScale);
 

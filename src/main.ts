@@ -6,6 +6,7 @@ import UIScene from "./UI/UIScene";
 import Game from "./Game/Game";
 import { RaycastManager } from "./Game/RaycastManager";
 import PixiAssetsLoader from "./Game/PixiAssetsLoader";
+import LoadingPopup from "./UI/LoadingPopup";
 
 (async () => {
   let WIDTH = window.innerWidth;
@@ -87,5 +88,5 @@ import PixiAssetsLoader from "./Game/PixiAssetsLoader";
     uiScene.resize(WIDTH, HEIGHT);
   });
 
-  await Game.instance.startGame();
+  LoadingPopup.instance.showLoaded();
 })();
