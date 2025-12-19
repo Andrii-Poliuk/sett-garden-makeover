@@ -33,7 +33,9 @@ export default class MainLevel extends GameLevel {
 
   public async finishLevel(): Promise<void> {}
 
-  public update(delta: number): void {}
+  public update(delta: number): void {
+    this.landPlacements
+  }
 
   private async enableCropPlacement(cropType: CropType) {
     let highlight: ObjectHighlight = new ObjectHighlight();
@@ -74,6 +76,7 @@ export default class MainLevel extends GameLevel {
   }
 
   private async finishDay() {
+    this.disablePlacement();
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", () => {
       this.collectCattleIncome();
       this.growCrops();
@@ -113,7 +116,7 @@ export default class MainLevel extends GameLevel {
       if (readyToHarvest) {
         crop.enableInteraction(async (_sender) => {
           await this.harvestCrop(crop);
-        })
+        });
       }
     });
   }
@@ -283,14 +286,20 @@ export default class MainLevel extends GameLevel {
   private async placeFence(location: InteractiveArea) {
     const cost = MoneyCost[MoneyCostType.FenceMake];
     Game.instance.money += cost;
-    FloatingText.playEffect(cost, new Vector3(location.position.x, 3, location.position.z));
+    FloatingText.playEffect(
+      cost,
+      new Vector3(location.position.x, 3, location.position.z)
+    );
     const fence = await Game.instance.createFence();
     this.setNewObjectLocation(fence, location);
   }
   private async placeGround(location: InteractiveArea) {
     const cost = MoneyCost[MoneyCostType.GroundMake];
     Game.instance.money += cost;
-    FloatingText.playEffect(cost, new Vector3(location.position.x, 3, location.position.z));
+    FloatingText.playEffect(
+      cost,
+      new Vector3(location.position.x, 3, location.position.z)
+    );
     const ground = await Game.instance.createGround();
     this.setNewObjectLocation(ground, location);
   }
@@ -321,12 +330,33 @@ export default class MainLevel extends GameLevel {
     this.landPlacements.push(placement2);
   }
 
+  private disablePlacement() {
+    const fences = Game.instance.getFences();
+    fences.forEach((fence) => {
+      fence.disableInteraction();
+    });
+
+    const grounds = Game.instance.getGrounds();
+    grounds.forEach((ground) => {
+      ground.disableInteraction();
+    });
+    this.landPlacements.forEach((area) => {
+      area.disableInteractiveArea();
+    });
+  }
+
   private bindUI() {
     Game.instance.UIScene.cattlePlacementMenu.onCowClick = () => {
+      this.disablePlacement();
       this.enableCattlePlacement(CattleType.Cow);
     };
     Game.instance.UIScene.cattlePlacementMenu.onSheepClick = () => {
+      this.disablePlacement();
       this.enableCattlePlacement(CattleType.Sheep);
+    };
+    Game.instance.UIScene.cattlePlacementMenu.onBackClick = () => {
+      this.disablePlacement();
+      Game.instance.UIScene.showHomeMenu();
     };
 
     Game.instance.UIScene.cropPlacementMenu.onCornClick = () => {
@@ -341,6 +371,10 @@ export default class MainLevel extends GameLevel {
     Game.instance.UIScene.cropPlacementMenu.onTomatoClick = () => {
       this.enableCropPlacement(CropType.Tomato);
     };
+    Game.instance.UIScene.cropPlacementMenu.onBackClick = () => {
+      this.disablePlacement();
+      Game.instance.UIScene.showHomeMenu();
+    };
 
     Game.instance.UIScene.landPlacementMenu.onCattlePenClick = () => {
       this.enableLandPlacement(LandType.Fence);
@@ -348,6 +382,11 @@ export default class MainLevel extends GameLevel {
     Game.instance.UIScene.landPlacementMenu.onCroplandClick = () => {
       this.enableLandPlacement(LandType.Ground);
     };
+    Game.instance.UIScene.landPlacementMenu.onBackClick = () => {
+      this.disablePlacement();
+      Game.instance.UIScene.showHomeMenu();
+    };
+
     Game.instance.UIScene.gameControls.onSkipDayClick = () => {
       this.finishDay();
     };

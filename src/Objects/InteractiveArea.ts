@@ -45,8 +45,8 @@ export class InteractiveArea extends Mesh {
     // this.scale.copy(this.originalScale);
 
     //TODO: remove
-    this.material.wireframe = true;
-    this.material.visible = true;
+    // this.material.wireframe = true;
+    // this.material.visible = true;
   }
 
   public setScale(x: number, y: number, z: number): void {
@@ -59,6 +59,10 @@ export class InteractiveArea extends Mesh {
     this.onPress = undefined;
     RaycastManager.instance.removeInteractiveArea(this);
     this.visible = false;
+    if (this.hint) {
+      this.remove(this.hint);
+      this.hint = undefined;
+    }
   }
 
   // TODO: remove enabled
@@ -78,6 +82,7 @@ export class InteractiveArea extends Mesh {
     }
     this.onPress = onPress;
     RaycastManager.instance.addInteractiveArea(this);
+    this.visible = true;
   }
 
   update(delta: number) {
@@ -88,8 +93,9 @@ export class InteractiveArea extends Mesh {
       ? this.scale.lerp(this.hoveredScale, delta * 20)
       : this.scale.lerp(this.originalScale, delta * 20);
 
-    // this.clicked ? this.v.set(1.5, 1.5, 1.5) : this.v.set(1.0, 1.0, 1.0)
-    // this.scale.lerp(this.v, delta * 5)
+    if (this.hint instanceof ObjectHighlight) {
+      this.hint.update(delta);
+    }
   }
 
   public destroy(): void {

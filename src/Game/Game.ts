@@ -288,6 +288,9 @@ export default class Game {
     this.grounds.forEach((object) => {
       object.update(delta);
     });
+    this.interactiveAreas.forEach((object) => {
+      object.update(delta);
+    })
     this.currentLevel?.update(delta);
     this.cameraPositions.forEach((object) => {
       object.update();
