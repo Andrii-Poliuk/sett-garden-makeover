@@ -1,5 +1,4 @@
-import { AxesHelper, CameraHelper, Object3D, PerspectiveCamera, Vector3 } from "three";
-import Game from "./Game";
+import { AxesHelper, Object3D, PerspectiveCamera, Vector3 } from "three";
 import { lerp } from "../Helpers";
 
 export interface CameraPositionData {
@@ -24,13 +23,6 @@ export default class CameraPosition extends Object3D {
 
     const targetAxesHelper = new AxesHelper(1);
     this.cameraTarget.add(targetAxesHelper);
-
-    // this.helperCamera = Game.instance.getGameScene()?.camera!.clone()!;
-    // this.add(this.helperCamera);
-    // this.helperCamera.position.set(0,0,0);
-
-    // this.cameraHelper = new CameraHelper(this.helperCamera);
-    // this.add(this.cameraHelper);
   }
 
   public update(): void {

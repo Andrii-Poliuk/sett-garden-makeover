@@ -37,6 +37,8 @@ export default class GameControls extends Container {
     this.incomeContainer.label = "IncomeContainer";
     this.incomeContainer.position.set(0, spacing * 2);
     this.addChild(this.incomeContainer);
+
+    this.position.set(window.innerWidth - 180, 40);
   }
 
   public setEnabled(enabled: boolean): void {
@@ -62,5 +64,10 @@ export default class GameControls extends Container {
 
   public setMoney(amount: number): void {
     this.moneyDisplay.setAmount(amount);
+  }
+
+  public resize(width: number, _height: number, flexibleScale: number): void {
+    this.scale.set(flexibleScale);
+    this.position.set(width - 180 * flexibleScale, 40 * flexibleScale);
   }
 }

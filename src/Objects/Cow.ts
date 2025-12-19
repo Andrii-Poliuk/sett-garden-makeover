@@ -3,7 +3,6 @@ import MeshLoader from "./MeshLoader";
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import AnimatedObject from "./AnimatedObject";
 import { CattleType } from "../Game/Game";
-import PixiAssetsLoader, { SoundAsset } from "../Game/PixiAssetsLoader";
 
 export default class Cow extends AnimatedObject {
   constructor() {

@@ -14,9 +14,17 @@ import MoneyCost, { MoneyCostType } from "./MoneyCost";
 import FloatingText from "../Particles/FloatingText";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 import AnimatedObject from "../Objects/AnimatedObject";
+import GameOverPopup from "../UI/GameOverPopup";
 
 export default class MainLevel extends GameLevel {
   private landPlacements: InteractiveArea[] = [];
+
+  private static readonly RENT_MESSAGES: string[] = [
+    "Rent Time!",
+    "Time to pay the rent!",
+    "Rent is due!",
+    "Pay Day! It's everyday..",
+  ];
 
   constructor() {
     super();
@@ -35,9 +43,7 @@ export default class MainLevel extends GameLevel {
 
   public async finishLevel(): Promise<void> {}
 
-  public update(delta: number): void {
-    this.landPlacements;
-  }
+  public update(_delta: number): void {}
 
   private async enableCropPlacement(cropType: CropType) {
     let highlight: ObjectHighlight = new ObjectHighlight();
@@ -86,7 +92,13 @@ export default class MainLevel extends GameLevel {
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", async () => {
       const income = this.collectCattleIncome();
       if (income + MoneyCost[MoneyCostType.RentDaily] > 0) {
-        // TODO: Congratulations?
+        await GameOverPopup.instance.showPopup(
+          "Congratulations!\nYou've defeated the Rent",
+          false,
+          () => {
+            // TODO: Congratulations?
+          }
+        );
       }
       await Game.instance.dayNightController.setNight();
       await Game.instance.dayNightController.setMorning();
@@ -99,13 +111,21 @@ export default class MainLevel extends GameLevel {
   }
 
   private async rentCheck() {
-    Game.instance.toggleChickenGuide(true,true);
-    await DialogPopup.instance.showPopup("Rent Time!")
+    Game.instance.toggleChickenGuide(true, true);
+    const randomIndex = Math.floor(Math.random() * MainLevel.RENT_MESSAGES.length);
+    const message = MainLevel.RENT_MESSAGES[randomIndex];
+    await DialogPopup.instance.showPopup(message);
     const rent = MoneyCost[MoneyCostType.RentDaily];
     Game.instance.toggleChickenGuide(false);
     const money = Game.instance.money + rent;
     if (money < 0) {
-      // TODO: game over
+      await GameOverPopup.instance.showPopup(
+        "You were defeated by the Rent.\nYou can try again, or check the Sources\n",
+        true,
+        () => {
+          // TODO: restart game
+        }
+      );
     }
     Game.instance.money += rent;
     FloatingText.playEffect(rent, new Vector3(0, 0, 0));
@@ -221,7 +241,7 @@ export default class MainLevel extends GameLevel {
     }
 
     this.landPlacements.forEach((area) => {
-      area.enableInteractiveArea(highlight, async (sender) => {
+      area.enableInteractiveArea(highlight, async (_sender) => {
         area?.disableInteractiveArea();
 
         let isCreated = false;
@@ -259,7 +279,11 @@ export default class MainLevel extends GameLevel {
     // TODO
   }
 
-private async placeCrop(cost: number, location: InteractiveArea, cropConstructor: () => Promise<MultiStageObject>) : Promise<boolean> {
+  private async placeCrop(
+    cost: number,
+    location: InteractiveArea,
+    cropConstructor: () => Promise<MultiStageObject>
+  ): Promise<boolean> {
     const money = Game.instance.money + cost;
     if (money < 0) {
       PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
@@ -275,34 +299,38 @@ private async placeCrop(cost: number, location: InteractiveArea, cropConstructor
     crop.placedAtArea = location;
     this.setNewObjectLocationWorld(crop, location);
     return true;
-}
+  }
 
   private async placeCorn(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.CornPlant];
-    return await this.placeCrop(cost, location, async ()=> {
+    return await this.placeCrop(cost, location, async () => {
       return await Game.instance.createCorn();
     });
   }
   private async placeTomato(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.TomatoPlant];
-    return await this.placeCrop(cost, location, async ()=> {
+    return await this.placeCrop(cost, location, async () => {
       return await Game.instance.createTomato();
     });
   }
   private async placeGrape(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.GrapePlant];
-    return await this.placeCrop(cost, location, async ()=> {
+    return await this.placeCrop(cost, location, async () => {
       return await Game.instance.createGrape();
     });
   }
-  private async placeStrawberry(location: InteractiveArea) : Promise<boolean> {
+  private async placeStrawberry(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.StrawberryPlant];
-    return await this.placeCrop(cost, location, async ()=> {
+    return await this.placeCrop(cost, location, async () => {
       return await Game.instance.createStrawberry();
     });
   }
 
-  private async placeCattle(cost: number, location: InteractiveArea, cattleConstructor: () => Promise<AnimatedObject>) : Promise<boolean> {
+  private async placeCattle(
+    cost: number,
+    location: InteractiveArea,
+    cattleConstructor: () => Promise<AnimatedObject>
+  ): Promise<boolean> {
     const money = Game.instance.money + cost;
     if (money < 0) {
       PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
@@ -332,8 +360,12 @@ private async placeCrop(cost: number, location: InteractiveArea, cropConstructor
     });
   }
 
-  private async placeLand(cost: number, location: InteractiveArea, landConstructor: () => Promise<PlaceableObject>) : Promise<boolean> {
-  const money = Game.instance.money + cost;
+  private async placeLand(
+    cost: number,
+    location: InteractiveArea,
+    landConstructor: () => Promise<PlaceableObject>
+  ): Promise<boolean> {
+    const money = Game.instance.money + cost;
     if (money < 0) {
       PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
       this.disablePlacement();
@@ -352,13 +384,13 @@ private async placeCrop(cost: number, location: InteractiveArea, cropConstructor
   }
   private async placeFence(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.FenceMake];
-    return await this.placeLand(cost, location, async() => {
+    return await this.placeLand(cost, location, async () => {
       return await Game.instance.createFence();
     });
   }
   private async placeGround(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.GroundMake];
-    return await this.placeLand(cost, location, async() => {
+    return await this.placeLand(cost, location, async () => {
       return await Game.instance.createGround();
     });
   }

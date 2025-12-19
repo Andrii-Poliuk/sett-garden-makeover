@@ -1,17 +1,10 @@
-import { Object3D, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import * as THREE from "three";
 import MeshLoader from "../Objects/MeshLoader";
-import Cow from "../Objects/Cow";
-import AnimatedObject from "../Objects/AnimatedObject";
-import ObjectHighlight from "../Objects/ObjectHighlight";
-import { ObjectsMeshEnum } from "../Objects/ObjectsMeshEnum";
-import Fence from "../Objects/Fence";
-import { setupOrbitControls, Helpers } from "../Helpers";
+import { setupOrbitControls } from "../Helpers";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import PlaceableObject from "../Objects/PlaceableObject";
 import { RaycastManager } from "./RaycastManager";
 import Game from "./Game";
-import { InteractiveArea } from "../Objects/InteractiveArea";
 
 export default class GameScene {
   scene: Scene;
@@ -61,7 +54,7 @@ export default class GameScene {
     this.camera.updateProjectionMatrix();
   }
 
-  public update(delta: number): void {
+  public update(_delta: number): void {
     this.controls.update();
   }
 

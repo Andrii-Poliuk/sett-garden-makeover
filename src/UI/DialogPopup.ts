@@ -31,13 +31,14 @@ export default class DialogPopup extends Container {
     this.originalHeight = height;
 
     const popupWidth = Math.min(600, width - 40);
-    const popupHeight = 120;
+    const popupHeight = 180;
     const popupX = (width) / 2;
-    const popupY = height - popupHeight - 40;
+    const popupY = height - popupHeight/2 - 60;
 
     this.background = new Graphics();
     this.background.rect(0, 0, width, height);
     this.background.fill({ color: 0x000000, alpha: 0.1 });
+    this.background.pivot = 0.5;
     this.addChild(this.background);
 
     this.dialogBackground = new Graphics();
@@ -52,7 +53,7 @@ export default class DialogPopup extends Container {
       text: "",
       style: {
         fontFamily: "Arial",
-        fontSize: 32,
+        fontSize: 28,
         fill: "white",
         align: "center",
         wordWrap: true,
@@ -83,7 +84,7 @@ export default class DialogPopup extends Container {
   private handleClick(): void {
     const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
     click && click.play();
-    
+
     gsap.to(this, {
       alpha: 0,
       duration: 0.2,
@@ -97,22 +98,21 @@ export default class DialogPopup extends Container {
     });
   }
 
-  public resize(width: number, height: number): void {
+  public resize(width: number, height: number, scale: number): void {
     if (!this.visible) return;
     if (!this.dialogBackground) return;
 
     const scaleX = width / this.originalWidth;
     const scaleY = height / this.originalHeight;
-    const dialogScale = Math.min(scaleX, scaleY);
     const backgroundScale = Math.max(scaleX, scaleY);
 
-    const popupHeight = 120;
+    const popupHeight = 180;
     const popupX = width / 2;
-    const popupY = height - popupHeight * dialogScale - 40;
+    const popupY = height - (popupHeight/2) * scale - 40;
 
     this.dialogBackground.x = popupX;
     this.dialogBackground.y = popupY;
-    this.dialogBackground.scale.set(dialogScale);
+    this.dialogBackground.scale.set(scale);
     this.background?.scale.set(backgroundScale);
   }
 }

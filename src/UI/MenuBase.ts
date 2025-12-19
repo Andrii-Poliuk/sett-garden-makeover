@@ -5,6 +5,7 @@ export default class MenuBase extends Container {
   private slideOffset: number = 30;
   private currentTween: gsap.core.Tween | null = null;
   private originalX: number = 0;
+  private originalY: number = 0;
 
   public show(): void {
     if (this.visible && !this.currentTween) return;
@@ -47,7 +48,15 @@ export default class MenuBase extends Container {
     }
   }
 
-  public setOriginalPosition(x: number): void {
+  public setOriginalPosition(x: number, y?: number): void {
     this.originalX = x;
+    if (y !== undefined) {
+      this.originalY = y;
+    }
+  }
+
+  public resize(flexibleScale: number): void {
+    this.scale.set(flexibleScale);
+    this.position.set(this.originalX * flexibleScale, this.originalY * flexibleScale);
   }
 }

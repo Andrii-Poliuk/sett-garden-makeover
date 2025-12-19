@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
-import PixiAssetsLoader from "../Game/PixiAssetsLoader";
 import DialogPopup from "./DialogPopup";
 import ConfirmationPopup from "./ConfirmationPopup";
+import GameOverPopup from "./GameOverPopup";
 import CropPlacementMenu from "./CropPlacementMenu";
 import CattlePlacementMenu from "./CattlePlacementMenu";
 import HomeMenu from "./HomeMenu";
@@ -19,7 +19,11 @@ export default class UIScene {
   private _gameControls!: GameControls;
   private dialogPopup!: DialogPopup;
   private confirmationPopup!: ConfirmationPopup;
+  private gameOverPopup!: GameOverPopup;
   private floatingTextContainer!: Container;
+
+  private originalWidth: number = 0;
+  private originalHeight: number = 0;
 
   public get homeMenu(): HomeMenu {
     return this._homeMenu;
@@ -91,7 +95,7 @@ export default class UIScene {
   public async init(): Promise<void> {
     this._homeMenu = new HomeMenu();
     this._homeMenu.position.set(60, 120);
-    this._homeMenu.setOriginalPosition(60);
+    this._homeMenu.setOriginalPosition(60, 120);
     this._homeMenu.init();
     this.stage.addChild(this._homeMenu);
     this.homeMenu.onCropClick = () => {
@@ -106,17 +110,17 @@ export default class UIScene {
 
     this._cattlePlacementMenu = new CattlePlacementMenu();
     this._cattlePlacementMenu.position.set(60, 120);
-    this._cattlePlacementMenu.setOriginalPosition(60);
+    this._cattlePlacementMenu.setOriginalPosition(60, 120);
     this._cattlePlacementMenu.init();
     this.stage.addChild(this._cattlePlacementMenu);
     this._cattlePlacementMenu.visible = false;
     this.cattlePlacementMenu.onBackClick = () => {
       this.showHomeMenu();
-    }
+    };
 
     this._cropPlacementMenu = new CropPlacementMenu();
     this._cropPlacementMenu.position.set(60, 120);
-    this._cropPlacementMenu.setOriginalPosition(60);
+    this._cropPlacementMenu.setOriginalPosition(60, 120);
     this._cropPlacementMenu.init();
     this.stage.addChild(this._cropPlacementMenu);
     this._cropPlacementMenu.visible = false;
@@ -126,7 +130,7 @@ export default class UIScene {
 
     this._landPlacementMenu = new LandPlacementMenu();
     this._landPlacementMenu.position.set(60, 120);
-    this._landPlacementMenu.setOriginalPosition(60);
+    this._landPlacementMenu.setOriginalPosition(60, 120);
     this._landPlacementMenu.init();
     this.stage.addChild(this._landPlacementMenu);
     this._landPlacementMenu.visible = false;
@@ -136,7 +140,6 @@ export default class UIScene {
 
     this._gameControls = new GameControls();
     this._gameControls.init();
-    this._gameControls.position.set(window.innerWidth - 180, 40);
     this.stage.addChild(this._gameControls);
 
     this.dialogPopup = DialogPopup.instance;
@@ -147,19 +150,37 @@ export default class UIScene {
     this.confirmationPopup.init(window.innerWidth, window.innerHeight);
     this.stage.addChild(this.confirmationPopup);
 
+    this.gameOverPopup = GameOverPopup.instance;
+    this.gameOverPopup.init(window.innerWidth, window.innerHeight);
+    this.stage.addChild(this.gameOverPopup);
+
     this.floatingTextContainer = new Container();
     this.stage.addChild(this.floatingTextContainer);
     FloatingText.init(this.floatingTextContainer);
 
     this.hideMenu();
     this.gameControls.hide();
+
+    this.originalWidth = window.innerWidth;
+    this.originalHeight = window.innerHeight;
   }
 
   public resize(width: number, height: number): void {
-    this.dialogPopup.resize(width, height);
-    this.confirmationPopup.resize(width, height);
-    this._gameControls.position.set(width - 180, 40);
+    const scaleX = width > 600 ? 1 : width / this.originalWidth;
+    const scaleY = height > 800 ? 1 : height / this.originalHeight;
+    const flexibleScale = Math.min(scaleX, scaleY);
+
+    this.dialogPopup.resize(width, height, flexibleScale);
+    this.confirmationPopup.resize(width, height, flexibleScale);
+    this.gameOverPopup.resize(width, height, flexibleScale);
+
+    this._gameControls.resize(width, height, flexibleScale);
+
+    this._homeMenu.resize(flexibleScale);
+    this._cropPlacementMenu.resize(flexibleScale);
+    this._cattlePlacementMenu.resize(flexibleScale);
+    this._landPlacementMenu.resize(flexibleScale);
   }
 
-  public update(delta: number): void {}
+  public update(_delta: number): void {}
 }

@@ -2,23 +2,26 @@ import { Container, Graphics, Text } from "pixi.js";
 import gsap from "gsap";
 import PixiAssetsLoader, { SoundAsset } from "../Game/PixiAssetsLoader";
 
-export default class ConfirmationPopup extends Container {
-  private static _instance: ConfirmationPopup;
+export default class GameOverPopup extends Container {
+  private static _instance: GameOverPopup;
 
   private background?: Graphics;
   private dialogBackground?: Graphics;
   private messageText?: Text;
-  private yesButton?: Graphics;
-  private noButton?: Graphics;
-  private onYesCallback?: () => void;
+  private sourceButton?: Graphics;
+  private actionButton?: Graphics;
+  private actionButtonText?: Text;
+  private onActionCallback?: () => void;
   private originalWidth: number = 0;
   private originalHeight: number = 0;
 
-  public static get instance(): ConfirmationPopup {
-    if (!ConfirmationPopup._instance) {
-      ConfirmationPopup._instance = new ConfirmationPopup();
+  private static readonly SOURCE_URL = "https://github.com/Andrii-Poliuk/sett-garden-makeover";
+
+  public static get instance(): GameOverPopup {
+    if (!GameOverPopup._instance) {
+      GameOverPopup._instance = new GameOverPopup();
     }
-    return ConfirmationPopup._instance;
+    return GameOverPopup._instance;
   }
 
   private constructor() {
@@ -31,7 +34,7 @@ export default class ConfirmationPopup extends Container {
     this.originalHeight = height;
 
     const popupWidth = Math.min(500, width - 40);
-    const popupHeight = 180;
+    const popupHeight = 240;
     const popupX = width / 2;
     const popupY = height / 2;
 
@@ -72,88 +75,81 @@ export default class ConfirmationPopup extends Container {
     const buttonHeight = 40;
     const buttonSpacing = 30;
 
-    this.yesButton = new Graphics();
-    this.yesButton.rect(
+    this.sourceButton = new Graphics();
+    this.sourceButton.rect(
       -buttonWidth / 2,
       -buttonHeight / 2,
       buttonWidth,
       buttonHeight
     );
-    this.yesButton.fill({ color: 0x222222 });
-    this.yesButton.stroke({ color: 0x888888, width: 1 });
-    this.yesButton.x = -buttonSpacing - buttonWidth / 2;
-    this.yesButton.y = 50;
-    this.yesButton.eventMode = "static";
-    this.yesButton.cursor = "pointer";
-    this.yesButton.on("pointerdown", this.handleYesClick, this);
-    this.dialogBackground.addChild(this.yesButton);
+    this.sourceButton.fill({ color: 0x222222 });
+    this.sourceButton.stroke({ color: 0x888888, width: 1 });
+    this.sourceButton.x = -buttonSpacing - buttonWidth / 2;
+    this.sourceButton.y = 50;
+    this.sourceButton.eventMode = "static";
+    this.sourceButton.cursor = "pointer";
+    this.sourceButton.on("pointerdown", this.handleSourceClick, this);
+    this.dialogBackground.addChild(this.sourceButton);
 
-    const yesText = new Text({
-      text: "Yes",
+    const sourceText = new Text({
+      text: "Source",
       style: {
         fontFamily: "Arial",
         fontSize: 24,
         fill: "white",
       },
     });
-    yesText.anchor.set(0.5);
-    this.yesButton.addChild(yesText);
+    sourceText.anchor.set(0.5);
+    this.sourceButton.addChild(sourceText);
 
-    this.noButton = new Graphics();
-    this.noButton.rect(
+    this.actionButton = new Graphics();
+    this.actionButton.rect(
       -buttonWidth / 2,
       -buttonHeight / 2,
       buttonWidth,
       buttonHeight
     );
-    this.noButton.fill({ color: 0x222222 });
-    this.noButton.stroke({ color: 0x888888, width: 1 });
-    this.noButton.x = buttonSpacing + buttonWidth / 2;
-    this.noButton.y = 50;
-    this.noButton.eventMode = "static";
-    this.noButton.cursor = "pointer";
-    this.noButton.on("pointerdown", this.handleNoClick, this);
-    this.dialogBackground.addChild(this.noButton);
+    this.actionButton.fill({ color: 0x222222 });
+    this.actionButton.stroke({ color: 0x888888, width: 1 });
+    this.actionButton.x = buttonSpacing + buttonWidth / 2;
+    this.actionButton.y = 50;
+    this.actionButton.eventMode = "static";
+    this.actionButton.cursor = "pointer";
+    this.actionButton.on("pointerdown", this.handleActionClick, this);
+    this.dialogBackground.addChild(this.actionButton);
 
-    const noText = new Text({
-      text: "No",
+    this.actionButtonText = new Text({
+      text: "Continue",
       style: {
         fontFamily: "Arial",
         fontSize: 24,
         fill: "white",
       },
     });
-    noText.anchor.set(0.5);
-    this.noButton.addChild(noText);
+    this.actionButtonText.anchor.set(0.5);
+    this.actionButton.addChild(this.actionButtonText);
 
     this.eventMode = "static";
     this.visible = false;
   }
 
-  public showPopup(message: string, onYes: () => void): void {
+  public showPopup(message: string, gameOver: boolean, onAction: () => void): void {
     this.messageText!.text = message;
-    this.onYesCallback = onYes;
+    this.actionButtonText!.text = gameOver ? "Restart" : "Continue";
+    this.onActionCallback = onAction;
     this.visible = true;
     this.alpha = 0;
 
     gsap.to(this, { alpha: 1, duration: 0.2 });
   }
 
-  private handleYesClick(): void {
+  private handleSourceClick(): void {
     const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
     click && click.play();
-    gsap.to(this, {
-      alpha: 0,
-      duration: 0.2,
-      onComplete: () => {
-        this.visible = false;
-        this.onYesCallback?.();
-        this.onYesCallback = undefined;
-      },
-    });
+    window.open(GameOverPopup.SOURCE_URL, "_blank");
   }
 
-  private handleNoClick(): void {
+  private handleActionClick(): void {
     const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
     click && click.play();
     gsap.to(this, {
@@ -161,7 +157,8 @@ export default class ConfirmationPopup extends Container {
       duration: 0.2,
       onComplete: () => {
         this.visible = false;
-        this.onYesCallback = undefined;
+        this.onActionCallback?.();
+        this.onActionCallback = undefined;
       },
     });
   }

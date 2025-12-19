@@ -1,5 +1,4 @@
 import { Object3D, Vector3 } from "three";
-import { Helpers } from "../Helpers";
 import DialogPopup from "../UI/DialogPopup";
 import Sheep from "../Objects/Sheep";
 import CameraPosition, { CameraPositionData } from "./CameraPosition";
@@ -11,7 +10,6 @@ import { InteractiveArea } from "../Objects/InteractiveArea";
 import { ObjectsMeshEnum } from "../Objects/ObjectsMeshEnum";
 import ObjectHighlight from "../Objects/ObjectHighlight";
 import Corn from "../Objects/Corn";
-import UIScene from "../UI/UIScene";
 import HomeMenu from "../UI/HomeMenu";
 import LandPlacementMenu from "../UI/LandPlacementMenu";
 import MoneyCost, { MoneyCostType } from "./MoneyCost";
@@ -102,7 +100,7 @@ export default class TutorialLevel extends GameLevel {
     this.cameraPosition!.updatePosition(cameraCropHarvestPosition);
 
     await DialogPopup.instance.showPopup(
-      "Now, when the Sheep's put in place,\nyou can collect what's left of your Harvest"
+      "Now, when the Sheep's put in place,\nyou can collect what's\nleft of your Harvest"
     );
     Game.instance.toggleChickenGuide(false);
 
@@ -199,7 +197,7 @@ export default class TutorialLevel extends GameLevel {
       "This is your Farm!\nSmall but cozy\nHowever..."
     );
     await DialogPopup.instance.showPopup(
-      "You still have to pay the rent\nand it could use some management"
+      "You still have to pay the rent\nand it could use\nsome management"
     );
 
     const cameraCornView: CameraPositionData = {

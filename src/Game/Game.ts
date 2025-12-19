@@ -19,7 +19,6 @@ import UIScene from "../UI/UIScene";
 import MultiStageObject from "../Objects/MultiStageObject";
 import AnimatedObject from "../Objects/AnimatedObject";
 import MainLevel from "./MainLevel";
-import { Helpers } from "../Helpers";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 
 export enum CropType {
@@ -72,7 +71,7 @@ export default class Game {
     if (this._money < 0) {
       this._money = 0;
     }
-    this.uiScene?.gameControls.setMoney(value);
+    this.uiScene?.gameControls.setMoney(this._money);
   }
 
   private constructor() {}
