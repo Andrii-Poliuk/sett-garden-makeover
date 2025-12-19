@@ -161,8 +161,8 @@ export default class UIScene {
     this.hideMenu();
     this.gameControls.hide();
 
-    this.originalWidth = window.innerWidth;
-    this.originalHeight = window.innerHeight;
+    this.originalWidth = Math.max(window.innerWidth, 600);
+    this.originalHeight = Math.max(window.innerHeight, 800);
   }
 
   public resize(width: number, height: number): void {

@@ -51,7 +51,6 @@ export default class MeshLoader {
     // objects.scene.static = true;
     MeshLoader.Instance.objects = objects;
     MeshLoader.Instance.ground = ground;
-    console.log(objects);
 
     for (const key of Object.values(ObjectsMeshEnum)) {
       const mesh = objects.scene.getObjectByName(key) as Object3D<Object3DEventMap>;

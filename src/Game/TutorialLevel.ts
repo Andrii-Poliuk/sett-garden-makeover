@@ -106,7 +106,6 @@ export default class TutorialLevel extends GameLevel {
 
     this.corn.forEach((corn) => {
       corn.enableInteraction(async (_obj) => {
-        console.log("clicked");
         this.collectCorn(corn);
         PixiAssetsLoader.instance.playSound(SoundAsset.Click);
       });
@@ -234,7 +233,6 @@ export default class TutorialLevel extends GameLevel {
       const position = area.getWorldPosition(new Vector3());
       const corn = await Game.instance.createCorn();
       corn.position.set(position.x, position.y, position.z);
-      console.log(corn.position, corn.scale);
       corn.setStage3();
       this.corn.push(corn);
       corn.placedAtArea = area;

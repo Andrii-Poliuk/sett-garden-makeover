@@ -1,4 +1,4 @@
-import { AxesHelper, Object3D, PerspectiveCamera, Vector3 } from "three";
+import { Object3D, PerspectiveCamera, Vector3 } from "three";
 import { lerp } from "../Helpers";
 
 export interface CameraPositionData {
@@ -15,14 +15,14 @@ export default class CameraPosition extends Object3D {
   constructor() {
     super();
 
-    const axesHelper = new AxesHelper(1);
-    this.add(axesHelper);
+    // const axesHelper = new AxesHelper(1);
+    // this.add(axesHelper);
 
     this.cameraTarget = new Object3D();
     this.add(this.cameraTarget);
 
-    const targetAxesHelper = new AxesHelper(1);
-    this.cameraTarget.add(targetAxesHelper);
+    // const targetAxesHelper = new AxesHelper(1);
+    // this.cameraTarget.add(targetAxesHelper);
   }
 
   public update(): void {

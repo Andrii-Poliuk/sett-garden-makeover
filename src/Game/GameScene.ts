@@ -1,8 +1,8 @@
 import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import * as THREE from "three";
 import MeshLoader from "../Objects/MeshLoader";
-import { setupOrbitControls } from "../Helpers";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+// import { setupOrbitControls } from "../Helpers";
+// import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RaycastManager } from "./RaycastManager";
 import Game from "./Game";
 
@@ -10,7 +10,7 @@ export default class GameScene {
   scene: Scene;
   camera: PerspectiveCamera;
   renderer: WebGLRenderer;
-  controls: OrbitControls;
+  // controls: OrbitControls;
   ambientLight?: THREE.AmbientLight;
 
   constructor(renderer: WebGLRenderer) {
@@ -25,7 +25,7 @@ export default class GameScene {
     threeCamera.lookAt(new THREE.Vector3(0, 0, 0));
     scene.add(threeCamera);
     this.renderer = renderer;
-    this.controls = setupOrbitControls(threeCamera, renderer);
+    // this.controls = setupOrbitControls(threeCamera, renderer);
 
 
     scene.background = new THREE.Color(0.3,0.5,1);
@@ -40,13 +40,9 @@ export default class GameScene {
     this.scene.add(farm);
 
     this.scene.add(Game.instance.getBatchRenderer());
-    // this.scene.add(MeshLoader.Instance.objects!.scene);
 
     this.ambientLight = new THREE.AmbientLight(0xFFFFFF, 1.5);
     this.scene.add(this.ambientLight);
-
-    const axesHelper = new THREE.AxesHelper(5);
-    this.scene.add(axesHelper);
   }
 
   public resize(width: number, height: number): void {
@@ -55,7 +51,7 @@ export default class GameScene {
   }
 
   public update(_delta: number): void {
-    this.controls.update();
+    // this.controls.update();
   }
 
   public setEnvironmentColors(

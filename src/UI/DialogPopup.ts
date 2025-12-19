@@ -30,7 +30,7 @@ export default class DialogPopup extends Container {
     this.originalWidth = width;
     this.originalHeight = height;
 
-    const popupWidth = Math.min(600, width - 40);
+    const popupWidth = Math.min(580, width - 40);
     const popupHeight = 180;
     const popupX = (width) / 2;
     const popupY = height - popupHeight/2 - 60;
@@ -57,7 +57,7 @@ export default class DialogPopup extends Container {
         fill: "white",
         align: "center",
         wordWrap: true,
-        wordWrapWidth: 600,
+        wordWrapWidth: popupWidth - 20,
       },
     });
     this.messageText.anchor.set(0.5);
@@ -114,5 +114,9 @@ export default class DialogPopup extends Container {
     this.dialogBackground.y = popupY;
     this.dialogBackground.scale.set(scale);
     this.background?.scale.set(backgroundScale);
+
+    // if (this.messageText) {
+    //   this.messageText.style.fontSize =  28*scale;
+    // }
   }
 }

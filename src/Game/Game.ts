@@ -145,6 +145,10 @@ export default class Game {
     return this.gameScene?.camera;
   }
 
+  public getCameraPositions(): CameraPosition[] | undefined {
+    return this.cameraPositions;
+  }
+
   public async startGame(): Promise<void> {
     const themeMusic = await PixiAssetsLoader.instance.getSound(
       SoundAsset.Theme

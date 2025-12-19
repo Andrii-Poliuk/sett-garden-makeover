@@ -68,6 +68,6 @@ export default class GameControls extends Container {
 
   public resize(width: number, _height: number, flexibleScale: number): void {
     this.scale.set(flexibleScale);
-    this.position.set(width - 180 * flexibleScale, 40 * flexibleScale);
+    this.position.set(width - (180 * flexibleScale), 40 * flexibleScale);
   }
 }

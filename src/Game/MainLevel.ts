@@ -15,9 +15,11 @@ import FloatingText from "../Particles/FloatingText";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 import AnimatedObject from "../Objects/AnimatedObject";
 import GameOverPopup from "../UI/GameOverPopup";
+import CameraPosition from "./CameraPosition";
 
 export default class MainLevel extends GameLevel {
   private landPlacements: InteractiveArea[] = [];
+  private cameraPosition?: CameraPosition;
 
   private static readonly RENT_MESSAGES: string[] = [
     "Rent Time!",
@@ -39,6 +41,17 @@ export default class MainLevel extends GameLevel {
     Game.instance.UIScene.showHomeMenu();
     Game.instance.UIScene.showGameControls();
     Game.instance.UIScene.gameControls.setEnabled(true);
+
+    this.cameraPosition = Game.instance.createCameraPosition();
+    this.cameraPosition.updatePosition({
+      position: new Vector3(
+        -22.4,
+        22.6,
+        10.1
+      ),
+      target: new Vector3(9.2, -10, -4.1),
+    });
+    this.cameraPosition.snapCamera(Game.instance.getCamera()!);
   }
 
   public async finishLevel(): Promise<void> {}

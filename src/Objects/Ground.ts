@@ -1,7 +1,6 @@
 import PlaceableObject from "./PlaceableObject";
 import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import { InteractiveArea } from "./InteractiveArea";
-import { AxesHelper } from "three";
 import { LandType } from "../Game/Game";
 
 export default class Ground extends PlaceableObject {
@@ -29,7 +28,5 @@ export default class Ground extends PlaceableObject {
       area.position.set(positions[index].x, 0, positions[index].z);
       this.add(area);
     });
-
-    this.add(new AxesHelper(1));
   }
 }
