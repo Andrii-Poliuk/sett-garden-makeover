@@ -1,12 +1,11 @@
-//import { Application, Assets, Sprite } from "pixi.js";
-import { EventSystem, WebGLRenderer } from 'pixi.js';
-import * as THREE from 'three';
-import Stats from 'three/addons/libs/stats.module.js'
-import GameScene from './Game/GameScene';
-import UIScene from './UI/UIScene';
-import Game from './Game/Game';
-import { RaycastManager } from './Game/RaycastManager';
-import PixiAssetsLoader from './Game/PixiAssetsLoader';
+import { EventSystem, WebGLRenderer } from "pixi.js";
+import * as THREE from "three";
+// import Stats from 'three/addons/libs/stats.module.js'
+import GameScene from "./Game/GameScene";
+import UIScene from "./UI/UIScene";
+import Game from "./Game/Game";
+import { RaycastManager } from "./Game/RaycastManager";
+import PixiAssetsLoader from "./Game/PixiAssetsLoader";
 
 (async () => {
   let WIDTH = window.innerWidth;
@@ -43,27 +42,26 @@ import PixiAssetsLoader from './Game/PixiAssetsLoader';
   RaycastManager.instance.setUIStage(uiScene.stage);
 
   // PixiJS DevTools support
-  (globalThis as any).__PIXI_STAGE__ = uiScene.stage;
-  (globalThis as any).__PIXI_RENDERER__ = pixiRenderer;
+  // (globalThis as any).__PIXI_STAGE__ = uiScene.stage;
+  // (globalThis as any).__PIXI_RENDERER__ = pixiRenderer;
 
   // Set up PixiJS event system on the Three.js canvas
   const eventSystem = new EventSystem(pixiRenderer);
   eventSystem.domElement = threeRenderer.domElement as HTMLCanvasElement;
   eventSystem.setTargetElement(threeRenderer.domElement as HTMLCanvasElement);
   eventSystem.resolution = pixiRenderer.resolution;
-  uiScene.stage.eventMode = 'static';
+  uiScene.stage.eventMode = "static";
 
-  const stats = new Stats()
-  document.body.appendChild(stats.dom)
+  // const stats = new Stats()
+  // document.body.appendChild(stats.dom)
 
-  const clock = new THREE.Clock()
-  let delta = 0
+  const clock = new THREE.Clock();
+  let delta = 0;
 
   function loop() {
-    delta = clock.getDelta()
-    threeScene.update(delta)
+    delta = clock.getDelta();
+    threeScene.update(delta);
     Game.instance.update(delta);
-    uiScene.update(delta);
 
     threeRenderer.resetState();
     threeRenderer.render(threeScene.scene, threeScene.camera);
@@ -71,14 +69,14 @@ import PixiAssetsLoader from './Game/PixiAssetsLoader';
     pixiRenderer.resetState();
     pixiRenderer.render({ container: uiScene.stage });
 
-    stats.update()
+    // stats.update()
 
     requestAnimationFrame(loop);
   }
 
   requestAnimationFrame(loop);
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
 

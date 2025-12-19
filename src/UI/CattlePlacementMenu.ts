@@ -45,15 +45,21 @@ export default class CattlePlacementMenu extends MenuBase {
     this.backButton.position.set(0, spacing * 2);
     this.addChild(this.backButton);
     const backButtonScale = this.backButton.sprite.scale;
-    this.backButton.sprite.scale.set(-backButtonScale.x,backButtonScale.y);
+    this.backButton.sprite.scale.set(-backButtonScale.x, backButtonScale.y);
   }
 
   public static readonly COW = 1 << 0;
   public static readonly SHEEP = 1 << 1;
   public static readonly BACK = 1 << 2;
-  public static readonly ALL = CattlePlacementMenu.COW | CattlePlacementMenu.SHEEP | CattlePlacementMenu.BACK;
+  public static readonly ALL =
+    CattlePlacementMenu.COW |
+    CattlePlacementMenu.SHEEP |
+    CattlePlacementMenu.BACK;
 
-  public setEnabled(enabled: boolean, mask: number = CattlePlacementMenu.ALL): void {
+  public setEnabled(
+    enabled: boolean,
+    mask: number = CattlePlacementMenu.ALL,
+  ): void {
     if (mask & CattlePlacementMenu.COW) this.cowButton.setEnabled(enabled);
     if (mask & CattlePlacementMenu.SHEEP) this.sheepButton.setEnabled(enabled);
     if (mask & CattlePlacementMenu.BACK) this.backButton.setEnabled(enabled);

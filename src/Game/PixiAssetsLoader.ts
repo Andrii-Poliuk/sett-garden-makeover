@@ -43,7 +43,7 @@ export default class PixiAssetsLoader {
     const assetKeys = Object.values(PixiAsset);
 
     const loadedTextures = await Promise.all(
-      assetKeys.map((path) => Assets.load(path))
+      assetKeys.map((path) => Assets.load(path)),
     );
 
     assetKeys.forEach((key, index) => {
@@ -60,17 +60,25 @@ export default class PixiAssetsLoader {
       soundKeys.map((path) => {
         return new Promise<void>((resolve) => {
           const audio = new Audio(path);
-          audio.addEventListener("canplaythrough", () => {
-            this.sounds.set(path as SoundAsset, audio);
-            resolve();
-          }, { once: true });
-          audio.addEventListener("error", () => {
-            console.warn(`Failed to load sound: ${path}`);
-            resolve();
-          }, { once: true });
+          audio.addEventListener(
+            "canplaythrough",
+            () => {
+              this.sounds.set(path as SoundAsset, audio);
+              resolve();
+            },
+            { once: true },
+          );
+          audio.addEventListener(
+            "error",
+            () => {
+              console.warn(`Failed to load sound: ${path}`);
+              resolve();
+            },
+            { once: true },
+          );
           audio.load();
         });
-      })
+      }),
     );
   }
 

@@ -15,6 +15,21 @@ export default tseslint.config(
       ecmaVersion: "latest",
       sourceType: "module",
     },
-    rules: {},
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/no-unused-expressions": [
+        "error",
+        {
+          allowShortCircuit: true,
+        },
+      ],
+      "@typescript-eslint/no-namespace": "off",
+    },
   },
 );

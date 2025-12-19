@@ -151,7 +151,7 @@ export default class Game {
 
   public async startGame(): Promise<void> {
     const themeMusic = await PixiAssetsLoader.instance.getSound(
-      SoundAsset.Theme
+      SoundAsset.Theme,
     );
     if (themeMusic) {
       themeMusic.volume = 0.2;
@@ -309,7 +309,7 @@ export default class Game {
   public createInteractiveArea(
     scaleX: number = 2,
     scaleY: number = 2,
-    scaleZ: number = 2
+    scaleZ: number = 2,
   ): InteractiveArea {
     const interactiveArea = new InteractiveArea(scaleX, scaleY, scaleZ);
     this.interactiveAreas.push(interactiveArea);

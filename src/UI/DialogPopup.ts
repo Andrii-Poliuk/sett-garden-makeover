@@ -12,13 +12,12 @@ export default class DialogPopup extends Container {
   private originalWidth: number = 0;
   private originalHeight: number = 0;
 
-    public static get instance(): DialogPopup {
+  public static get instance(): DialogPopup {
     if (!DialogPopup._instance) {
       DialogPopup._instance = new DialogPopup();
     }
     return DialogPopup._instance;
   }
-
 
   private constructor() {
     super();
@@ -26,14 +25,14 @@ export default class DialogPopup extends Container {
     this.visible = false;
   }
 
-    public init(width: number, height: number): void {
+  public init(width: number, height: number): void {
     this.originalWidth = width;
     this.originalHeight = height;
 
     const popupWidth = Math.min(580, width - 40);
     const popupHeight = 180;
-    const popupX = (width) / 2;
-    const popupY = height - popupHeight/2 - 60;
+    const popupX = width / 2;
+    const popupY = height - popupHeight / 2 - 60;
 
     this.background = new Graphics();
     this.background.rect(0, 0, width, height);
@@ -42,7 +41,12 @@ export default class DialogPopup extends Container {
     this.addChild(this.background);
 
     this.dialogBackground = new Graphics();
-    this.dialogBackground.rect(-popupWidth/2, -popupHeight/2, popupWidth, popupHeight);
+    this.dialogBackground.rect(
+      -popupWidth / 2,
+      -popupHeight / 2,
+      popupWidth,
+      popupHeight,
+    );
     this.dialogBackground.fill({ color: 0x000000, alpha: 0.8 });
     this.dialogBackground.stroke({ color: 0xaaaaaa, width: 2 });
     this.addChild(this.dialogBackground);
@@ -82,8 +86,7 @@ export default class DialogPopup extends Container {
   }
 
   private handleClick(): void {
-    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
-    click && click.play();
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
 
     gsap.to(this, {
       alpha: 0,
@@ -108,7 +111,7 @@ export default class DialogPopup extends Container {
 
     const popupHeight = 180;
     const popupX = width / 2;
-    const popupY = height - (popupHeight/2) * scale - 40;
+    const popupY = height - (popupHeight / 2) * scale - 40;
 
     this.dialogBackground.x = popupX;
     this.dialogBackground.y = popupY;

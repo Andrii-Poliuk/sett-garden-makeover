@@ -15,7 +15,8 @@ export default class GameOverPopup extends Container {
   private originalWidth: number = 0;
   private originalHeight: number = 0;
 
-  private static readonly SOURCE_URL = "https://github.com/Andrii-Poliuk/sett-garden-makeover";
+  private static readonly SOURCE_URL =
+    "https://github.com/Andrii-Poliuk/sett-garden-makeover";
 
   public static get instance(): GameOverPopup {
     if (!GameOverPopup._instance) {
@@ -48,7 +49,7 @@ export default class GameOverPopup extends Container {
       -popupWidth / 2,
       -popupHeight / 2,
       popupWidth,
-      popupHeight
+      popupHeight,
     );
     this.dialogBackground.fill({ color: 0x000000, alpha: 0.9 });
     this.dialogBackground.stroke({ color: 0xaaaaaa, width: 2 });
@@ -80,7 +81,7 @@ export default class GameOverPopup extends Container {
       -buttonWidth / 2,
       -buttonHeight / 2,
       buttonWidth,
-      buttonHeight
+      buttonHeight,
     );
     this.sourceButton.fill({ color: 0x222222 });
     this.sourceButton.stroke({ color: 0x888888, width: 1 });
@@ -107,7 +108,7 @@ export default class GameOverPopup extends Container {
       -buttonWidth / 2,
       -buttonHeight / 2,
       buttonWidth,
-      buttonHeight
+      buttonHeight,
     );
     this.actionButton.fill({ color: 0x222222 });
     this.actionButton.stroke({ color: 0x888888, width: 1 });
@@ -133,7 +134,11 @@ export default class GameOverPopup extends Container {
     this.visible = false;
   }
 
-  public showPopup(message: string, gameOver: boolean, onAction: () => void): void {
+  public showPopup(
+    message: string,
+    gameOver: boolean,
+    onAction: () => void,
+  ): void {
     this.messageText!.text = message;
     this.actionButtonText!.text = gameOver ? "Restart" : "Continue";
     this.onActionCallback = onAction;
@@ -144,14 +149,12 @@ export default class GameOverPopup extends Container {
   }
 
   private handleSourceClick(): void {
-    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
-    click && click.play();
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
     window.open(GameOverPopup.SOURCE_URL, "_blank");
   }
 
   private handleActionClick(): void {
-    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
-    click && click.play();
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
     gsap.to(this, {
       alpha: 0,
       duration: 0.2,
@@ -163,7 +166,11 @@ export default class GameOverPopup extends Container {
     });
   }
 
-  public resize(width: number, height: number, flexibleScale: number = 1): void {
+  public resize(
+    width: number,
+    height: number,
+    flexibleScale: number = 1,
+  ): void {
     if (!this.dialogBackground) return;
 
     const backgroundScaleX = width / this.originalWidth;

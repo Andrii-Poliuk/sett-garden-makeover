@@ -7,8 +7,8 @@ export class RaycastManager {
   private interactiveAreas: InteractiveArea[] = [];
 
   private raycaster = new Raycaster();
-  private renderer?: WebGLRenderer;
-  private camera?: Camera;
+  // private renderer?: WebGLRenderer;
+  // private camera?: Camera;
 
   public enabled: boolean = true;
 
@@ -30,25 +30,29 @@ export class RaycastManager {
   }
 
   public init(renderer: WebGLRenderer, camera: Camera) {
-    this.renderer = renderer;
-    this.camera = camera;
+    // this.renderer = renderer;
+    // this.camera = camera;
 
     renderer.domElement.addEventListener("mousemove", (e) => {
       if (!this.enabled) return;
 
-      let mouse: Vector2 = new Vector2();
+      const mouse: Vector2 = new Vector2();
       mouse.set(
         (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
-        -(e.clientY / renderer.domElement.clientHeight) * 2 + 1
+        -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
       );
 
       this.raycaster.setFromCamera(mouse, camera);
 
-      const intersects = this.raycaster.intersectObjects(this.interactiveAreas, false);
+      const intersects = this.raycaster.intersectObjects(
+        this.interactiveAreas,
+        false,
+      );
 
       this.interactiveAreas.forEach((p) => (p.hovered = false));
 
-      intersects.length && ((intersects[0].object as InteractiveArea).hovered = true);
+      intersects.length &&
+        ((intersects[0].object as InteractiveArea).hovered = true);
     });
 
     renderer.domElement.addEventListener("pointerdown", (e) => {
@@ -57,15 +61,18 @@ export class RaycastManager {
       // Check if click is over UI element
       if (this.isOverUI(e.clientX, e.clientY)) return;
 
-      let mouse: Vector2 = new Vector2();
+      const mouse: Vector2 = new Vector2();
       mouse.set(
         (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
-        -(e.clientY / renderer.domElement.clientHeight) * 2 + 1
+        -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
       );
 
       this.raycaster.setFromCamera(mouse, camera);
 
-      const intersects = this.raycaster.intersectObjects(this.interactiveAreas, false);
+      const intersects = this.raycaster.intersectObjects(
+        this.interactiveAreas,
+        false,
+      );
 
       if (intersects.length) {
         const area = intersects[0].object as InteractiveArea;

@@ -27,8 +27,8 @@ export default class TutorialLevel extends GameLevel {
   private gameQuestResolved?: () => void;
   private corn: Corn[] = [];
 
-  private tickingDamage : number = 0;
-  private damageTick : number = 3.0;
+  private tickingDamage: number = 0;
+  private damageTick: number = 3.0;
   private damageTimer: number = 0;
 
   constructor() {
@@ -44,7 +44,7 @@ export default class TutorialLevel extends GameLevel {
       position: new Vector3(
         cameraPosition.x,
         cameraPosition.y,
-        cameraPosition.z
+        cameraPosition.z,
       ),
       target: new Vector3(0, -1, -1),
     });
@@ -77,17 +77,17 @@ export default class TutorialLevel extends GameLevel {
 
     Game.instance.toggleChickenGuide(true, true);
     await DialogPopup.instance.showPopup(
-      "Good job!\nYou can coninue without henholding"
+      "Good job!\nYou can coninue without henholding",
     );
     Game.instance.UIScene.showGameControls(GameControls.SKIP_DAY);
     await DialogPopup.instance.showPopup(
-      "You can rest till morning\nby pressing Next Day button.\nOr plant more Crops"
+      "You can rest till morning\nby pressing Next Day button.\nOr plant more Crops",
     );
     await DialogPopup.instance.showPopup(
-      "Crops take 2 nights to mature.\nIf you get enough Cattle to cover Rent\nconsider your problems solved"
+      "Crops take 2 nights to mature.\nIf you get enough Cattle to cover Rent\nconsider your problems solved",
     );
     await DialogPopup.instance.showPopup(
-      "Be wary of Rent pay every morning\nIt was 300 greens I believe?\nGood luck!"
+      "Be wary of Rent pay every morning\nIt was 300 greens I believe?\nGood luck!",
     );
     Game.instance.toggleChickenGuide(false);
   }
@@ -100,7 +100,7 @@ export default class TutorialLevel extends GameLevel {
     this.cameraPosition!.updatePosition(cameraCropHarvestPosition);
 
     await DialogPopup.instance.showPopup(
-      "Now, when the Sheep's put in place,\nyou can collect what's\nleft of your Harvest"
+      "Now, when the Sheep's put in place,\nyou can collect what's\nleft of your Harvest",
     );
     Game.instance.toggleChickenGuide(false);
 
@@ -130,7 +130,7 @@ export default class TutorialLevel extends GameLevel {
     this.tickingDamage = MoneyCost[MoneyCostType.SheepDamage];
 
     await DialogPopup.instance.showPopup(
-      "And it's already causing damage\nPlace a fence, quick!"
+      "And it's already causing damage\nPlace a fence, quick!",
     );
     Game.instance.toggleChickenGuide(false);
 
@@ -140,7 +140,7 @@ export default class TutorialLevel extends GameLevel {
     Game.instance.UIScene.landPlacementMenu.setEnabled(false);
     Game.instance.UIScene.landPlacementMenu.setEnabled(
       true,
-      LandPlacementMenu.CATTLE_PEN
+      LandPlacementMenu.CATTLE_PEN,
     );
     Game.instance.UIScene.landPlacementMenu.onCattlePenClick = () => {
       this.createFencePlacement();
@@ -179,7 +179,7 @@ export default class TutorialLevel extends GameLevel {
 
     Game.instance.toggleChickenGuide(true, false);
     await DialogPopup.instance.showPopup(
-      "Cattle in the Pens provide income every morning"
+      "Cattle in the Pens provide income every morning",
     );
   }
 
@@ -193,10 +193,10 @@ export default class TutorialLevel extends GameLevel {
 
     Game.instance.toggleChickenGuide(true, true);
     await DialogPopup.instance.showPopup(
-      "This is your Farm!\nSmall but cozy\nHowever..."
+      "This is your Farm!\nSmall but cozy\nHowever...",
     );
     await DialogPopup.instance.showPopup(
-      "You still have to pay the rent\nand it could use\nsome management"
+      "You still have to pay the rent\nand it could use\nsome management",
     );
 
     const cameraCornView: CameraPositionData = {
@@ -207,7 +207,7 @@ export default class TutorialLevel extends GameLevel {
     this.cameraPosition!.updatePosition(cameraCornView);
     Game.instance.toggleChickenGuide(true, false);
     await DialogPopup.instance.showPopup(
-      "You've already got some grown Corn\nready to be picked for profit"
+      "You've already got some grown Corn\nready to be picked for profit",
     );
 
     const cameraChickenView: CameraPositionData = {
@@ -217,7 +217,7 @@ export default class TutorialLevel extends GameLevel {
     this.cameraPosition!.lerpSpeed = 0.015;
     this.cameraPosition!.updatePosition(cameraChickenView);
     await DialogPopup.instance.showPopup(
-      "Animals are the source of daily income.\nIn your Fence already placed\nChickens and a Sheep"
+      "Animals are the source of daily income.\nIn your Fence already placed\nChickens and a Sheep",
     );
     await DialogPopup.instance.showPopup("By the way... Where's...");
   }
@@ -309,7 +309,7 @@ export default class TutorialLevel extends GameLevel {
     this.fence.position.set(
       location.position.x,
       location.position.y,
-      location.position.z
+      location.position.z,
     );
     this.gameQuestResolved?.();
   }

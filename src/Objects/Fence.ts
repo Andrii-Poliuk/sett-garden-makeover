@@ -13,11 +13,11 @@ export default class Fence extends PlaceableObject {
     await super.init(ObjectsMeshEnum.Fence);
 
     const positions = [
-      { x: 1.6, z: 2.95, r:0 },
-      { x: -0.2, z: -2.3, r:0.67 },
-      { x: -1.5, z: 2.65, r:-0.23 },
+      { x: 1.6, z: 2.95, r: 0 },
+      { x: -0.2, z: -2.3, r: 0.67 },
+      { x: -1.5, z: 2.65, r: -0.23 },
     ];
-        
+
     for (let i = 0; i < 3; i++) {
       const area = new InteractiveArea();
       this.add(area);

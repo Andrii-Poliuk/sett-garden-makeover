@@ -45,7 +45,7 @@ export default class ConfirmationPopup extends Container {
       -popupWidth / 2,
       -popupHeight / 2,
       popupWidth,
-      popupHeight
+      popupHeight,
     );
     this.dialogBackground.fill({ color: 0x000000, alpha: 0.9 });
     this.dialogBackground.stroke({ color: 0xaaaaaa, width: 2 });
@@ -77,7 +77,7 @@ export default class ConfirmationPopup extends Container {
       -buttonWidth / 2,
       -buttonHeight / 2,
       buttonWidth,
-      buttonHeight
+      buttonHeight,
     );
     this.yesButton.fill({ color: 0x222222 });
     this.yesButton.stroke({ color: 0x888888, width: 1 });
@@ -104,7 +104,7 @@ export default class ConfirmationPopup extends Container {
       -buttonWidth / 2,
       -buttonHeight / 2,
       buttonWidth,
-      buttonHeight
+      buttonHeight,
     );
     this.noButton.fill({ color: 0x222222 });
     this.noButton.stroke({ color: 0x888888, width: 1 });
@@ -140,8 +140,7 @@ export default class ConfirmationPopup extends Container {
   }
 
   private handleYesClick(): void {
-    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
-    click && click.play();
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
     gsap.to(this, {
       alpha: 0,
       duration: 0.2,
@@ -154,8 +153,7 @@ export default class ConfirmationPopup extends Container {
   }
 
   private handleNoClick(): void {
-    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
-    click && click.play();
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
     gsap.to(this, {
       alpha: 0,
       duration: 0.2,
@@ -166,7 +164,11 @@ export default class ConfirmationPopup extends Container {
     });
   }
 
-  public resize(width: number, height: number, flexibleScale: number = 1): void {
+  public resize(
+    width: number,
+    height: number,
+    flexibleScale: number = 1,
+  ): void {
     if (!this.dialogBackground) return;
 
     const backgroundScaleX = width / this.originalWidth;

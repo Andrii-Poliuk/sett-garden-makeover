@@ -92,15 +92,13 @@ export default class SpriteButton extends Container {
     if (!this.isValidPointer(event)) return;
     this.scale.set(this.pressedScale);
 
-    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
-    click && click.play();
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
   }
 
   private handlePointerUp(event: FederatedPointerEvent): void {
     if (!this.isValidPointer(event)) return;
     this.scale.set(this.originalScale);
-    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
-    click && click.play();
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
     this.onClick?.();
   }
 

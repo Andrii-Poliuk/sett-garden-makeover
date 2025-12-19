@@ -57,6 +57,9 @@ export default class MenuBase extends Container {
 
   public resize(flexibleScale: number): void {
     this.scale.set(flexibleScale);
-    this.position.set(this.originalX * flexibleScale, this.originalY * flexibleScale);
+    this.position.set(
+      this.originalX * flexibleScale,
+      this.originalY * flexibleScale,
+    );
   }
 }

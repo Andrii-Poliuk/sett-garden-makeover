@@ -48,7 +48,8 @@ export default class GameControls extends Container {
   public static readonly MONEY = 1 << 0;
   public static readonly SKIP_DAY = 1 << 1;
   public static readonly INCOME = 1 << 2;
-  public static readonly ALL = GameControls.MONEY | GameControls.SKIP_DAY | GameControls.INCOME;
+  public static readonly ALL =
+    GameControls.MONEY | GameControls.SKIP_DAY | GameControls.INCOME;
 
   public show(mask: number = GameControls.ALL): void {
     if (mask & GameControls.MONEY) this.moneyDisplay.visible = true;
@@ -68,6 +69,6 @@ export default class GameControls extends Container {
 
   public resize(width: number, _height: number, flexibleScale: number): void {
     this.scale.set(flexibleScale);
-    this.position.set(width - (180 * flexibleScale), 40 * flexibleScale);
+    this.position.set(width - 180 * flexibleScale, 40 * flexibleScale);
   }
 }

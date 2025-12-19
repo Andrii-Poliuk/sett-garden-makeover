@@ -49,7 +49,7 @@ export default class MultiStageObject extends Object3D {
   protected async init(modelName: ObjectsMeshEnum[]) {
     const models: Object3D<Object3DEventMap>[] = [];
     for (let i = 0; i < modelName.length; i++) {
-      let model = MeshLoader.getMesh(modelName[i]);
+      const model = MeshLoader.getMesh(modelName[i]);
       if (!model) {
         continue;
       }
@@ -60,12 +60,10 @@ export default class MultiStageObject extends Object3D {
     [this.stage1Model, this.stage2Model, this.stage3Model] = models;
 
     const leafs = new SpriteParticleEffect();
-    await leafs.init("./images/leaf.png",
-      {
-        color1: {r:0.1,g:0.6,b:0.1},
-        color2: {r:0.2,g:0.7,b:0.2},
-      }
-    );
+    await leafs.init("./images/leaf.png", {
+      color1: { r: 0.1, g: 0.6, b: 0.1 },
+      color2: { r: 0.2, g: 0.7, b: 0.2 },
+    });
     leafs.position.set(0, 1, 0);
     this.particlesEffect = leafs;
     this.add(leafs);
@@ -88,12 +86,14 @@ export default class MultiStageObject extends Object3D {
 
   public async playEffect(): Promise<void> {
     this.particlesEffect?.restart();
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
   }
 
   public setStage1() {
     this._currentStage = 1;
     this.stage1Model && this.setStage(this.stage1Model);
+      this.setStage(this.stage1Model);
+    }
     if (this.interactiveArea) {
       this.interactiveArea.visible = false;
     }
@@ -127,7 +127,7 @@ export default class MultiStageObject extends Object3D {
     }
   }
 
-  public enableInteraction(onPress?: (sender: Object3D) => Promise<void>): void {
+  public enableInteraction(onPress: (sender: Object3D) => Promise<void>): void {
     this.interactiveArea?.enableInteractiveArea(undefined, onPress);
   }
 

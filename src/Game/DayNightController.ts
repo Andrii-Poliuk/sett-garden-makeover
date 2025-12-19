@@ -12,17 +12,32 @@ export enum TimeOfDay {
 export default class DayNightController {
   private gameScene: GameScene;
   private currentTween: gsap.core.Tween | null = null;
-  private currentLightColor: { r: number; g: number; b: number; i: number } = { r: 1, g: 1, b: 1, i: 1.5 };
-  private currentSkyColor: { r: number; g: number; b: number } = { r: 0.3, g: 0.5, b: 1 };
+  private currentLightColor: { r: number; g: number; b: number; i: number } = {
+    r: 1,
+    g: 1,
+    b: 1,
+    i: 1.5,
+  };
+  private currentSkyColor: { r: number; g: number; b: number } = {
+    r: 0.3,
+    g: 0.5,
+    b: 1,
+  };
 
-  private readonly lightColors: Record<TimeOfDay, { r: number; g: number; b: number; i: number }> = {
+  private readonly lightColors: Record<
+    TimeOfDay,
+    { r: number; g: number; b: number; i: number }
+  > = {
     [TimeOfDay.Morning]: { r: 1.0, g: 0.9, b: 0.8, i: 1 },
     [TimeOfDay.Day]: { r: 1.0, g: 1.0, b: 1.0, i: 1.5 },
     [TimeOfDay.Evening]: { r: 1.0, g: 0.7, b: 0.5, i: 0.7 },
     [TimeOfDay.Night]: { r: 0.3, g: 0.3, b: 0.6, i: 0.1 },
   };
 
-  private readonly skyColors: Record<TimeOfDay, { r: number; g: number; b: number }> = {
+  private readonly skyColors: Record<
+    TimeOfDay,
+    { r: number; g: number; b: number }
+  > = {
     [TimeOfDay.Morning]: { r: 0.6, g: 0.7, b: 0.9 },
     [TimeOfDay.Day]: { r: 0.3, g: 0.5, b: 1.0 },
     [TimeOfDay.Evening]: { r: 0.8, g: 0.4, b: 0.3 },
@@ -85,7 +100,7 @@ export default class DayNightController {
       this.currentLightColor.i,
       this.currentSkyColor.r,
       this.currentSkyColor.g,
-      this.currentSkyColor.b
+      this.currentSkyColor.b,
     );
   }
 

@@ -11,7 +11,7 @@ export default class ObjectHighlight extends Object3D {
 
   async init(
     modelName: ObjectsMeshEnum,
-    color: THREE.ColorRepresentation = 0x00ff00
+    color: THREE.ColorRepresentation = 0x00ff00,
   ) {
     let model = MeshLoader.getMesh(modelName);
     if (!model) {
@@ -36,6 +36,4 @@ export default class ObjectHighlight extends Object3D {
 
     this.add(model);
   }
-
-  public update(_delta: number): void {}
 }

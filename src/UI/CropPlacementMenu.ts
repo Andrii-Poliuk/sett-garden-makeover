@@ -65,7 +65,7 @@ export default class CropPlacementMenu extends MenuBase {
     this.backButton.position.set(0, spacing * 4);
     this.addChild(this.backButton);
     const backButtonScale = this.backButton.sprite.scale;
-    this.backButton.sprite.scale.set(-backButtonScale.x,backButtonScale.y);
+    this.backButton.sprite.scale.set(-backButtonScale.x, backButtonScale.y);
   }
 
   public static readonly CORN = 1 << 0;
@@ -73,13 +73,22 @@ export default class CropPlacementMenu extends MenuBase {
   public static readonly GRAPE = 1 << 2;
   public static readonly STRAWBERRY = 1 << 3;
   public static readonly BACK = 1 << 4;
-  public static readonly ALL = CropPlacementMenu.CORN | CropPlacementMenu.TOMATO | CropPlacementMenu.GRAPE | CropPlacementMenu.STRAWBERRY | CropPlacementMenu.BACK;
+  public static readonly ALL =
+    CropPlacementMenu.CORN |
+    CropPlacementMenu.TOMATO |
+    CropPlacementMenu.GRAPE |
+    CropPlacementMenu.STRAWBERRY |
+    CropPlacementMenu.BACK;
 
-  public setEnabled(enabled: boolean, mask: number = CropPlacementMenu.ALL): void {
+  public setEnabled(
+    enabled: boolean,
+    mask: number = CropPlacementMenu.ALL,
+  ): void {
     if (mask & CropPlacementMenu.CORN) this.cornButton.setEnabled(enabled);
     if (mask & CropPlacementMenu.TOMATO) this.tomatoButton.setEnabled(enabled);
     if (mask & CropPlacementMenu.GRAPE) this.grapeButton.setEnabled(enabled);
-    if (mask & CropPlacementMenu.STRAWBERRY) this.strawberryButton.setEnabled(enabled);
+    if (mask & CropPlacementMenu.STRAWBERRY)
+      this.strawberryButton.setEnabled(enabled);
     if (mask & CropPlacementMenu.BACK) this.backButton.setEnabled(enabled);
   }
 }

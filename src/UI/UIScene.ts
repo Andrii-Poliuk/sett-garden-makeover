@@ -181,6 +181,4 @@ export default class UIScene {
     this._cattlePlacementMenu.resize(flexibleScale);
     this._landPlacementMenu.resize(flexibleScale);
   }
-
-  public update(_delta: number): void {}
 }

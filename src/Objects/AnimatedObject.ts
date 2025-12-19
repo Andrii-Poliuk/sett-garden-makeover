@@ -5,9 +5,7 @@ import {
   Object3DEventMap,
 } from "three";
 import MeshLoader from "./MeshLoader";
-import {
-  ObjectsMeshEnum,
-} from "./ObjectsMeshEnum";
+import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
 import { CattleType } from "../Game/Game";
@@ -37,14 +35,14 @@ export default class AnimatedObject extends Object3D {
       return;
     }
     model = SkeletonUtils.clone(model);
-    model.position.set(0,0,0);
+    model.position.set(0, 0, 0);
 
     this.loadAnimations(model);
     this.mixer = new AnimationMixer(model);
 
     this.animationActions["idle"] = this.mixer.clipAction(model.animations[0]);
     this.animationActions["action"] = this.mixer.clipAction(
-      model.animations[1]
+      model.animations[1],
     );
 
     this.setAction(this.animationActions["idle"]);
@@ -52,12 +50,10 @@ export default class AnimatedObject extends Object3D {
     this.add(model);
 
     const smoke = new SpriteParticleEffect();
-    await smoke.init("./images/smoke.png",
-      {
-        color1: {r:0.8,g:0.8,b:0.8},
-        color2: {r:0.7,g:0.7,b:0.7},
-      }
-    )
+    await smoke.init("./images/smoke.png", {
+      color1: { r: 0.8, g: 0.8, b: 0.8 },
+      color2: { r: 0.7, g: 0.7, b: 0.7 },
+    });
     this.particlesEffect = smoke;
     this.add(smoke);
     smoke.position.set(0, 2, 0);

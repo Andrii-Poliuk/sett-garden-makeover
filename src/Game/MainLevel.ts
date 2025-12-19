@@ -44,11 +44,7 @@ export default class MainLevel extends GameLevel {
 
     this.cameraPosition = Game.instance.createCameraPosition();
     this.cameraPosition.updatePosition({
-      position: new Vector3(
-        -22.4,
-        22.6,
-        10.1
-      ),
+      position: new Vector3(-22.4, 22.6, 10.1),
       target: new Vector3(9.2, -10, -4.1),
     });
     this.cameraPosition.snapCamera(Game.instance.getCamera()!);
@@ -59,7 +55,7 @@ export default class MainLevel extends GameLevel {
   public update(_delta: number): void {}
 
   private async enableCropPlacement(cropType: CropType) {
-    let highlight: ObjectHighlight = new ObjectHighlight();
+    const highlight: ObjectHighlight = new ObjectHighlight();
     if (cropType == CropType.Corn) {
       highlight.init(ObjectsMeshEnum.Corn1);
     } else if (cropType == CropType.Tomato) {
@@ -110,7 +106,7 @@ export default class MainLevel extends GameLevel {
           false,
           () => {
             // TODO: Congratulations?
-          }
+          },
         );
       }
       await Game.instance.dayNightController.setNight();
@@ -126,7 +122,7 @@ export default class MainLevel extends GameLevel {
   private async rentCheck() {
     Game.instance.toggleChickenGuide(true, true);
     const randomIndex = Math.floor(
-      Math.random() * MainLevel.RENT_MESSAGES.length
+      Math.random() * MainLevel.RENT_MESSAGES.length,
     );
     const message = MainLevel.RENT_MESSAGES[randomIndex];
     await DialogPopup.instance.showPopup(message);
@@ -140,7 +136,7 @@ export default class MainLevel extends GameLevel {
         () => {
           Game.instance.resetGame();
           Game.instance.startGame();
-        }
+        },
       );
     } else {
       Game.instance.money += rent;
@@ -283,7 +279,7 @@ export default class MainLevel extends GameLevel {
     if (this.landPlacements.length <= 0) {
       Game.instance.UIScene.landPlacementMenu.setEnabled(
         false,
-        LandPlacementMenu.CATTLE_PEN | LandPlacementMenu.CROPLAND
+        LandPlacementMenu.CATTLE_PEN | LandPlacementMenu.CROPLAND,
       );
       Game.instance.UIScene.homeMenu.setEnabled(false, HomeMenu.LAND);
     }
@@ -299,7 +295,7 @@ export default class MainLevel extends GameLevel {
   private async placeCrop(
     cost: number,
     location: InteractiveArea,
-    cropConstructor: () => Promise<MultiStageObject>
+    cropConstructor: () => Promise<MultiStageObject>,
   ): Promise<boolean> {
     const money = Game.instance.money + cost;
     if (money < 0) {
@@ -346,7 +342,7 @@ export default class MainLevel extends GameLevel {
   private async placeCattle(
     cost: number,
     location: InteractiveArea,
-    cattleConstructor: () => Promise<AnimatedObject>
+    cattleConstructor: () => Promise<AnimatedObject>,
   ): Promise<boolean> {
     const money = Game.instance.money + cost;
     if (money < 0) {
@@ -380,7 +376,7 @@ export default class MainLevel extends GameLevel {
   private async placeLand(
     cost: number,
     location: InteractiveArea,
-    landConstructor: () => Promise<PlaceableObject>
+    landConstructor: () => Promise<PlaceableObject>,
   ): Promise<boolean> {
     const money = Game.instance.money + cost;
     if (money < 0) {
@@ -392,7 +388,7 @@ export default class MainLevel extends GameLevel {
     Game.instance.money += cost;
     FloatingText.playEffect(
       cost,
-      new Vector3(location.position.x, 3, location.position.z)
+      new Vector3(location.position.x, 3, location.position.z),
     );
     const land = await landConstructor();
     this.setNewObjectLocation(land, location);
@@ -416,7 +412,7 @@ export default class MainLevel extends GameLevel {
     object.position.set(
       location.position.x,
       location.position.y,
-      location.position.z
+      location.position.z,
     );
   }
   private setNewObjectLocationWorld(object: Object3D, location: Object3D) {

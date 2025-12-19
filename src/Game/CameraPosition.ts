@@ -28,14 +28,40 @@ export default class CameraPosition extends Object3D {
   public update(): void {
     if (!this.camera) return;
 
-    this.camera.position.x = lerp(this.camera.position.x, this.position.x, this.lerpSpeed);
-    this.camera.position.y = lerp(this.camera.position.y, this.position.y, this.lerpSpeed);
-    this.camera.position.z = lerp(this.camera.position.z, this.position.z, this.lerpSpeed);
+    this.camera.position.x = lerp(
+      this.camera.position.x,
+      this.position.x,
+      this.lerpSpeed,
+    );
+    this.camera.position.y = lerp(
+      this.camera.position.y,
+      this.position.y,
+      this.lerpSpeed,
+    );
+    this.camera.position.z = lerp(
+      this.camera.position.z,
+      this.position.z,
+      this.lerpSpeed,
+    );
 
-    const targetWorldPosition = this.cameraTarget.getWorldPosition(new Vector3());
-    this.currentLookAt.x = lerp(this.currentLookAt.x, targetWorldPosition.x, this.lerpSpeed);
-    this.currentLookAt.y = lerp(this.currentLookAt.y, targetWorldPosition.y, this.lerpSpeed);
-    this.currentLookAt.z = lerp(this.currentLookAt.z, targetWorldPosition.z, this.lerpSpeed);
+    const targetWorldPosition = this.cameraTarget.getWorldPosition(
+      new Vector3(),
+    );
+    this.currentLookAt.x = lerp(
+      this.currentLookAt.x,
+      targetWorldPosition.x,
+      this.lerpSpeed,
+    );
+    this.currentLookAt.y = lerp(
+      this.currentLookAt.y,
+      targetWorldPosition.y,
+      this.lerpSpeed,
+    );
+    this.currentLookAt.z = lerp(
+      this.currentLookAt.z,
+      targetWorldPosition.z,
+      this.lerpSpeed,
+    );
     this.camera.lookAt(this.currentLookAt);
   }
 

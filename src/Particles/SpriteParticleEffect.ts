@@ -27,7 +27,10 @@ export class SpriteParticleEffect extends THREE.Object3D {
     super();
   }
 
-  private getOrCreateMaterial(image: string, texture: THREE.Texture): THREE.MeshBasicMaterial {
+  private getOrCreateMaterial(
+    image: string,
+    texture: THREE.Texture,
+  ): THREE.MeshBasicMaterial {
     let material = sharedMaterials.get(image);
     if (!material) {
       material = new THREE.MeshBasicMaterial({
@@ -40,22 +43,37 @@ export class SpriteParticleEffect extends THREE.Object3D {
     return material;
   }
 
-  public async init(image: string, colorRange: {
-    color1:{r: number, g: number ,b: number}
-    color2:{r: number, g: number ,b: number}
-  }) {
+  public async init(
+    image: string,
+    colorRange: {
+      color1: { r: number; g: number; b: number };
+      color2: { r: number; g: number; b: number };
+    },
+  ) {
     this.colorRange = new ColorRange(
-      new Vector4(colorRange.color1.r, colorRange.color1.g, colorRange.color1.b, 1),
-      new Vector4(colorRange.color2.r, colorRange.color2.g, colorRange.color2.b, 1),
+      new Vector4(
+        colorRange.color1.r,
+        colorRange.color1.g,
+        colorRange.color1.b,
+        1,
+      ),
+      new Vector4(
+        colorRange.color2.r,
+        colorRange.color2.g,
+        colorRange.color2.b,
+        1,
+      ),
     );
     const texture = await new THREE.TextureLoader().loadAsync(image);
     const material = this.getOrCreateMaterial(image, texture);
     this.particleSystem = this.createParticleSystem(material);
     this.add(this.particleSystem.emitter);
     Game.instance.getBatchRenderer().addSystem(this.particleSystem);
-  } 
+  }
 
-  protected createParticleSystem(material: THREE.MeshBasicMaterial): ParticleSystem {
+  protected createParticleSystem(
+    material: THREE.MeshBasicMaterial,
+  ): ParticleSystem {
     const system = new ParticleSystem({
       duration: 0.5,
       looping: false,
@@ -89,20 +107,19 @@ export class SpriteParticleEffect extends THREE.Object3D {
     });
 
     system.addBehavior(
-      new ApplyForce(new Vector3(0, -6, 0), new ConstantValue(1))
+      new ApplyForce(new Vector3(0, -6, 0), new ConstantValue(1)),
     );
 
     system.addBehavior(
-      new RotationOverLife(new IntervalValue(-Math.PI, Math.PI))
+      new RotationOverLife(new IntervalValue(-Math.PI, Math.PI)),
     );
 
     system.addBehavior(
-      new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.8, 0.3, 0), 0]]))
+      new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.8, 0.3, 0), 0]])),
     );
 
     return system;
   }
-
 
   public setPosition(position: THREE.Vector3): void {
     if (this.particleSystem) {

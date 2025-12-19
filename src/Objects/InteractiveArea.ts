@@ -6,7 +6,6 @@ import {
   Object3D,
   Vector3,
 } from "three";
-import ObjectHighlight from "./ObjectHighlight";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { RaycastManager } from "../Game/RaycastManager";
 
@@ -65,10 +64,9 @@ export class InteractiveArea extends Mesh {
     }
   }
 
-  // TODO: remove enabled
   public enableInteractiveArea(
-    hint?: Object3D,
-    onPress?: (sender: Object3D) => Promise<void>
+    hint: Object3D | undefined,
+    onPress: (sender: Object3D) => Promise<void>,
   ): void {
     if (this.hint) {
       this.hint.visible = false;
@@ -89,12 +87,10 @@ export class InteractiveArea extends Mesh {
     if (!this.visible) {
       return;
     }
-    this.hovered
-      ? this.scale.lerp(this.hoveredScale, delta * 20)
-      : this.scale.lerp(this.originalScale, delta * 20);
-
-    if (this.hint instanceof ObjectHighlight) {
-      this.hint.update(delta);
+    if (this.hovered) {
+      this.scale.lerp(this.hoveredScale, delta * 20);
+    } else {
+      this.scale.lerp(this.originalScale, delta * 20);
     }
   }
 

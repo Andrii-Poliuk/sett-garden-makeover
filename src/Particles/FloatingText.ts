@@ -112,7 +112,10 @@ export default class FloatingText extends Container {
     });
   }
 
-  private static worldToScreen(worldPosition: Vector3): { x: number; y: number } {
+  private static worldToScreen(worldPosition: Vector3): {
+    x: number;
+    y: number;
+  } {
     const camera = Game.instance.getCamera();
     if (!camera) return { x: 0, y: 0 };
 

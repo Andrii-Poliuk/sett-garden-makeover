@@ -1,4 +1,4 @@
-import { Group, Object3D, Object3DEventMap } from "three";
+import { Object3D, Object3DEventMap } from "three";
 import MeshLoader from "./MeshLoader";
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import AnimatedObject from "./AnimatedObject";

@@ -27,8 +27,7 @@ export default class GameScene {
     this.renderer = renderer;
     // this.controls = setupOrbitControls(threeCamera, renderer);
 
-
-    scene.background = new THREE.Color(0.3,0.5,1);
+    scene.background = new THREE.Color(0.3, 0.5, 1);
   }
 
   public async init() {
@@ -41,7 +40,7 @@ export default class GameScene {
 
     this.scene.add(Game.instance.getBatchRenderer());
 
-    this.ambientLight = new THREE.AmbientLight(0xFFFFFF, 1.5);
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
     this.scene.add(this.ambientLight);
   }
 
@@ -61,7 +60,7 @@ export default class GameScene {
     lightIntensity: number,
     skyR: number,
     skyG: number,
-    skyB: number
+    skyB: number,
   ): void {
     if (this.ambientLight) {
       this.ambientLight.color.setRGB(lightR, lightG, lightB);

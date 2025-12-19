@@ -28,8 +28,7 @@ export default class PlaceableObject extends Object3D {
     this.add(model);
   }
 
-  public getInteractiveAreas(): InteractiveArea[]
-  {
+  public getInteractiveAreas(): InteractiveArea[] {
     return this.interactiveAreas;
   }
 
@@ -39,7 +38,10 @@ export default class PlaceableObject extends Object3D {
     });
   }
 
-  public enableInteraction(hint: Object3D, onPress?: (sender: Object3D) => Promise<void>): void {
+  public enableInteraction(
+    hint: Object3D,
+    onPress: (sender: Object3D) => Promise<void>,
+  ): void {
     this.interactiveAreas.forEach((area) => {
       area.enableInteractiveArea(hint, onPress);
     });

@@ -11,5 +11,5 @@ export default class GameLevel {
     this.onLevelFinished?.();
   }
 
-  public update(delta: number): void {}
+  public update(_delta: number): void {}
 }

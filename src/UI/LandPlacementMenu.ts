@@ -45,17 +45,25 @@ export default class LandPlacementMenu extends MenuBase {
     this.backButton.position.set(0, spacing * 2);
     this.addChild(this.backButton);
     const backButtonScale = this.backButton.sprite.scale;
-    this.backButton.sprite.scale.set(-backButtonScale.x,backButtonScale.y);
+    this.backButton.sprite.scale.set(-backButtonScale.x, backButtonScale.y);
   }
 
   public static readonly CROPLAND = 1 << 0;
   public static readonly CATTLE_PEN = 1 << 1;
   public static readonly BACK = 1 << 2;
-  public static readonly ALL = LandPlacementMenu.CROPLAND | LandPlacementMenu.CATTLE_PEN | LandPlacementMenu.BACK;
+  public static readonly ALL =
+    LandPlacementMenu.CROPLAND |
+    LandPlacementMenu.CATTLE_PEN |
+    LandPlacementMenu.BACK;
 
-  public setEnabled(enabled: boolean, mask: number = LandPlacementMenu.ALL): void {
-    if (mask & LandPlacementMenu.CROPLAND) this.croplandButton.setEnabled(enabled);
-    if (mask & LandPlacementMenu.CATTLE_PEN) this.cattlePenButton.setEnabled(enabled);
+  public setEnabled(
+    enabled: boolean,
+    mask: number = LandPlacementMenu.ALL,
+  ): void {
+    if (mask & LandPlacementMenu.CROPLAND)
+      this.croplandButton.setEnabled(enabled);
+    if (mask & LandPlacementMenu.CATTLE_PEN)
+      this.cattlePenButton.setEnabled(enabled);
     if (mask & LandPlacementMenu.BACK) this.backButton.setEnabled(enabled);
   }
 }

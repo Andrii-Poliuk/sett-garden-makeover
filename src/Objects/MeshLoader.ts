@@ -23,7 +23,9 @@ export default class MeshLoader {
     return MeshLoader.Instance.ground!.scene;
   }
 
-  public static getMesh(mesh: ObjectsMeshEnum): Object3D<Object3DEventMap> | undefined {
+  public static getMesh(
+    mesh: ObjectsMeshEnum,
+  ): Object3D<Object3DEventMap> | undefined {
     if (MeshLoader.Instance.meshes.has(mesh)) {
       return MeshLoader.Instance.meshes.get(mesh);
     } else {
@@ -32,7 +34,7 @@ export default class MeshLoader {
   }
 
   public static getAnimation(
-    animation: ObjectAnimationsEnum
+    animation: ObjectAnimationsEnum,
   ): AnimationClip | undefined {
     if (MeshLoader.Instance.animations.has(animation)) {
       return MeshLoader.Instance.animations.get(animation);
@@ -53,7 +55,9 @@ export default class MeshLoader {
     MeshLoader.Instance.ground = ground;
 
     for (const key of Object.values(ObjectsMeshEnum)) {
-      const mesh = objects.scene.getObjectByName(key) as Object3D<Object3DEventMap>;
+      const mesh = objects.scene.getObjectByName(
+        key,
+      ) as Object3D<Object3DEventMap>;
       if (mesh) {
         MeshLoader.Instance.meshes.set(key, mesh);
       }
