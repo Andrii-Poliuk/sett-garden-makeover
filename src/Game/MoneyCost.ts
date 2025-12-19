@@ -20,8 +20,8 @@ export enum MoneyCostType {
 }
 
 const MoneyCost: Record<MoneyCostType, number> = {
-  [MoneyCostType.FenceMake]: 50,
-  [MoneyCostType.GroundMake]: 100,
+  [MoneyCostType.FenceMake]: -50,
+  [MoneyCostType.GroundMake]: -100,
 
   [MoneyCostType.CornPlant]: -1,
   [MoneyCostType.CornHarvest]: 30,

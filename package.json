@@ -10,6 +10,7 @@
     "dev": "vite"
   },
   "dependencies": {
+    "gsap": "^3.14.2",
     "pixi-sound": "^3.0.4",
     "pixi.js": "^8.8.1",
     "three-nebula": "^10.0.3",

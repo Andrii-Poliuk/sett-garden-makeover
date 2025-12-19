@@ -11,6 +11,7 @@ import ConfirmationPopup from "../UI/ConfirmationPopup";
 import DialogPopup from "../UI/DialogPopup";
 import MultiStageObject from "../Objects/MultiStageObject";
 import MoneyCost, { MoneyCostType } from "./MoneyCost";
+import FloatingText from "../Particles/FloatingText";
 
 export default class MainLevel extends GameLevel {
   private landPlacements: InteractiveArea[] = [];
@@ -76,25 +77,31 @@ export default class MainLevel extends GameLevel {
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", () => {
       this.collectCattleIncome();
       this.growCrops();
-    });
 
-    Game.instance.money += MoneyCost[MoneyCostType.RentDaily];
+      const rent = MoneyCost[MoneyCostType.RentDaily];
+      Game.instance.money += rent;
+      FloatingText.playEffect(rent, new Vector3(0, 0, 0));
+    });
   }
 
   private collectCattleIncome() {
     const cattle = Game.instance.getCattle();
     cattle.forEach((animal) => {
+      let income = 0;
       switch (animal.cattleType) {
         case CattleType.Chicken:
-          Game.instance.money += MoneyCost[MoneyCostType.ChickenDaily];
+          income = MoneyCost[MoneyCostType.ChickenDaily];
           break;
         case CattleType.Cow:
-          Game.instance.money += MoneyCost[MoneyCostType.CowDaily];
+          income = MoneyCost[MoneyCostType.CowDaily];
           break;
         case CattleType.Sheep:
-          Game.instance.money += MoneyCost[MoneyCostType.SheepDaily];
+          income = MoneyCost[MoneyCostType.SheepDaily];
           break;
       }
+      Game.instance.money += income;
+      const animalPosition = animal.getWorldPosition(new Vector3());
+      FloatingText.playEffect(income, animalPosition);
     });
   }
 
@@ -112,20 +119,24 @@ export default class MainLevel extends GameLevel {
   }
 
   private async harvestCrop(crop: MultiStageObject) {
+    let income = 0;
     switch (crop.cropType) {
       case CropType.Corn:
-        Game.instance.money += MoneyCost[MoneyCostType.CornHarvest];
+        income = MoneyCost[MoneyCostType.CornHarvest];
         break;
       case CropType.Tomato:
-        Game.instance.money += MoneyCost[MoneyCostType.TomatoHarvest];
+        income = MoneyCost[MoneyCostType.TomatoHarvest];
         break;
       case CropType.Grape:
-        Game.instance.money += MoneyCost[MoneyCostType.GrapeHarvest];
+        income = MoneyCost[MoneyCostType.GrapeHarvest];
         break;
       case CropType.Strawberry:
-        Game.instance.money += MoneyCost[MoneyCostType.StrawberryHarvest];
+        income = MoneyCost[MoneyCostType.StrawberryHarvest];
         break;
     }
+    const cropPosition = crop.getWorldPosition(new Vector3());
+    Game.instance.money += income;
+    FloatingText.playEffect(income, cropPosition);
     crop.playEffect();
     Game.instance.destroyMultiStageObject(crop);
   }
@@ -213,28 +224,40 @@ export default class MainLevel extends GameLevel {
   }
 
   private async placeCorn(location: InteractiveArea) {
-    Game.instance.money += MoneyCost[MoneyCostType.CornPlant];
+    const cost = MoneyCost[MoneyCostType.CornPlant];
+    const position = location.getWorldPosition(new Vector3());
+    Game.instance.money += cost;
+    FloatingText.playEffect(cost, position);
     const corn = await Game.instance.createCorn();
     corn.setStage1();
     corn.placedAtArea = location;
     this.setNewObjectLocationWorld(corn, location);
   }
   private async placeTomato(location: InteractiveArea) {
-    Game.instance.money += MoneyCost[MoneyCostType.TomatoPlant];
+    const cost = MoneyCost[MoneyCostType.TomatoPlant];
+    const position = location.getWorldPosition(new Vector3());
+    Game.instance.money += cost;
+    FloatingText.playEffect(cost, position);
     const tomato = await Game.instance.createTomato();
     tomato.setStage1();
     tomato.placedAtArea = location;
     this.setNewObjectLocationWorld(tomato, location);
   }
   private async placeGrape(location: InteractiveArea) {
-    Game.instance.money += MoneyCost[MoneyCostType.GrapePlant];
+    const cost = MoneyCost[MoneyCostType.GrapePlant];
+    const position = location.getWorldPosition(new Vector3());
+    Game.instance.money += cost;
+    FloatingText.playEffect(cost, position);
     const grape = await Game.instance.createGrape();
     grape.setStage1();
     grape.placedAtArea = location;
     this.setNewObjectLocationWorld(grape, location);
   }
   private async placeStrawberry(location: InteractiveArea) {
-    Game.instance.money += MoneyCost[MoneyCostType.StrawberryPlant];
+    const cost = MoneyCost[MoneyCostType.StrawberryPlant];
+    const position = location.getWorldPosition(new Vector3());
+    Game.instance.money += cost;
+    FloatingText.playEffect(cost, position);
     const strawberry = await Game.instance.createStrawberry();
     strawberry.setStage1();
     strawberry.placedAtArea = location;
@@ -242,22 +265,32 @@ export default class MainLevel extends GameLevel {
   }
 
   private async placeCow(location: InteractiveArea) {
-    Game.instance.money += MoneyCost[MoneyCostType.CowBuy];
+    const cost = MoneyCost[MoneyCostType.CowBuy];
+    const position = location.getWorldPosition(new Vector3());
+    Game.instance.money += cost;
+    FloatingText.playEffect(cost, position);
     const cow = await Game.instance.createCow();
     this.setNewObjectLocationWorld(cow, location);
   }
   private async placeSheep(location: InteractiveArea) {
-    Game.instance.money += MoneyCost[MoneyCostType.SheepBuy];
+    const cost = MoneyCost[MoneyCostType.SheepBuy];
+    const position = location.getWorldPosition(new Vector3());
+    Game.instance.money += cost;
+    FloatingText.playEffect(cost, position);
     const sheep = await Game.instance.createSheep();
     this.setNewObjectLocationWorld(sheep, location);
   }
   private async placeFence(location: InteractiveArea) {
-    Game.instance.money += MoneyCost[MoneyCostType.FenceMake];
+    const cost = MoneyCost[MoneyCostType.FenceMake];
+    Game.instance.money += cost;
+    FloatingText.playEffect(cost, new Vector3(location.position.x, 3, location.position.z));
     const fence = await Game.instance.createFence();
     this.setNewObjectLocation(fence, location);
   }
   private async placeGround(location: InteractiveArea) {
-    Game.instance.money += MoneyCost[MoneyCostType.GroundMake];
+    const cost = MoneyCost[MoneyCostType.GroundMake];
+    Game.instance.money += cost;
+    FloatingText.playEffect(cost, new Vector3(location.position.x, 3, location.position.z));
     const ground = await Game.instance.createGround();
     this.setNewObjectLocation(ground, location);
   }

@@ -7,6 +7,7 @@ import CattlePlacementMenu from "./CattlePlacementMenu";
 import HomeMenu from "./HomeMenu";
 import LandPlacementMenu from "./LandPlacementMenu";
 import GameControls from "./GameControls";
+import FloatingText from "../Particles/FloatingText";
 
 export default class UIScene {
   stage: Container;
@@ -18,6 +19,7 @@ export default class UIScene {
   private _gameControls!: GameControls;
   private dialogPopup!: DialogPopup;
   private confirmationPopup!: ConfirmationPopup;
+  private floatingTextContainer!: Container;
 
   public get homeMenu(): HomeMenu {
     return this._homeMenu;
@@ -142,6 +144,10 @@ export default class UIScene {
     this.confirmationPopup = ConfirmationPopup.instance;
     this.confirmationPopup.init(window.innerWidth, window.innerHeight);
     this.stage.addChild(this.confirmationPopup);
+
+    this.floatingTextContainer = new Container();
+    this.stage.addChild(this.floatingTextContainer);
+    FloatingText.init(this.floatingTextContainer);
 
     this.hideMenu();
     this.gameControls.hide();

@@ -16,6 +16,7 @@ import HomeMenu from "../UI/HomeMenu";
 import LandPlacementMenu from "../UI/LandPlacementMenu";
 import MoneyCost, { MoneyCostType } from "./MoneyCost";
 import GameControls from "../UI/GameControls";
+import FloatingText from "../Particles/FloatingText";
 
 export default class TutorialLevel extends GameLevel {
   private cameraPosition?: CameraPosition;
@@ -193,7 +194,7 @@ export default class TutorialLevel extends GameLevel {
 
     Game.instance.toggleChickenGuide(true, true);
     await DialogPopup.instance.showPopup(
-      "This is your Farm!\nSmall but cozy\nAlthought..."
+      "This is your Farm!\nSmall but cozy\nHowever..."
     );
     await DialogPopup.instance.showPopup(
       "You still have to pay the rent\nand it could use some management"
@@ -261,7 +262,10 @@ export default class TutorialLevel extends GameLevel {
   }
 
   private collectCorn(corn: Corn) {
-    Game.instance.money += MoneyCost[MoneyCostType.CornHarvest];
+    const income = MoneyCost[MoneyCostType.CornHarvest];
+    const cornPosition = corn.getWorldPosition(new Vector3());
+    FloatingText.playEffect(income, cornPosition);
+    Game.instance.money += income;
     const index = this.corn.indexOf(corn);
     this.corn.splice(index, 1);
     Game.instance.destroyMultiStageObject(corn);
@@ -330,9 +334,13 @@ export default class TutorialLevel extends GameLevel {
     this.targetSheep?.update(delta);
 
     this.damageTimer += delta;
-    if (this.damageTimer > this.damageTick) {
+    if (this.damageTimer > this.damageTick && this.tickingDamage !== 0) {
       this.damageTimer = 0;
       Game.instance.money += this.tickingDamage;
+      if (this.sheep) {
+        const sheepPosition = this.sheep.getWorldPosition(new Vector3());
+        FloatingText.playEffect(this.tickingDamage, sheepPosition);
+      }
     }
   }
 }
