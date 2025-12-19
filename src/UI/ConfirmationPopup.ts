@@ -1,4 +1,5 @@
 import { Container, Graphics, Text } from "pixi.js";
+import gsap from "gsap";
 
 export default class ConfirmationPopup extends Container {
   private static _instance: ConfirmationPopup;
@@ -117,17 +118,32 @@ export default class ConfirmationPopup extends Container {
     this.messageText!.text = message;
     this.onYesCallback = onYes;
     this.visible = true;
+    this.alpha = 0;
+
+    gsap.to(this, { alpha: 1, duration: 0.2 });
   }
 
   private handleYesClick(): void {
-    this.visible = false;
-    this.onYesCallback?.();
-    this.onYesCallback = undefined;
+    gsap.to(this, {
+      alpha: 0,
+      duration: 0.2,
+      onComplete: () => {
+        this.visible = false;
+        this.onYesCallback?.();
+        this.onYesCallback = undefined;
+      },
+    });
   }
 
   private handleNoClick(): void {
-    this.visible = false;
-    this.onYesCallback = undefined;
+    gsap.to(this, {
+      alpha: 0,
+      duration: 0.2,
+      onComplete: () => {
+        this.visible = false;
+        this.onYesCallback = undefined;
+      },
+    });
   }
 
   public resize(width: number, height: number): void {

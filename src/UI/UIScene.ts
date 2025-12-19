@@ -42,38 +42,38 @@ export default class UIScene {
   }
 
   public showHomeMenu() {
-    this._homeMenu.visible = true;
-    this._cropPlacementMenu.visible = false;
-    this._cattlePlacementMenu.visible = false;
-    this._landPlacementMenu.visible = false;
+    this._homeMenu.show();
+    this._cropPlacementMenu.hide();
+    this._cattlePlacementMenu.hide();
+    this._landPlacementMenu.hide();
   }
 
   public showCropMenu() {
-    this._homeMenu.visible = false;
-    this._cropPlacementMenu.visible = true;
-    this._cattlePlacementMenu.visible = false;
-    this._landPlacementMenu.visible = false;
+    this._homeMenu.hide();
+    this._cropPlacementMenu.show();
+    this._cattlePlacementMenu.hide();
+    this._landPlacementMenu.hide();
   }
 
   public showCattleMenu() {
-    this._homeMenu.visible = false;
-    this._cropPlacementMenu.visible = false;
-    this._cattlePlacementMenu.visible = true;
-    this._landPlacementMenu.visible = false;
+    this._homeMenu.hide();
+    this._cropPlacementMenu.hide();
+    this._cattlePlacementMenu.show();
+    this._landPlacementMenu.hide();
   }
 
   public showLandMenu() {
-    this._homeMenu.visible = false;
-    this._cropPlacementMenu.visible = false;
-    this._cattlePlacementMenu.visible = false;
-    this._landPlacementMenu.visible = true;
+    this._homeMenu.hide();
+    this._cropPlacementMenu.hide();
+    this._cattlePlacementMenu.hide();
+    this._landPlacementMenu.show();
   }
 
   public hideMenu() {
-    this._homeMenu.visible = false;
-    this._cropPlacementMenu.visible = false;
-    this._cattlePlacementMenu.visible = false;
-    this._landPlacementMenu.visible = false;
+    this._homeMenu.hide();
+    this._cropPlacementMenu.hide();
+    this._cattlePlacementMenu.hide();
+    this._landPlacementMenu.hide();
   }
 
   public showGameControls(mask: number = GameControls.ALL): void {
@@ -93,6 +93,7 @@ export default class UIScene {
 
     this._homeMenu = new HomeMenu();
     this._homeMenu.position.set(60, 120);
+    this._homeMenu.setOriginalPosition(60);
     this._homeMenu.init();
     this.stage.addChild(this._homeMenu);
     this.homeMenu.onCropClick = () => {
@@ -107,6 +108,7 @@ export default class UIScene {
 
     this._cattlePlacementMenu = new CattlePlacementMenu();
     this._cattlePlacementMenu.position.set(60, 120);
+    this._cattlePlacementMenu.setOriginalPosition(60);
     this._cattlePlacementMenu.init();
     this.stage.addChild(this._cattlePlacementMenu);
     this._cattlePlacementMenu.visible = false;
@@ -116,6 +118,7 @@ export default class UIScene {
 
     this._cropPlacementMenu = new CropPlacementMenu();
     this._cropPlacementMenu.position.set(60, 120);
+    this._cropPlacementMenu.setOriginalPosition(60);
     this._cropPlacementMenu.init();
     this.stage.addChild(this._cropPlacementMenu);
     this._cropPlacementMenu.visible = false;
@@ -125,6 +128,7 @@ export default class UIScene {
 
     this._landPlacementMenu = new LandPlacementMenu();
     this._landPlacementMenu.position.set(60, 120);
+    this._landPlacementMenu.setOriginalPosition(60);
     this._landPlacementMenu.init();
     this.stage.addChild(this._landPlacementMenu);
     this._landPlacementMenu.visible = false;

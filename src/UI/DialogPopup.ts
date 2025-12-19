@@ -1,4 +1,5 @@
 import { Container, Graphics, Text } from "pixi.js";
+import gsap from "gsap";
 
 export default class DialogPopup extends Container {
   private static _instance: DialogPopup;
@@ -69,6 +70,9 @@ export default class DialogPopup extends Container {
   public async showPopup(message: string): Promise<void> {
     this.messageText!.text = message;
     this.visible = true;
+    this.alpha = 0;
+
+    gsap.to(this, { alpha: 1, duration: 0.2 });
 
     return new Promise<void>((resolve) => {
       this.resolvePromise = resolve;
@@ -76,11 +80,17 @@ export default class DialogPopup extends Container {
   }
 
   private handleClick(): void {
-    if (this.resolvePromise) {
-      this.resolvePromise();
-      this.resolvePromise = null;
-    }
-    this.visible = false;
+    gsap.to(this, {
+      alpha: 0,
+      duration: 0.2,
+      onComplete: () => {
+        this.visible = false;
+        if (this.resolvePromise) {
+          this.resolvePromise();
+          this.resolvePromise = null;
+        }
+      },
+    });
   }
 
   public resize(width: number, height: number): void {

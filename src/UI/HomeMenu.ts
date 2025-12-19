@@ -1,8 +1,8 @@
-import { Container } from "pixi.js";
 import SpriteButton from "./SpriteButton";
 import PixiAssetsLoader, { PixiAsset } from "./PixiAssetsLoader";
+import MenuBase from "./MenuBase";
 
-export default class HomeMenu extends Container {
+export default class HomeMenu extends MenuBase {
   private cropButton!: SpriteButton;
   private cattleButton!: SpriteButton;
   private landButton!: SpriteButton;
