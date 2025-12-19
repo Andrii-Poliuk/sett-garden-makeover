@@ -344,6 +344,7 @@ export default class TutorialLevel extends GameLevel {
       if (this.sheep) {
         const sheepPosition = this.sheep.getWorldPosition(new Vector3());
         FloatingText.playEffect(this.tickingDamage, sheepPosition);
+        PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
       }
     }
   }

@@ -13,6 +13,7 @@ import MultiStageObject from "../Objects/MultiStageObject";
 import MoneyCost, { MoneyCostType } from "./MoneyCost";
 import FloatingText from "../Particles/FloatingText";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
+import AnimatedObject from "../Objects/AnimatedObject";
 
 export default class MainLevel extends GameLevel {
   private landPlacements: InteractiveArea[] = [];
@@ -56,21 +57,24 @@ export default class MainLevel extends GameLevel {
       for (let j = 0; j < areas.length; j++) {
         const area = areas[j];
         if (area.blocked) continue;
-        area.enableInteractiveArea(highlight, async (sender) => {
+        area.enableInteractiveArea(highlight, async (_sender) => {
           area?.disableInteractiveArea();
 
+          let isCreated = false;
           if (cropType == CropType.Corn) {
-            await this.placeCorn(area);
+            isCreated = await this.placeCorn(area);
           } else if (cropType == CropType.Tomato) {
-            await this.placeTomato(area);
+            isCreated = await this.placeTomato(area);
           } else if (cropType == CropType.Grape) {
-            await this.placeGrape(area);
+            isCreated = await this.placeGrape(area);
           } else {
-            await this.placeStrawberry(area);
+            isCreated = await this.placeStrawberry(area);
           }
-          area.blocked = true;
-          PixiAssetsLoader.instance.playSound(SoundAsset.Click);
-          this.checkBlockCropUiButtons();
+          if (isCreated) {
+            area.blocked = true;
+            PixiAssetsLoader.instance.playSound(SoundAsset.Click);
+            this.checkBlockCropUiButtons();
+          }
         });
       }
     }
@@ -80,7 +84,10 @@ export default class MainLevel extends GameLevel {
     this.disablePlacement();
     await Game.instance.dayNightController.setEvening();
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", async () => {
-      this.collectCattleIncome();
+      const income = this.collectCattleIncome();
+      if (income + MoneyCost[MoneyCostType.RentDaily] > 0) {
+        // TODO: Congratulations?
+      }
       await Game.instance.dayNightController.setNight();
       await Game.instance.dayNightController.setMorning();
       this.growCrops();
@@ -96,12 +103,17 @@ export default class MainLevel extends GameLevel {
     await DialogPopup.instance.showPopup("Rent Time!")
     const rent = MoneyCost[MoneyCostType.RentDaily];
     Game.instance.toggleChickenGuide(false);
+    const money = Game.instance.money + rent;
+    if (money < 0) {
+      // TODO: game over
+    }
     Game.instance.money += rent;
     FloatingText.playEffect(rent, new Vector3(0, 0, 0));
   }
 
-  private collectCattleIncome() {
+  private collectCattleIncome(): number {
     const cattle = Game.instance.getCattle();
+    let total = 0;
     cattle.forEach((animal) => {
       let income = 0;
       switch (animal.cattleType) {
@@ -115,10 +127,12 @@ export default class MainLevel extends GameLevel {
           income = MoneyCost[MoneyCostType.SheepDaily];
           break;
       }
+      total += income;
       Game.instance.money += income;
       const animalPosition = animal.getWorldPosition(new Vector3());
       FloatingText.playEffect(income, animalPosition);
     });
+    return total;
   }
 
   private async growCrops() {
@@ -176,17 +190,19 @@ export default class MainLevel extends GameLevel {
       for (let j = 0; j < areas.length; j++) {
         const area = areas[j];
         if (area.blocked) continue;
-        area.enableInteractiveArea(highlight, async (sender) => {
+        area.enableInteractiveArea(highlight, async (_sender) => {
           area?.disableInteractiveArea();
 
+          let isCreated = false;
           if (cattleType == CattleType.Cow) {
-            await this.placeCow(area);
+            isCreated = await this.placeCow(area);
           } else {
-            await this.placeSheep(area);
+            isCreated = await this.placeSheep(area);
           }
-          area.blocked = true;
-
-          this.checkBlockCattleUiButtons();
+          if (isCreated) {
+            area.blocked = true;
+            this.checkBlockCattleUiButtons();
+          }
         });
       }
     }
@@ -208,17 +224,20 @@ export default class MainLevel extends GameLevel {
       area.enableInteractiveArea(highlight, async (sender) => {
         area?.disableInteractiveArea();
 
+        let isCreated = false;
         if (landType == LandType.Fence) {
-          await this.placeFence(area);
+          isCreated = await this.placeFence(area);
         } else {
-          await this.placeGround(area);
+          isCreated = await this.placeGround(area);
         }
 
-        Game.instance.removeInteractiveArea(area);
-        const index = this.landPlacements.indexOf(area);
-        this.landPlacements.splice(index, 1);
+        if (isCreated) {
+          Game.instance.removeInteractiveArea(area);
+          const index = this.landPlacements.indexOf(area);
+          this.landPlacements.splice(index, 1);
 
-        this.checkBlockLandUiButtons();
+          this.checkBlockLandUiButtons();
+        }
       });
     });
   }
@@ -240,86 +259,108 @@ export default class MainLevel extends GameLevel {
     // TODO
   }
 
-  private async placeCorn(location: InteractiveArea) {
+private async placeCrop(cost: number, location: InteractiveArea, cropConstructor: () => Promise<MultiStageObject>) : Promise<boolean> {
+    const money = Game.instance.money + cost;
+    if (money < 0) {
+      PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
+      this.disablePlacement();
+      Game.instance.money += 0; // to trigger shake animation
+      return false;
+    }
+    Game.instance.money += cost;
+    const position = location.getWorldPosition(new Vector3());
+    FloatingText.playEffect(cost, position);
+    const crop = await cropConstructor();
+    crop.setStage1();
+    crop.placedAtArea = location;
+    this.setNewObjectLocationWorld(crop, location);
+    return true;
+}
+
+  private async placeCorn(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.CornPlant];
-    const position = location.getWorldPosition(new Vector3());
-    Game.instance.money += cost;
-    FloatingText.playEffect(cost, position);
-    const corn = await Game.instance.createCorn();
-    corn.setStage1();
-    corn.placedAtArea = location;
-    this.setNewObjectLocationWorld(corn, location);
+    return await this.placeCrop(cost, location, async ()=> {
+      return await Game.instance.createCorn();
+    });
   }
-  private async placeTomato(location: InteractiveArea) {
+  private async placeTomato(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.TomatoPlant];
-    const position = location.getWorldPosition(new Vector3());
-    Game.instance.money += cost;
-    FloatingText.playEffect(cost, position);
-    const tomato = await Game.instance.createTomato();
-    tomato.setStage1();
-    tomato.placedAtArea = location;
-    this.setNewObjectLocationWorld(tomato, location);
+    return await this.placeCrop(cost, location, async ()=> {
+      return await Game.instance.createTomato();
+    });
   }
-  private async placeGrape(location: InteractiveArea) {
+  private async placeGrape(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.GrapePlant];
-    const position = location.getWorldPosition(new Vector3());
-    Game.instance.money += cost;
-    FloatingText.playEffect(cost, position);
-    const grape = await Game.instance.createGrape();
-    grape.setStage1();
-    grape.placedAtArea = location;
-    this.setNewObjectLocationWorld(grape, location);
+    return await this.placeCrop(cost, location, async ()=> {
+      return await Game.instance.createGrape();
+    });
   }
-  private async placeStrawberry(location: InteractiveArea) {
+  private async placeStrawberry(location: InteractiveArea) : Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.StrawberryPlant];
-    const position = location.getWorldPosition(new Vector3());
-    Game.instance.money += cost;
-    FloatingText.playEffect(cost, position);
-    const strawberry = await Game.instance.createStrawberry();
-    strawberry.setStage1();
-    strawberry.placedAtArea = location;
-    this.setNewObjectLocationWorld(strawberry, location);
+    return await this.placeCrop(cost, location, async ()=> {
+      return await Game.instance.createStrawberry();
+    });
   }
 
-  private async placeCow(location: InteractiveArea) {
+  private async placeCattle(cost: number, location: InteractiveArea, cattleConstructor: () => Promise<AnimatedObject>) : Promise<boolean> {
+    const money = Game.instance.money + cost;
+    if (money < 0) {
+      PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
+      this.disablePlacement();
+      Game.instance.money += 0; // to trigger shake animation
+      return false;
+    }
+    Game.instance.money += cost;
+    const position = location.getWorldPosition(new Vector3());
+    FloatingText.playEffect(cost, position);
+    const cattle = await cattleConstructor();
+    this.setNewObjectLocationWorld(cattle, location);
+    return true;
+  }
+  private async placeCow(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.CowBuy];
-    const position = location.getWorldPosition(new Vector3());
-    Game.instance.money += cost;
-    FloatingText.playEffect(cost, position);
-    const cow = await Game.instance.createCow();
-    this.setNewObjectLocationWorld(cow, location);
-    PixiAssetsLoader.instance.playSound(SoundAsset.Cow);
+    return await this.placeCattle(cost, location, async () => {
+      PixiAssetsLoader.instance.playSound(SoundAsset.Cow);
+      return await Game.instance.createCow();
+    });
   }
-  private async placeSheep(location: InteractiveArea) {
+  private async placeSheep(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.SheepBuy];
-    const position = location.getWorldPosition(new Vector3());
-    Game.instance.money += cost;
-    FloatingText.playEffect(cost, position);
-    const sheep = await Game.instance.createSheep();
-    this.setNewObjectLocationWorld(sheep, location);
-    PixiAssetsLoader.instance.playSound(SoundAsset.Sheep);
+    return await this.placeCattle(cost, location, async () => {
+      PixiAssetsLoader.instance.playSound(SoundAsset.Sheep);
+      return await Game.instance.createSheep();
+    });
   }
-  private async placeFence(location: InteractiveArea) {
+
+  private async placeLand(cost: number, location: InteractiveArea, landConstructor: () => Promise<PlaceableObject>) : Promise<boolean> {
+  const money = Game.instance.money + cost;
+    if (money < 0) {
+      PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
+      this.disablePlacement();
+      Game.instance.money += 0; // to trigger shake animation
+      return false;
+    }
+    Game.instance.money += cost;
+    FloatingText.playEffect(
+      cost,
+      new Vector3(location.position.x, 3, location.position.z)
+    );
+    const land = await landConstructor();
+    this.setNewObjectLocation(land, location);
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
+    return true;
+  }
+  private async placeFence(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.FenceMake];
-    Game.instance.money += cost;
-    FloatingText.playEffect(
-      cost,
-      new Vector3(location.position.x, 3, location.position.z)
-    );
-    const fence = await Game.instance.createFence();
-    this.setNewObjectLocation(fence, location);
-    PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
+    return await this.placeLand(cost, location, async() => {
+      return await Game.instance.createFence();
+    });
   }
-  private async placeGround(location: InteractiveArea) {
+  private async placeGround(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.GroundMake];
-    Game.instance.money += cost;
-    FloatingText.playEffect(
-      cost,
-      new Vector3(location.position.x, 3, location.position.z)
-    );
-    const ground = await Game.instance.createGround();
-    this.setNewObjectLocation(ground, location);
-    PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
+    return await this.placeLand(cost, location, async() => {
+      return await Game.instance.createGround();
+    });
   }
   private setNewObjectLocation(object: Object3D, location: Object3D) {
     object.rotation.set(0, location.rotation.y, 0);

@@ -69,6 +69,9 @@ export default class Game {
 
   public set money(value: number) {
     this._money = value;
+    if (this._money < 0) {
+      this._money = 0;
+    }
     this.uiScene?.gameControls.setMoney(value);
   }
 

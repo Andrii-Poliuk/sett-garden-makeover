@@ -43,7 +43,7 @@ const MoneyCost: Record<MoneyCostType, number> = {
   [MoneyCostType.SheepDamage]: -10,
 
   [MoneyCostType.ChickenBuy]: 0,
-  [MoneyCostType.ChickenDaily]: 19,
+  [MoneyCostType.ChickenDaily]: 17,
 
   [MoneyCostType.RentDaily]: -300,
 };
