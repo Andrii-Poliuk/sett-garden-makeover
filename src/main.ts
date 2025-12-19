@@ -2,14 +2,17 @@
 import { EventSystem, WebGLRenderer } from 'pixi.js';
 import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js'
-import GameScene from './GameScene';
+import GameScene from './Game/GameScene';
 import UIScene from './UI/UIScene';
 import Game from './Game/Game';
-import { RaycastManager } from './RaycastManager';
+import { RaycastManager } from './Game/RaycastManager';
+import PixiAssetsLoader from './Game/PixiAssetsLoader';
 
 (async () => {
   let WIDTH = window.innerWidth;
   let HEIGHT = window.innerHeight;
+
+  await PixiAssetsLoader.instance.loadAssets();
 
   const threeRenderer = new THREE.WebGLRenderer({
     antialias: true,

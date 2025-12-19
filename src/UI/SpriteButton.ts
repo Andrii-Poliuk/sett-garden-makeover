@@ -7,6 +7,7 @@ import {
   Texture,
   ColorMatrixFilter,
 } from "pixi.js";
+import PixiAssetsLoader, { SoundAsset } from "../Game/PixiAssetsLoader";
 
 export interface SpriteButtonOptions {
   texture: Texture;
@@ -90,11 +91,16 @@ export default class SpriteButton extends Container {
   private handlePointerDown(event: FederatedPointerEvent): void {
     if (!this.isValidPointer(event)) return;
     this.scale.set(this.pressedScale);
+
+    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
+    click && click.play();
   }
 
   private handlePointerUp(event: FederatedPointerEvent): void {
     if (!this.isValidPointer(event)) return;
     this.scale.set(this.originalScale);
+    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
+    click && click.play();
     this.onClick?.();
   }
 

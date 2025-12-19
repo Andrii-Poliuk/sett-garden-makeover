@@ -12,6 +12,7 @@ import DialogPopup from "../UI/DialogPopup";
 import MultiStageObject from "../Objects/MultiStageObject";
 import MoneyCost, { MoneyCostType } from "./MoneyCost";
 import FloatingText from "../Particles/FloatingText";
+import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 
 export default class MainLevel extends GameLevel {
   private landPlacements: InteractiveArea[] = [];
@@ -68,7 +69,7 @@ export default class MainLevel extends GameLevel {
             await this.placeStrawberry(area);
           }
           area.blocked = true;
-
+          PixiAssetsLoader.instance.playSound(SoundAsset.Click);
           this.checkBlockCropUiButtons();
         });
       }
@@ -154,6 +155,7 @@ export default class MainLevel extends GameLevel {
     FloatingText.playEffect(income, cropPosition);
     await crop.playEffect();
     Game.instance.destroyMultiStageObject(crop);
+    PixiAssetsLoader.instance.playSound(SoundAsset.Click);
   }
 
   private async enableCattlePlacement(cattleType: CattleType) {
@@ -286,6 +288,7 @@ export default class MainLevel extends GameLevel {
     FloatingText.playEffect(cost, position);
     const cow = await Game.instance.createCow();
     this.setNewObjectLocationWorld(cow, location);
+    PixiAssetsLoader.instance.playSound(SoundAsset.Cow);
   }
   private async placeSheep(location: InteractiveArea) {
     const cost = MoneyCost[MoneyCostType.SheepBuy];
@@ -294,6 +297,7 @@ export default class MainLevel extends GameLevel {
     FloatingText.playEffect(cost, position);
     const sheep = await Game.instance.createSheep();
     this.setNewObjectLocationWorld(sheep, location);
+    PixiAssetsLoader.instance.playSound(SoundAsset.Sheep);
   }
   private async placeFence(location: InteractiveArea) {
     const cost = MoneyCost[MoneyCostType.FenceMake];
@@ -304,6 +308,7 @@ export default class MainLevel extends GameLevel {
     );
     const fence = await Game.instance.createFence();
     this.setNewObjectLocation(fence, location);
+    PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
   }
   private async placeGround(location: InteractiveArea) {
     const cost = MoneyCost[MoneyCostType.GroundMake];
@@ -314,6 +319,7 @@ export default class MainLevel extends GameLevel {
     );
     const ground = await Game.instance.createGround();
     this.setNewObjectLocation(ground, location);
+    PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
   }
   private setNewObjectLocation(object: Object3D, location: Object3D) {
     object.rotation.set(0, location.rotation.y, 0);

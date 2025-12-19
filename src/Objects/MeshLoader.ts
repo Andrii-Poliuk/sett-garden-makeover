@@ -1,5 +1,5 @@
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { AnimationAction, AnimationClip, Group, Mesh, Object3D, Object3DEventMap } from "three";
+import { AnimationClip, Object3D, Object3DEventMap } from "three";
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
 
 export default class MeshLoader {

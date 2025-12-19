@@ -8,7 +8,7 @@ import {
 } from "three";
 import ObjectHighlight from "./ObjectHighlight";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
-import { RaycastManager } from "../RaycastManager";
+import { RaycastManager } from "../Game/RaycastManager";
 
 export class InteractiveArea extends Mesh {
   public hovered = false;

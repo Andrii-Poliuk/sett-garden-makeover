@@ -2,7 +2,7 @@ import { Container, Sprite, Text } from "pixi.js";
 import { Vector3 } from "three";
 import gsap from "gsap";
 import Game from "../Game/Game";
-import PixiAssetsLoader, { PixiAsset } from "../UI/PixiAssetsLoader";
+import PixiAssetsLoader, { PixiAsset } from "../Game/PixiAssetsLoader";
 
 export default class FloatingText extends Container {
   private static pool: FloatingText[] = [];

@@ -1,6 +1,5 @@
 import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import MultiStageObject from "./MultiStageObject";
-import { Object3D } from "three";
 import { CropType } from "../Game/Game";
 
 export default class Corn extends MultiStageObject {

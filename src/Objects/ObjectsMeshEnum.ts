@@ -1,4 +1,3 @@
-import { Vector3 } from "three";
 
 export enum ObjectsMeshEnum {
     Chicken = "chicken_1",
@@ -20,12 +19,6 @@ export enum ObjectsMeshEnum {
     Tomato2 ="tomato_2",
     Tomato3 ="tomato_3"
 }
-
-export const OjectPivotFix = new Map<ObjectsMeshEnum, Vector3>([
-    [ObjectsMeshEnum.Cow, new Vector3(0, 0, 0)],
-    [ObjectsMeshEnum.Sheep, new Vector3(0, 0, 0)],
-    [ObjectsMeshEnum.Fence, new Vector3(0, 0, -2)]
-]);
 
 export enum ObjectAnimationsEnum {
     ChickenAction = "action_chicken",

@@ -1,16 +1,12 @@
 import {
   AnimationAction,
   AnimationMixer,
-  Group,
-  LoopOnce,
   Object3D,
   Object3DEventMap,
 } from "three";
 import MeshLoader from "./MeshLoader";
 import {
-  ObjectAnimationsEnum,
   ObjectsMeshEnum,
-  OjectPivotFix,
 } from "./ObjectsMeshEnum";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
@@ -33,8 +29,7 @@ export default class AnimatedObject extends Object3D {
     super();
   }
 
-  // must be be overriden
-  protected loadAnimations(model: Object3D<Object3DEventMap>) {}
+  protected loadAnimations(_model: Object3D<Object3DEventMap>) {}
 
   protected async init(modelName: ObjectsMeshEnum) {
     let model = MeshLoader.getMesh(modelName);
@@ -42,8 +37,6 @@ export default class AnimatedObject extends Object3D {
       return;
     }
     model = SkeletonUtils.clone(model);
-    // const pivotFix = OjectPivotFix.get(modelName);
-    // pivotFix && model.position.set(pivotFix.x, pivotFix.y, pivotFix.z);
     model.position.set(0,0,0);
 
     this.loadAnimations(model);

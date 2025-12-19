@@ -1,9 +1,6 @@
 import PlaceableObject from "./PlaceableObject";
 import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import { InteractiveArea } from "./InteractiveArea";
-import { AxesHelper, Object3D } from "three";
-import GUI from "three/examples/jsm/libs/lil-gui.module.min.js";
-import { Helpers } from "../Helpers";
 import { LandType } from "../Game/Game";
 
 export default class Fence extends PlaceableObject {
@@ -14,7 +11,6 @@ export default class Fence extends PlaceableObject {
 
   async init() {
     await super.init(ObjectsMeshEnum.Fence);
-    this.add(new AxesHelper(1));
 
     const positions = [
       { x: 1.6, z: 2.95, r:0 },

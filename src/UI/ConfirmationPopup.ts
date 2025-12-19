@@ -1,5 +1,6 @@
 import { Container, Graphics, Text } from "pixi.js";
 import gsap from "gsap";
+import PixiAssetsLoader, { SoundAsset } from "../Game/PixiAssetsLoader";
 
 export default class ConfirmationPopup extends Container {
   private static _instance: ConfirmationPopup;
@@ -40,7 +41,12 @@ export default class ConfirmationPopup extends Container {
     this.addChild(this.background);
 
     this.dialogBackground = new Graphics();
-    this.dialogBackground.rect(-popupWidth / 2, -popupHeight / 2, popupWidth, popupHeight);
+    this.dialogBackground.rect(
+      -popupWidth / 2,
+      -popupHeight / 2,
+      popupWidth,
+      popupHeight
+    );
     this.dialogBackground.fill({ color: 0x000000, alpha: 0.9 });
     this.dialogBackground.stroke({ color: 0xaaaaaa, width: 2 });
     this.addChild(this.dialogBackground);
@@ -67,7 +73,12 @@ export default class ConfirmationPopup extends Container {
     const buttonSpacing = 30;
 
     this.yesButton = new Graphics();
-    this.yesButton.rect(-buttonWidth / 2, -buttonHeight / 2, buttonWidth, buttonHeight);
+    this.yesButton.rect(
+      -buttonWidth / 2,
+      -buttonHeight / 2,
+      buttonWidth,
+      buttonHeight
+    );
     this.yesButton.fill({ color: 0x222222 });
     this.yesButton.stroke({ color: 0x888888, width: 1 });
     this.yesButton.x = -buttonSpacing - buttonWidth / 2;
@@ -89,7 +100,12 @@ export default class ConfirmationPopup extends Container {
     this.yesButton.addChild(yesText);
 
     this.noButton = new Graphics();
-    this.noButton.rect(-buttonWidth / 2, -buttonHeight / 2, buttonWidth, buttonHeight);
+    this.noButton.rect(
+      -buttonWidth / 2,
+      -buttonHeight / 2,
+      buttonWidth,
+      buttonHeight
+    );
     this.noButton.fill({ color: 0x222222 });
     this.noButton.stroke({ color: 0x888888, width: 1 });
     this.noButton.x = buttonSpacing + buttonWidth / 2;
@@ -124,6 +140,8 @@ export default class ConfirmationPopup extends Container {
   }
 
   private handleYesClick(): void {
+    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
+    click && click.play();
     gsap.to(this, {
       alpha: 0,
       duration: 0.2,
@@ -136,6 +154,8 @@ export default class ConfirmationPopup extends Container {
   }
 
   private handleNoClick(): void {
+    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
+    click && click.play();
     gsap.to(this, {
       alpha: 0,
       duration: 0.2,

@@ -10,7 +10,7 @@ import Strawberry from "../Objects/Strawberry";
 import Tomato from "../Objects/Tomato";
 import GameLevel from "./GameLevel";
 import TutorialLevel from "./TutorialLevel";
-import GameScene from "../GameScene";
+import GameScene from "./GameScene";
 import { PerspectiveCamera } from "three";
 import CameraPosition from "./CameraPosition";
 import DayNightController from "./DayNightController";
@@ -20,6 +20,7 @@ import MultiStageObject from "../Objects/MultiStageObject";
 import AnimatedObject from "../Objects/AnimatedObject";
 import MainLevel from "./MainLevel";
 import { Helpers } from "../Helpers";
+import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 
 export enum CropType {
   Corn,
@@ -43,8 +44,8 @@ export default class Game {
   private static _instance: Game;
 
   private interactiveAreas: InteractiveArea[] = [];
-  private cattle: (AnimatedObject)[] = [];
-  private crops: (MultiStageObject)[] = [];
+  private cattle: AnimatedObject[] = [];
+  private crops: MultiStageObject[] = [];
   private fences: Fence[] = [];
   private grounds: Ground[] = [];
 
@@ -98,11 +99,15 @@ export default class Game {
     if (!this.chickenGuide) return;
     this.chickenGuide.visible = visible;
     if (left) {
-      this.chickenGuide.position.set(-0.55,-1.05,-1.8);
-      this.chickenGuide.rotation.set(-0.33,0.98,0);
+      this.chickenGuide.position.set(-0.55, -1.05, -1.8);
+      this.chickenGuide.rotation.set(-0.33, 0.98, 0);
     } else {
-      this.chickenGuide.position.set(0.55,-1.05,-1.8);
-      this.chickenGuide.rotation.set(-0.33,-0.98,0);
+      this.chickenGuide.position.set(0.55, -1.05, -1.8);
+      this.chickenGuide.rotation.set(-0.33, -0.98, 0);
+    }
+    if (visible) {
+      const click = PixiAssetsLoader.instance.getSound(SoundAsset.Chicken);
+      click && click.play();
     }
   }
 
@@ -139,6 +144,15 @@ export default class Game {
   }
 
   public async startGame(): Promise<void> {
+    const themeMusic = await PixiAssetsLoader.instance.getSound(
+      SoundAsset.Theme
+    );
+    if (themeMusic) {
+      themeMusic.volume = 0.2;
+      themeMusic.loop = true;
+      themeMusic.play();
+    }
+
     const tutorialLevel = new TutorialLevel();
     tutorialLevel.init();
     const mainLevel = new MainLevel();
@@ -146,16 +160,16 @@ export default class Game {
 
     this.money = 1000;
 
-// TODO: remove
+    // TODO: remove
     // this.currentLevel = mainLevel;
     // await mainLevel.startLevel();
     //   return;
-      //<<<<<<<<<<<<<<<<<<
+    //<<<<<<<<<<<<<<<<<<
 
     tutorialLevel.onLevelFinished = async () => {
       this.currentLevel = mainLevel;
       await mainLevel.startLevel();
-    }
+    };
     this.currentLevel = tutorialLevel;
     await tutorialLevel.startLevel();
     // this.levels.push(tutorialLevel);
@@ -247,7 +261,11 @@ export default class Game {
     return cameraPosition;
   }
 
-  public createInteractiveArea(scaleX: number = 2, scaleY: number = 2, scaleZ: number = 2): InteractiveArea {
+  public createInteractiveArea(
+    scaleX: number = 2,
+    scaleY: number = 2,
+    scaleZ: number = 2
+  ): InteractiveArea {
     const interactiveArea = new InteractiveArea(scaleX, scaleY, scaleZ);
     this.interactiveAreas.push(interactiveArea);
     this.gameScene?.scene.add(interactiveArea);
@@ -299,7 +317,7 @@ export default class Game {
     });
     this.interactiveAreas.forEach((object) => {
       object.update(delta);
-    })
+    });
     this.currentLevel?.update(delta);
     this.cameraPositions.forEach((object) => {
       object.update();

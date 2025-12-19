@@ -1,6 +1,6 @@
 import { Object3D } from "three";
 import MeshLoader from "./MeshLoader";
-import { ObjectsMeshEnum, OjectPivotFix } from "./ObjectsMeshEnum";
+import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { InteractiveArea } from "./InteractiveArea";
 import { LandType } from "../Game/Game";

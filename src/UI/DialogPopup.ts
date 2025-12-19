@@ -1,5 +1,6 @@
 import { Container, Graphics, Text } from "pixi.js";
 import gsap from "gsap";
+import PixiAssetsLoader, { SoundAsset } from "../Game/PixiAssetsLoader";
 
 export default class DialogPopup extends Container {
   private static _instance: DialogPopup;
@@ -80,6 +81,9 @@ export default class DialogPopup extends Container {
   }
 
   private handleClick(): void {
+    const click = PixiAssetsLoader.instance.getSound(SoundAsset.Click);
+    click && click.play();
+    
     gsap.to(this, {
       alpha: 0,
       duration: 0.2,

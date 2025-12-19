@@ -17,6 +17,7 @@ import LandPlacementMenu from "../UI/LandPlacementMenu";
 import MoneyCost, { MoneyCostType } from "./MoneyCost";
 import GameControls from "../UI/GameControls";
 import FloatingText from "../Particles/FloatingText";
+import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 
 export default class TutorialLevel extends GameLevel {
   private cameraPosition?: CameraPosition;
@@ -106,9 +107,10 @@ export default class TutorialLevel extends GameLevel {
     Game.instance.toggleChickenGuide(false);
 
     this.corn.forEach((corn) => {
-      corn.enableInteraction(async (obj) => {
+      corn.enableInteraction(async (_obj) => {
         console.log("clicked");
         this.collectCorn(corn);
+        PixiAssetsLoader.instance.playSound(SoundAsset.Click);
       });
     });
 
@@ -302,6 +304,7 @@ export default class TutorialLevel extends GameLevel {
     const interactiveAreas = this.fence!.getInteractiveAreas();
     interactiveAreas[1].blocked = true;
     this.sheep?.playEffect();
+    PixiAssetsLoader.instance.playSound(SoundAsset.Sheep);
   }
 
   private async placeFence(location: Object3D) {

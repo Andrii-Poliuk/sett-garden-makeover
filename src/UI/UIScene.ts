@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import PixiAssetsLoader from "./PixiAssetsLoader";
+import PixiAssetsLoader from "../Game/PixiAssetsLoader";
 import DialogPopup from "./DialogPopup";
 import ConfirmationPopup from "./ConfirmationPopup";
 import CropPlacementMenu from "./CropPlacementMenu";
@@ -89,8 +89,6 @@ export default class UIScene {
   }
 
   public async init(): Promise<void> {
-    await PixiAssetsLoader.instance.loadAssets();
-
     this._homeMenu = new HomeMenu();
     this._homeMenu.position.set(60, 120);
     this._homeMenu.setOriginalPosition(60);

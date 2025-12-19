@@ -1,5 +1,5 @@
 import SpriteButton from "./SpriteButton";
-import PixiAssetsLoader, { PixiAsset } from "./PixiAssetsLoader";
+import PixiAssetsLoader, { PixiAsset } from "../Game/PixiAssetsLoader";
 import MenuBase from "./MenuBase";
 
 export default class HomeMenu extends MenuBase {
