@@ -67,6 +67,7 @@ import LoadingPopup from "./UI/Popups/LoadingPopup";
     Game.instance.update(delta);
 
     threeRenderer.resetState();
+    threeRenderer.setRenderTarget(null);
     threeRenderer.render(threeScene.scene, threeScene.camera);
 
     pixiRenderer.resetState();

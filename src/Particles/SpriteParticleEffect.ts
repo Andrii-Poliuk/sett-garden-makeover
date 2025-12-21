@@ -19,12 +19,29 @@ import Game from "../Game/Game";
 // Shared material cache to prevent VFXBatch duplication
 const sharedMaterials: Map<string, THREE.MeshBasicMaterial> = new Map();
 
+// Particle texture paths to preload
+const PARTICLE_TEXTURES = ["./images/leaf.png", "./images/smoke.png"];
+
 export class SpriteParticleEffect extends THREE.Object3D {
   private particleSystem?: ParticleSystem;
   private colorRange?: ColorRange;
 
   constructor() {
     super();
+  }
+
+  public static async preloadMaterials(): Promise<void> {
+    const loader = new THREE.TextureLoader();
+    await Promise.all(
+      PARTICLE_TEXTURES.map(async (path) => {
+        const texture = await loader.loadAsync(path);
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+        });
+        sharedMaterials.set(path, material);
+      }),
+    );
   }
 
   private getOrCreateMaterial(
