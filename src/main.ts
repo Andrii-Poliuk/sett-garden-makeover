@@ -1,18 +1,20 @@
 import { EventSystem, WebGLRenderer } from "pixi.js";
 import * as THREE from "three";
-// import Stats from 'three/addons/libs/stats.module.js'
+import Stats from 'three/addons/libs/stats.module.js'
 import GameScene from "./Game/GameScene";
 import UIScene from "./UI/UIScene";
 import Game from "./Game/Game";
 import { RaycastManager } from "./Game/RaycastManager";
 import PixiAssetsLoader from "./Game/PixiAssetsLoader";
 import LoadingPopup from "./UI/Popups/LoadingPopup";
+import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
 
 (async () => {
   let WIDTH = window.innerWidth;
   let HEIGHT = window.innerHeight;
 
   await PixiAssetsLoader.instance.loadAssets();
+  await SpriteParticleEffect.preloadMaterials();
 
   const threeRenderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -55,8 +57,8 @@ import LoadingPopup from "./UI/Popups/LoadingPopup";
   eventSystem.resolution = pixiRenderer.resolution;
   uiScene.stage.eventMode = "static";
 
-  // const stats = new Stats()
-  // document.body.appendChild(stats.dom)
+  const stats = new Stats()
+  document.body.appendChild(stats.dom)
 
   const clock = new THREE.Clock();
   let delta = 0;
@@ -73,7 +75,7 @@ import LoadingPopup from "./UI/Popups/LoadingPopup";
     pixiRenderer.resetState();
     pixiRenderer.render({ container: uiScene.stage });
 
-    // stats.update()
+    stats.update()
 
     requestAnimationFrame(loop);
   }

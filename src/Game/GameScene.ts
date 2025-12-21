@@ -23,6 +23,9 @@ export default class GameScene {
     threeCamera.position.z = 10;
     threeCamera.position.y = 10;
     threeCamera.lookAt(new THREE.Vector3(0, 0, 0));
+    threeCamera.fov = 70;
+    threeCamera.near = 1;
+    threeCamera.far = 90;
     scene.add(threeCamera);
     this.renderer = renderer;
     // this.controls = setupOrbitControls(threeCamera, renderer);
@@ -44,8 +47,22 @@ export default class GameScene {
     this.scene.add(this.ambientLight);
   }
 
+  private static readonly BASE_FOV = 70;
+  private static readonly MAX_FOV = 110;
+  private static readonly ASPECT_THRESHOLD = 0.5;
+  private static readonly ASPECT_MIN = 0.3;
+
   public resize(width: number, height: number): void {
-    this.camera.aspect = width / height;
+    const aspect = width / height;
+    this.camera.aspect = aspect;
+
+    if (aspect < GameScene.ASPECT_THRESHOLD) {
+      const t = Math.max(0, (GameScene.ASPECT_THRESHOLD - aspect) / (GameScene.ASPECT_THRESHOLD - GameScene.ASPECT_MIN));
+      this.camera.fov = GameScene.BASE_FOV + (GameScene.MAX_FOV - GameScene.BASE_FOV) * Math.min(t, 1);
+    } else {
+      this.camera.fov = GameScene.BASE_FOV;
+    }
+
     this.camera.updateProjectionMatrix();
   }
 

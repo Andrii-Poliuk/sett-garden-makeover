@@ -147,6 +147,63 @@ export namespace Helpers {
 
     return gui;
   }
+
+  export function setupCameraGUI(
+    camera: PerspectiveCamera,
+    name: string = "Camera",
+  ): GUI {
+    const gui = new GUI({ title: name });
+
+    const fovFolder = gui.addFolder("Field of View");
+    fovFolder
+      .add(camera, "fov", 30, 120, 1)
+      .name("FOV")
+      .onChange(() => camera.updateProjectionMatrix());
+
+    const fovDisplay = {
+      get value() {
+        return `${camera.fov.toFixed(1)}°`;
+      },
+    };
+    fovFolder.add(fovDisplay, "value").name("Display").listen().disable();
+
+    const frustumFolder = gui.addFolder("Frustum Culling");
+    frustumFolder
+      .add(camera, "near", 0.01, 10, 0.01)
+      .name("Near Plane")
+      .onChange(() => camera.updateProjectionMatrix());
+    frustumFolder
+      .add(camera, "far", 0.1, 200, 0.1)
+      .name("Far Plane")
+      .onChange(() => camera.updateProjectionMatrix());
+
+    const frustumDisplay = {
+      get value() {
+        return `Near: ${camera.near.toFixed(2)}, Far: ${camera.far.toFixed(0)}`;
+      },
+    };
+    frustumFolder
+      .add(frustumDisplay, "value")
+      .name("Display")
+      .listen()
+      .disable();
+
+    const aspectDisplay = {
+      get value() {
+        return `${camera.aspect.toFixed(3)}`;
+      },
+    };
+    gui.add(aspectDisplay, "value").name("Aspect Ratio").listen().disable();
+
+    const dimensionsDisplay = {
+      get value() {
+        return `${window.innerWidth} x ${window.innerHeight} | ${Math.round(100*window.innerWidth/window.innerHeight)/100}`;
+      },
+    };
+    gui.add(dimensionsDisplay, "value").name("Width x Height").listen().disable();
+
+    return gui;
+  }
 }
 
 export function lerp(from: number, to: number, speed: number) {
