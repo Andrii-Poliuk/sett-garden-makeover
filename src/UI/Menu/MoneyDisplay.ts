@@ -1,6 +1,6 @@
 import { Container, Sprite, Text } from "pixi.js";
 import gsap from "gsap";
-import PixiAssetsLoader, { PixiAsset } from "../Game/PixiAssetsLoader";
+import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
 
 export default class MoneyDisplay extends Container {
   private amountText!: Text;

@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
-import SpriteButton from "./SpriteButton";
-import PixiAssetsLoader, { PixiAsset } from "../Game/PixiAssetsLoader";
+import SpriteButton from "../SpriteButton";
+import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
 import MoneyDisplay from "./MoneyDisplay";
 
 export default class GameControls extends Container {

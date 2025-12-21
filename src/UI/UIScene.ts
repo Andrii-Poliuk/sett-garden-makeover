@@ -1,13 +1,13 @@
 import { Container } from "pixi.js";
-import DialogPopup from "./DialogPopup";
-import ConfirmationPopup from "./ConfirmationPopup";
-import GameOverPopup from "./GameOverPopup";
-import LoadingPopup from "./LoadingPopup";
-import CropPlacementMenu from "./CropPlacementMenu";
-import CattlePlacementMenu from "./CattlePlacementMenu";
-import HomeMenu from "./HomeMenu";
-import LandPlacementMenu from "./LandPlacementMenu";
-import GameControls from "./GameControls";
+import DialogPopup from "./Popups/DialogPopup";
+import ConfirmationPopup from "./Popups/ConfirmationPopup";
+import GameOverPopup from "./Popups/GameOverPopup";
+import LoadingPopup from "./Popups/LoadingPopup";
+import CropPlacementMenu from "./Menu/CropPlacementMenu";
+import CattlePlacementMenu from "./Menu/CattlePlacementMenu";
+import HomeMenu from "./Menu/HomeMenu";
+import LandPlacementMenu from "./Menu/LandPlacementMenu";
+import GameControls from "./Menu/GameControls";
 import FloatingText from "../Particles/FloatingText";
 
 export default class UIScene {
@@ -52,35 +52,35 @@ export default class UIScene {
   }
 
   public showHomeMenu() {
+    this._homeMenu.resize(this.currentScale);
     this._homeMenu.show();
     this._cropPlacementMenu.hide();
     this._cattlePlacementMenu.hide();
     this._landPlacementMenu.hide();
-    this._homeMenu.resize(this.currentScale);
   }
 
   public showCropMenu() {
+    this._cropPlacementMenu.resize(this.currentScale);
     this._homeMenu.hide();
     this._cropPlacementMenu.show();
     this._cattlePlacementMenu.hide();
     this._landPlacementMenu.hide();
-    this._cropPlacementMenu.resize(this.currentScale);
   }
 
   public showCattleMenu() {
+    this._cattlePlacementMenu.resize(this.currentScale);
     this._homeMenu.hide();
     this._cropPlacementMenu.hide();
     this._cattlePlacementMenu.show();
     this._landPlacementMenu.hide();
-    this._cattlePlacementMenu.resize(this.currentScale);
   }
 
   public showLandMenu() {
+    this._landPlacementMenu.resize(this.currentScale);
     this._homeMenu.hide();
     this._cropPlacementMenu.hide();
     this._cattlePlacementMenu.hide();
     this._landPlacementMenu.show();
-    this._landPlacementMenu.resize(this.currentScale);
   }
 
   public hideMenu() {
@@ -91,8 +91,8 @@ export default class UIScene {
   }
 
   public showGameControls(mask: number = GameControls.ALL): void {
-    this._gameControls.show(mask);
     this._gameControls.resize(this.currentWidth, this.currentHeight, this.currentScale);
+    this._gameControls.show(mask);
   }
 
   public hideGameControls(mask: number = GameControls.ALL): void {

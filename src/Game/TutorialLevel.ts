@@ -1,5 +1,5 @@
 import { Object3D, Vector3 } from "three";
-import DialogPopup from "../UI/DialogPopup";
+import DialogPopup from "../UI/Popups/DialogPopup";
 import Sheep from "../Objects/Sheep";
 import CameraPosition, { CameraPositionData } from "./CameraPosition";
 import Game from "./Game";
@@ -10,10 +10,10 @@ import { InteractiveArea } from "../Objects/InteractiveArea";
 import { ObjectsMeshEnum } from "../Objects/ObjectsMeshEnum";
 import ObjectHighlight from "../Objects/ObjectHighlight";
 import Corn from "../Objects/Corn";
-import HomeMenu from "../UI/HomeMenu";
-import LandPlacementMenu from "../UI/LandPlacementMenu";
+import HomeMenu from "../UI/Menu/HomeMenu";
+import LandPlacementMenu from "../UI/Menu/LandPlacementMenu";
 import MoneyCost, { MoneyCostType } from "./MoneyCost";
-import GameControls from "../UI/GameControls";
+import GameControls from "../UI/Menu/GameControls";
 import FloatingText from "../Particles/FloatingText";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 

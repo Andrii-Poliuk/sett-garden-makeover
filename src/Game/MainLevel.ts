@@ -5,16 +5,16 @@ import { ObjectsMeshEnum } from "../Objects/ObjectsMeshEnum";
 import PlaceableObject from "../Objects/PlaceableObject";
 import Game, { CropType, CattleType, LandType } from "./Game";
 import GameLevel from "./GameLevel";
-import LandPlacementMenu from "../UI/LandPlacementMenu";
-import HomeMenu from "../UI/HomeMenu";
-import ConfirmationPopup from "../UI/ConfirmationPopup";
-import DialogPopup from "../UI/DialogPopup";
+import LandPlacementMenu from "../UI/Menu/LandPlacementMenu";
+import HomeMenu from "../UI/Menu/HomeMenu";
+import ConfirmationPopup from "../UI/Popups/ConfirmationPopup";
+import DialogPopup from "../UI/Popups/DialogPopup";
 import MultiStageObject from "../Objects/MultiStageObject";
 import MoneyCost, { MoneyCostType } from "./MoneyCost";
 import FloatingText from "../Particles/FloatingText";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 import AnimatedObject from "../Objects/AnimatedObject";
-import GameOverPopup from "../UI/GameOverPopup";
+import GameOverPopup from "../UI/Popups/GameOverPopup";
 import CameraPosition from "./CameraPosition";
 
 export default class MainLevel extends GameLevel {
