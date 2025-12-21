@@ -19,6 +19,7 @@ import LoadingPopup from "./UI/LoadingPopup";
     stencil: true,
   });
 
+  threeRenderer.setPixelRatio(window.devicePixelRatio);
   threeRenderer.setSize(WIDTH, HEIGHT);
   threeRenderer.setClearColor(0xdddddd, 1);
   document.body.appendChild(threeRenderer.domElement);
@@ -28,6 +29,7 @@ import LoadingPopup from "./UI/LoadingPopup";
     context: threeRenderer.getContext() as WebGL2RenderingContext,
     width: WIDTH,
     height: HEIGHT,
+    resolution: window.devicePixelRatio,
     clearBeforeRender: false,
   });
 
@@ -77,7 +79,7 @@ import LoadingPopup from "./UI/LoadingPopup";
 
   requestAnimationFrame(loop);
 
-  window.addEventListener("resize", () => {
+  function handleResize() {
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
 
@@ -86,6 +88,19 @@ import LoadingPopup from "./UI/LoadingPopup";
 
     pixiRenderer.resize(WIDTH, HEIGHT);
     uiScene.resize(WIDTH, HEIGHT);
+  }
+
+  let resizeTimeout: number;
+  let resizing = false;
+  window.addEventListener("resize", () => {
+    if (!resizing) {
+      resizing = true;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(() => {
+        handleResize();
+        resizing = false;
+      }, 20);
+    }
   });
 
   LoadingPopup.instance.showLoaded();

@@ -66,7 +66,7 @@ export default class LoadingPopup extends Container {
     this.dialogBackground.addChild(this.loadingText);
 
     const buttonWidth = 120;
-    const buttonHeight = 50;
+    const buttonHeight = 40;
 
     this.startButton = new Graphics();
     this.startButton.rect(
@@ -89,7 +89,7 @@ export default class LoadingPopup extends Container {
       text: "Start",
       style: {
         fontFamily: "Arial",
-        fontSize: 24,
+        fontSize: 22,
         fill: "white",
       },
     });
@@ -102,7 +102,7 @@ export default class LoadingPopup extends Container {
 
   public showLoaded(): void {
     if (this.loadingText) {
-      this.loadingText.text = "Ready!";
+      this.loadingText.text = "Ready to Play?";
     }
     if (this.startButton) {
       this.startButton.visible = true;

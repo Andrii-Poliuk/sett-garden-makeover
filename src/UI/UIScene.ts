@@ -24,8 +24,12 @@ export default class UIScene {
   private loadingPopup!: LoadingPopup;
   private floatingTextContainer!: Container;
 
-  private originalWidth: number = 0;
-  private originalHeight: number = 0;
+  private minimumWidth: number = 700;
+  private minimumHeight: number = 600;
+
+  private currentWidth: number = 800;
+  private currentHeight: number = 600;
+  private currentScale: number = 1;
 
   public get homeMenu(): HomeMenu {
     return this._homeMenu;
@@ -52,6 +56,7 @@ export default class UIScene {
     this._cropPlacementMenu.hide();
     this._cattlePlacementMenu.hide();
     this._landPlacementMenu.hide();
+    this._homeMenu.resize(this.currentScale);
   }
 
   public showCropMenu() {
@@ -59,6 +64,7 @@ export default class UIScene {
     this._cropPlacementMenu.show();
     this._cattlePlacementMenu.hide();
     this._landPlacementMenu.hide();
+    this._cropPlacementMenu.resize(this.currentScale);
   }
 
   public showCattleMenu() {
@@ -66,6 +72,7 @@ export default class UIScene {
     this._cropPlacementMenu.hide();
     this._cattlePlacementMenu.show();
     this._landPlacementMenu.hide();
+    this._cattlePlacementMenu.resize(this.currentScale);
   }
 
   public showLandMenu() {
@@ -73,6 +80,7 @@ export default class UIScene {
     this._cropPlacementMenu.hide();
     this._cattlePlacementMenu.hide();
     this._landPlacementMenu.show();
+    this._landPlacementMenu.resize(this.currentScale);
   }
 
   public hideMenu() {
@@ -84,6 +92,7 @@ export default class UIScene {
 
   public showGameControls(mask: number = GameControls.ALL): void {
     this._gameControls.show(mask);
+    this._gameControls.resize(this.currentWidth, this.currentHeight, this.currentScale);
   }
 
   public hideGameControls(mask: number = GameControls.ALL): void {
@@ -166,15 +175,16 @@ export default class UIScene {
 
     this.hideMenu();
     this.gameControls.hide();
-
-    this.originalWidth = Math.max(window.innerWidth, 600);
-    this.originalHeight = Math.max(window.innerHeight, 800);
   }
 
   public resize(width: number, height: number): void {
-    const scaleX = width > 600 ? 1 : width / this.originalWidth;
-    const scaleY = height > 800 ? 1 : height / this.originalHeight;
+    const scaleX = width > this.minimumWidth ? 1 : width / this.minimumHeight;
+    const scaleY = height > this.minimumHeight ? 1 : height / this.minimumWidth;
     const flexibleScale = Math.min(scaleX, scaleY);
+
+    this.currentWidth = width;
+    this.currentHeight = height;
+    this.currentScale = flexibleScale;
 
     this.dialogPopup.resize(width, height, flexibleScale);
     this.confirmationPopup.resize(width, height, flexibleScale);

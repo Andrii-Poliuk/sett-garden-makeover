@@ -102,9 +102,6 @@ export default class DialogPopup extends Container {
   }
 
   public resize(width: number, height: number, scale: number): void {
-    if (!this.visible) return;
-    if (!this.dialogBackground) return;
-
     const scaleX = width / this.originalWidth;
     const scaleY = height / this.originalHeight;
     const backgroundScale = Math.max(scaleX, scaleY);
@@ -113,13 +110,11 @@ export default class DialogPopup extends Container {
     const popupX = width / 2;
     const popupY = height - (popupHeight / 2) * scale - 40;
 
-    this.dialogBackground.x = popupX;
-    this.dialogBackground.y = popupY;
-    this.dialogBackground.scale.set(scale);
+    if (this.dialogBackground) {
+      this.dialogBackground.x = popupX;
+      this.dialogBackground.y = popupY;
+      this.dialogBackground.scale.set(scale);
+    }
     this.background?.scale.set(backgroundScale);
-
-    // if (this.messageText) {
-    //   this.messageText.style.fontSize =  28*scale;
-    // }
   }
 }
