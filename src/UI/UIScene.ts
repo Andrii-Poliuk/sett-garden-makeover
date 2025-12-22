@@ -91,7 +91,11 @@ export default class UIScene {
   }
 
   public showGameControls(mask: number = GameControls.All): void {
-    this.gameControlsInstance.resize(this.currentWidth, this.currentHeight, this.currentScale);
+    this.gameControlsInstance.resize(
+      this.currentWidth,
+      this.currentHeight,
+      this.currentScale,
+    );
     this.gameControlsInstance.show(mask);
   }
 

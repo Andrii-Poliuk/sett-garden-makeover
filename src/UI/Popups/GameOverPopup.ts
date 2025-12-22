@@ -42,7 +42,9 @@ export default class GameOverPopup extends PopupBase {
       width: buttonWidth,
       height: buttonHeight,
       label: "Source",
-      onClick: () => { this.handleSourceClick(); },
+      onClick: () => {
+        this.handleSourceClick();
+      },
     });
     this.sourceButton.x = -buttonSpacing - buttonWidth / 2;
     this.sourceButton.y = 50;
@@ -52,7 +54,9 @@ export default class GameOverPopup extends PopupBase {
       width: buttonWidth,
       height: buttonHeight,
       label: "Restart",
-      onClick: () => { this.handleActionClick(); },
+      onClick: () => {
+        this.handleActionClick();
+      },
     });
     this.actionButton.x = buttonSpacing + buttonWidth / 2;
     this.actionButton.y = 50;

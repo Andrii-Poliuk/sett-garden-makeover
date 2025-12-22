@@ -8,7 +8,7 @@ export default class Grape extends MultiStageObject {
     this.cropTypeValue = CropType.Grape;
   }
 
-  async init() {
+  public async init() {
     await super.init([
       ObjectsMeshEnum.Grape1,
       ObjectsMeshEnum.Grape2,

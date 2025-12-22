@@ -23,7 +23,7 @@ const sharedMaterials: Map<string, THREE.MeshBasicMaterial> = new Map();
 const ParticleTextures = ["./images/leaf.png", "./images/smoke.png"];
 
 export class SpriteParticleEffect extends THREE.Object3D {
-private particleSystem?: ParticleSystem;
+  private particleSystem?: ParticleSystem;
   private colorRange?: ColorRange;
 
   constructor() {

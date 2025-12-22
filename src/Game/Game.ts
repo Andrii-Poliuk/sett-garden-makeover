@@ -98,7 +98,7 @@ export default class Game {
     this.chickenGuide.traverse((child) => {
       child.castShadow = false;
       child.receiveShadow = false;
-    })
+    });
     this.toggleChickenGuide(false);
   }
 
@@ -154,7 +154,7 @@ export default class Game {
   }
 
   public async startGame(): Promise<void> {
-// return;
+    // return;
     PixiAssetsLoader.instance.playSound(SoundAsset.Theme, 0.2, true);
 
     const tutorialLevel = new TutorialLevel();

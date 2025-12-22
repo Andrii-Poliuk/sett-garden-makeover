@@ -13,10 +13,10 @@ import SoundSource from "./SoundSource";
 import gsap from "gsap";
 
 export default class AnimatedObject extends Object3D {
-  mixer?: AnimationMixer;
+  protected mixer?: AnimationMixer;
 
-  animationActions: { [key: string]: AnimationAction } = {};
-  activeAction?: AnimationAction;
+  protected animationActions: { [key: string]: AnimationAction } = {};
+  protected activeAction?: AnimationAction;
 
   protected particlesEffect?: SpriteParticleEffect;
   protected cattleTypeValue: CattleType = CattleType.Chicken;

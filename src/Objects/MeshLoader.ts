@@ -3,10 +3,10 @@ import { AnimationClip, Object3D, Object3DEventMap } from "three";
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
 
 export default class MeshLoader {
-  objects?: GLTF;
-  ground?: GLTF;
-  meshes: Map<ObjectsMeshEnum, Object3D<Object3DEventMap>> = new Map();
-  animations: Map<ObjectAnimationsEnum, AnimationClip> = new Map();
+  // private objects?: GLTF;
+  private ground?: GLTF;
+  private meshes: Map<ObjectsMeshEnum, Object3D<Object3DEventMap>> = new Map();
+  private animations: Map<ObjectAnimationsEnum, AnimationClip> = new Map();
 
   private constructor() {}
 
@@ -51,7 +51,7 @@ export default class MeshLoader {
     ]);
     ground.scene.static = true;
     // objects.scene.static = true;
-    MeshLoader.Instance.objects = objects;
+    // MeshLoader.Instance.objects = objects;
     MeshLoader.Instance.ground = ground;
 
     const terrain = ground.scene.getObjectByName("terrain");
@@ -76,8 +76,11 @@ export default class MeshLoader {
         });
         child.castShadow = true;
       }
-      if (child.name.startsWith("ambar") || child.name.startsWith("hay") || child.name.startsWith("ground"))
-      {
+      if (
+        child.name.startsWith("ambar") ||
+        child.name.startsWith("hay") ||
+        child.name.startsWith("ground")
+      ) {
         child.traverse((child) => {
           child.receiveShadow = true;
         });
@@ -91,9 +94,9 @@ export default class MeshLoader {
       ) as Object3D<Object3DEventMap>;
       if (mesh) {
         if (mesh.name.startsWith("ground")) {
-            mesh.receiveShadow = true;
-          }
-         mesh.traverse((child) => {
+          mesh.receiveShadow = true;
+        }
+        mesh.traverse((child) => {
           child.castShadow = true;
           if (mesh.name.startsWith("ground")) {
             child.receiveShadow = true;

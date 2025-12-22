@@ -36,7 +36,7 @@ export default class DialogButton extends Container {
       -options.height / 2,
       options.width,
       options.height,
-      2
+      2,
     );
     this.background.fill({ color: 0x222222 });
     this.background.stroke({ color: 0x888888, width: 1 });

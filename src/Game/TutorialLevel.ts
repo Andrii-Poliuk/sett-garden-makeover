@@ -128,11 +128,11 @@ export default class TutorialLevel extends GameLevel {
     await DialogPopup.instance.showPopup("Oh no... Your sheep has run amok!");
 
     const sheepSound = new SoundSource({
-            sound: SoundAsset.Sheep,
-            minInterval: 3,
-            maxInterval: 10,
-            volume: 0.4,
-          });
+      sound: SoundAsset.Sheep,
+      minInterval: 3,
+      maxInterval: 10,
+      volume: 0.4,
+    });
     this.sheep!.soundSource = sheepSound;
     sheepSound.start();
 
@@ -266,12 +266,12 @@ export default class TutorialLevel extends GameLevel {
         chicken.playAction();
       }
       const soundSource = new SoundSource({
-              sound: SoundAsset.Chicken,
-              minInterval: 30,
-              maxInterval: 120,
-              volume: 0.2,
-            });
-      chicken.soundSource  = soundSource;
+        sound: SoundAsset.Chicken,
+        minInterval: 30,
+        maxInterval: 120,
+        volume: 0.2,
+      });
+      chicken.soundSource = soundSource;
       soundSource.start();
     }
 

@@ -9,9 +9,9 @@ export default class ObjectHighlight extends Object3D {
     super();
   }
 
-  static greenTransparentMat: THREE.MeshBasicMaterial | undefined;
+  protected static greenTransparentMat: THREE.MeshBasicMaterial | undefined;
 
-  async init(
+  public async init(
     modelName: ObjectsMeshEnum,
     color: THREE.ColorRepresentation = 0x00ff00,
   ) {

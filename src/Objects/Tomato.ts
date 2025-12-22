@@ -8,7 +8,7 @@ export default class Tomato extends MultiStageObject {
     this.cropTypeValue = CropType.Tomato;
   }
 
-  async init() {
+  public async init() {
     await super.init([
       ObjectsMeshEnum.Tomato1,
       ObjectsMeshEnum.Tomato2,

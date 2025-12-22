@@ -22,12 +22,13 @@ export default class DayNightController {
     g: 0.5,
     b: 1,
   };
-  private currentDirLightColor: { r: number; g: number; b: number; i: number } = {
-    r: 1,
-    g: 1,
-    b: 1,
-    i: 1,
-  };
+  private currentDirLightColor: { r: number; g: number; b: number; i: number } =
+    {
+      r: 1,
+      g: 1,
+      b: 1,
+      i: 1,
+    };
   private currentDirLightPosition: { x: number; y: number; z: number } = {
     x: 17,
     y: 20,

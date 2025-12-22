@@ -13,11 +13,11 @@ export default class MultiStageObject extends Object3D {
   public get cropType(): CropType {
     return this.cropTypeValue;
   }
-  stage1Model?: Object3D<Object3DEventMap>;
-  stage2Model?: Object3D<Object3DEventMap>;
-  stage3Model?: Object3D<Object3DEventMap>;
+  protected stage1Model?: Object3D<Object3DEventMap>;
+  protected stage2Model?: Object3D<Object3DEventMap>;
+  protected stage3Model?: Object3D<Object3DEventMap>;
 
-  activeModel?: Object3D<Object3DEventMap>;
+  protected activeModel?: Object3D<Object3DEventMap>;
 
   protected particlesEffect?: SpriteParticleEffect;
   protected interactiveArea?: InteractiveArea;
@@ -114,7 +114,7 @@ export default class MultiStageObject extends Object3D {
         duration: 0.2,
         ease: "elastic.in(1, 0.5)",
       },
-      "<"
+      "<",
     );
     timeline.to(
       this.rotation,
@@ -123,7 +123,7 @@ export default class MultiStageObject extends Object3D {
         duration: 0.05,
         // ease: "power1.inOut",
       },
-      "<"
+      "<",
     );
     timeline.to(this.rotation, {
       y: this.rotation.y - 0.1,

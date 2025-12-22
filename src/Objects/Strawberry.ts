@@ -8,7 +8,7 @@ export default class Strawberry extends MultiStageObject {
     this.cropTypeValue = CropType.Strawberry;
   }
 
-  async init() {
+  public async init() {
     await super.init([
       ObjectsMeshEnum.Strawberry1,
       ObjectsMeshEnum.Strawberry2,

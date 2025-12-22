@@ -1,4 +1,10 @@
-import { AmbientLight, DirectionalLight, Object3D, PerspectiveCamera, WebGLRenderer } from "three";
+import {
+  AmbientLight,
+  DirectionalLight,
+  Object3D,
+  PerspectiveCamera,
+  WebGLRenderer,
+} from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import MultiStageObject from "./Objects/MultiStageObject";
@@ -225,10 +231,14 @@ export namespace Helpers {
 
     const dimensionsDisplay = {
       get value() {
-        return `${window.innerWidth} x ${window.innerHeight} | ${Math.round(100*window.innerWidth/window.innerHeight)/100}`;
+        return `${window.innerWidth} x ${window.innerHeight} | ${Math.round((100 * window.innerWidth) / window.innerHeight) / 100}`;
       },
     };
-    gui.add(dimensionsDisplay, "value").name("Width x Height").listen().disable();
+    gui
+      .add(dimensionsDisplay, "value")
+      .name("Width x Height")
+      .listen()
+      .disable();
 
     return gui;
   }

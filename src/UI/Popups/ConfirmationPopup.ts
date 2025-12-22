@@ -39,7 +39,9 @@ export default class ConfirmationPopup extends PopupBase {
       width: buttonWidth,
       height: buttonHeight,
       label: "Yes",
-      onClick: () => { this.handleYesClick(); },
+      onClick: () => {
+        this.handleYesClick();
+      },
     });
     this.yesButton.x = -buttonSpacing - buttonWidth / 2;
     this.yesButton.y = 50;
@@ -49,7 +51,9 @@ export default class ConfirmationPopup extends PopupBase {
       width: buttonWidth,
       height: buttonHeight,
       label: "No",
-      onClick: () => { this.handleNoClick(); },
+      onClick: () => {
+        this.handleNoClick();
+      },
     });
     this.noButton.x = buttonSpacing + buttonWidth / 2;
     this.noButton.y = 50;

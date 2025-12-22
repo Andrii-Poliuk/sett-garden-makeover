@@ -23,8 +23,8 @@ export class InteractiveArea extends Mesh {
     this.visible = !this.blockedValue;
   }
 
-  geometry: BufferGeometry;
-  material: MeshBasicMaterial;
+  public geometry: BufferGeometry;
+  public material: MeshBasicMaterial;
 
   private hoveredScale: Vector3;
   private originalScale: Vector3;
@@ -83,7 +83,7 @@ export class InteractiveArea extends Mesh {
     this.visible = true;
   }
 
-  update(delta: number) {
+  public update(delta: number) {
     if (!this.visible) {
       return;
     }

@@ -81,10 +81,10 @@ export default class LandPlacementMenu extends MenuBase {
 
     const background = new Graphics();
     background.roundRect(
-      -bounds.width/2 -padding,
-      -bounds.height/2 -padding,
-      bounds.width + padding*2,
-      bounds.height + padding*2,
+      -bounds.width / 2 - padding,
+      -bounds.height / 2 - padding,
+      bounds.width + padding * 2,
+      bounds.height + padding * 2,
       cornerRadius,
     );
     background.stroke({ color: 0xffffff, width: 2 });
@@ -93,11 +93,13 @@ export default class LandPlacementMenu extends MenuBase {
     background.x = sprite.x;
     background.y = sprite.y;
 
-    const plusSprite = new Sprite(PixiAssetsLoader.instance.getTexture(PixiAsset.Plus));
-        plusSprite.scale = 0.1;
-        plusSprite.anchor.set(0.5);
-        button.addChild(plusSprite);
-        plusSprite.x = sprite.x + bounds.width * 0.5;
-        plusSprite.y = sprite.y + bounds.height * 0.25;
+    const plusSprite = new Sprite(
+      PixiAssetsLoader.instance.getTexture(PixiAsset.Plus),
+    );
+    plusSprite.scale = 0.1;
+    plusSprite.anchor.set(0.5);
+    button.addChild(plusSprite);
+    plusSprite.x = sprite.x + bounds.width * 0.5;
+    plusSprite.y = sprite.y + bounds.height * 0.25;
   }
 }

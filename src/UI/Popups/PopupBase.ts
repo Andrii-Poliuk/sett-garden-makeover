@@ -15,7 +15,12 @@ export default class PopupBase extends Container {
     this.visible = false;
   }
 
-  public init(layoutWidth: number, layoutHeight: number, popupWidth:number = 500, popupHeight:number = 180): void {
+  public init(
+    layoutWidth: number,
+    layoutHeight: number,
+    popupWidth: number = 500,
+    popupHeight: number = 180,
+  ): void {
     this.layoutWidth = layoutWidth;
     this.layoutHeight = layoutHeight;
 
@@ -33,7 +38,7 @@ export default class PopupBase extends Container {
       -popupHeight / 2,
       popupWidth,
       popupHeight,
-      2
+      2,
     );
     this.dialogBackground.fill({ color: 0x000000, alpha: 0.9 });
     this.dialogBackground.stroke({ color: 0xaaaaaa, width: 2 });
@@ -86,7 +91,7 @@ export default class PopupBase extends Container {
   public resize(
     width: number,
     height: number,
-    flexibleScale: number = 1
+    flexibleScale: number = 1,
   ): void {
     if (!this.dialogBackground) return;
 

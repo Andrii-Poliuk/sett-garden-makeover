@@ -38,7 +38,9 @@ export default class LoadingPopup extends PopupBase {
       width: buttonWidth,
       height: buttonHeight,
       label: "Start",
-      onClick: () => { this.handleStartClick(); },
+      onClick: () => {
+        this.handleStartClick();
+      },
     });
     this.startButton.x = 0;
     this.startButton.y = 45;

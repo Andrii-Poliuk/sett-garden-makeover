@@ -10,7 +10,7 @@ export default class Chicken extends AnimatedObject {
     this.cattleTypeValue = CattleType.Chicken;
   }
 
-  async init() {
+  public async init() {
     await super.init(ObjectsMeshEnum.Chicken);
   }
 

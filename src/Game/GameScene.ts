@@ -7,12 +7,12 @@ import { RaycastManager } from "./RaycastManager";
 import Game from "./Game";
 
 export default class GameScene {
-  scene: Scene;
-  camera: PerspectiveCamera;
-  renderer: WebGLRenderer;
-  // controls: OrbitControls;
-  ambientLight?: THREE.AmbientLight;
-  directionalLight?: THREE.DirectionalLight;
+  public scene: Scene;
+  public camera: PerspectiveCamera;
+  private renderer: WebGLRenderer;
+  // private controls: OrbitControls;
+  private ambientLight?: THREE.AmbientLight;
+  private directionalLight?: THREE.DirectionalLight;
 
   constructor(renderer: WebGLRenderer) {
     const width = window.innerWidth;
@@ -45,11 +45,11 @@ export default class GameScene {
 
     this.scene.add(Game.instance.getBatchRenderer());
 
-    this.ambientLight = new THREE.AmbientLight(0xffffff, .5);
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(this.ambientLight);
 
     this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    this.directionalLight.target.position.set(0,0,0);
+    this.directionalLight.target.position.set(0, 0, 0);
     this.directionalLight.position.set(10, 10, 10);
     this.directionalLight.castShadow = true;
     this.scene.add(this.directionalLight.target);
@@ -83,8 +83,14 @@ export default class GameScene {
     this.camera.aspect = aspect;
 
     if (aspect < GameScene.aspectThreshold) {
-      const t = Math.max(0, (GameScene.aspectThreshold - aspect) / (GameScene.aspectThreshold - GameScene.aspectMin));
-      this.camera.fov = GameScene.baseFov + (GameScene.maxFov - GameScene.baseFov) * Math.min(t, 1);
+      const t = Math.max(
+        0,
+        (GameScene.aspectThreshold - aspect) /
+          (GameScene.aspectThreshold - GameScene.aspectMin),
+      );
+      this.camera.fov =
+        GameScene.baseFov +
+        (GameScene.maxFov - GameScene.baseFov) * Math.min(t, 1);
     } else {
       this.camera.fov = GameScene.baseFov;
     }
