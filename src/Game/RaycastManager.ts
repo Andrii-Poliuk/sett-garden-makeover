@@ -29,7 +29,7 @@ export class RaycastManager {
     return hit !== null && hit !== this.uiStage;
   }
 
-  public init(renderer: WebGLRenderer, camera: Camera) {
+  public init(renderer: WebGLRenderer, camera: Camera): void {
     // this.renderer = renderer;
     // this.camera = camera;
 

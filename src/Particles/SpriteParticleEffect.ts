@@ -66,7 +66,7 @@ export class SpriteParticleEffect extends THREE.Object3D {
       color1: { r: number; g: number; b: number };
       color2: { r: number; g: number; b: number };
     },
-  ) {
+  ): Promise<void> {
     this.colorRange = new ColorRange(
       new Vector4(
         colorRange.color1.r,

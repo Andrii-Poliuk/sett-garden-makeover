@@ -9,7 +9,7 @@ export default class Fence extends PlaceableObject {
     this.landTypeValue = LandType.Fence;
   }
 
-  public async init() {
+  public async init(): Promise<void> {
     await super.init(ObjectsMeshEnum.Fence);
 
     const positions = [

@@ -10,11 +10,11 @@ export default class Chicken extends AnimatedObject {
     this.cattleTypeValue = CattleType.Chicken;
   }
 
-  public async init() {
+  public async init(): Promise<void> {
     await super.init(ObjectsMeshEnum.Chicken);
   }
 
-  protected override loadAnimations(model: Object3D<Object3DEventMap>) {
+  protected override loadAnimations(model: Object3D<Object3DEventMap>): void {
     const idle = MeshLoader.getAnimation(ObjectAnimationsEnum.ChickenIdle);
     if (idle) {
       model.animations.push(idle);

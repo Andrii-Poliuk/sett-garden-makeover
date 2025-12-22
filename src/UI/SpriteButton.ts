@@ -28,7 +28,7 @@ export default class SpriteButton extends Container {
   private originalScale: number = 1;
   private pressedScale: number = 1.03;
 
-  public setEnabled(enabled: boolean) {
+  public setEnabled(enabled: boolean): void {
     this.interactive = enabled;
     if (enabled) {
       this.sprite.filters = undefined;

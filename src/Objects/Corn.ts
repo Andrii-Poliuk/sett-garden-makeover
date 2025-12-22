@@ -8,7 +8,7 @@ export default class Corn extends MultiStageObject {
     this.cropTypeValue = CropType.Corn;
   }
 
-  public async init() {
+  public async init(): Promise<void> {
     await super.init([
       ObjectsMeshEnum.Corn1,
       ObjectsMeshEnum.Corn2,

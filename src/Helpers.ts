@@ -244,7 +244,7 @@ export namespace Helpers {
   }
 }
 
-export function lerp(from: number, to: number, speed: number) {
+export function lerp(from: number, to: number, speed: number): number {
   const amount = (1 - speed) * from + speed * to;
   return Math.abs(from - to) < 0.001 ? to : amount;
 }

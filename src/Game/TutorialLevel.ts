@@ -68,7 +68,7 @@ export default class TutorialLevel extends GameLevel {
     await this.finishLevel();
   }
 
-  private async playFinalWords() {
+  private async playFinalWords(): Promise<void> {
     const cameraFarmFarView: CameraPositionData = {
       position: new Vector3(-9.1, 30, 23.4),
       target: new Vector3(3.8, -18, -13.4),
@@ -93,7 +93,7 @@ export default class TutorialLevel extends GameLevel {
     Game.instance.toggleChickenGuide(false);
   }
 
-  private async playCropHarvesting() {
+  private async playCropHarvesting(): Promise<void> {
     const cameraCropHarvestPosition: CameraPositionData = {
       position: new Vector3(0, 18.2, 12.3),
       target: new Vector3(5.3, -10.5, -7),
@@ -117,7 +117,7 @@ export default class TutorialLevel extends GameLevel {
     });
   }
 
-  private async playSheepEncounter() {
+  private async playSheepEncounter(): Promise<void> {
     const cameraStartPosition: CameraPositionData = {
       position: new Vector3(0, 10.5, 14.5),
       target: new Vector3(-10, -10.5, -7),
@@ -197,7 +197,7 @@ export default class TutorialLevel extends GameLevel {
     );
   }
 
-  private async playFarmTour() {
+  private async playFarmTour(): Promise<void> {
     const cameraFarmOverview: CameraPositionData = {
       position: new Vector3(0, 14.5, 22),
       target: new Vector3(0, -18, -20),
@@ -236,7 +236,7 @@ export default class TutorialLevel extends GameLevel {
     await DialogPopup.instance.showPopup("By the way... Where's...");
   }
 
-  private async farmSetup() {
+  private async farmSetup(): Promise<void> {
     this.ground = await Game.instance.createGround();
     this.ground.position.set(10, 0, 0);
     this.ground.rotation.set(0, Math.PI / 2, 0);
@@ -281,7 +281,7 @@ export default class TutorialLevel extends GameLevel {
     this.sheep.playAction();
   }
 
-  private async collectCorn(corn: Corn) {
+  private async collectCorn(corn: Corn): Promise<void> {
     const income = MoneyCost[MoneyCostType.CornHarvest];
     const cornPosition = corn.getWorldPosition(new Vector3());
     FloatingText.playEffect(income, cornPosition);
@@ -295,7 +295,7 @@ export default class TutorialLevel extends GameLevel {
     }
   }
 
-  private async createFencePlacement() {
+  private async createFencePlacement(): Promise<void> {
     this.targetFence = await Game.instance.createInteractiveArea(6, 2, 10);
     this.targetFence.position.set(-10, 0, -3.25);
     this.targetFence.rotation.set(0, Math.PI / 2, 0);
@@ -315,7 +315,7 @@ export default class TutorialLevel extends GameLevel {
     this.cameraPosition?.updatePosition(cameraShowFencePosition);
   }
 
-  private placeSheep(location: Object3D) {
+  private placeSheep(location: Object3D): void {
     this.sheep?.position.set(location.position.x, 0, location.position.z);
     this.sheep?.rotation.set(0, location.rotation.y, 0);
     this.sheep?.playIdle();
@@ -325,7 +325,7 @@ export default class TutorialLevel extends GameLevel {
     PixiAssetsLoader.instance.playSound(SoundAsset.Sheep);
   }
 
-  private async placeFence(location: Object3D) {
+  private async placeFence(location: Object3D): Promise<void> {
     this.fence = await Game.instance.createFence();
     this.fence.rotation.set(0, location.rotation.y, 0);
     this.fence.position.set(

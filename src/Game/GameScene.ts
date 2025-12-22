@@ -35,7 +35,7 @@ export default class GameScene {
     scene.environmentIntensity = 0;
   }
 
-  public async init() {
+  public async init(): Promise<void> {
     RaycastManager.instance.init(this.renderer, this.camera);
 
     await MeshLoader.loadModelsAsync();

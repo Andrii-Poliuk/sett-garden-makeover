@@ -51,7 +51,7 @@ export default class UIScene {
     return this.gameControlsInstance;
   }
 
-  public showHomeMenu() {
+  public showHomeMenu(): void {
     this.homeMenuInstance.resize(this.currentScale);
     this.homeMenuInstance.show();
     this.cropPlacementMenuInstance.hide();
@@ -59,7 +59,7 @@ export default class UIScene {
     this.landPlacementMenuInstance.hide();
   }
 
-  public showCropMenu() {
+  public showCropMenu(): void {
     this.cropPlacementMenuInstance.resize(this.currentScale);
     this.homeMenuInstance.hide();
     this.cropPlacementMenuInstance.show();
@@ -67,7 +67,7 @@ export default class UIScene {
     this.landPlacementMenuInstance.hide();
   }
 
-  public showCattleMenu() {
+  public showCattleMenu(): void {
     this.cattlePlacementMenuInstance.resize(this.currentScale);
     this.homeMenuInstance.hide();
     this.cropPlacementMenuInstance.hide();
@@ -75,7 +75,7 @@ export default class UIScene {
     this.landPlacementMenuInstance.hide();
   }
 
-  public showLandMenu() {
+  public showLandMenu(): void {
     this.landPlacementMenuInstance.resize(this.currentScale);
     this.homeMenuInstance.hide();
     this.cropPlacementMenuInstance.hide();
@@ -83,7 +83,7 @@ export default class UIScene {
     this.landPlacementMenuInstance.show();
   }
 
-  public hideMenu() {
+  public hideMenu(): void {
     this.homeMenuInstance.hide();
     this.cropPlacementMenuInstance.hide();
     this.cattlePlacementMenuInstance.hide();

@@ -15,7 +15,7 @@ import gsap from "gsap";
 export default class AnimatedObject extends Object3D {
   protected mixer?: AnimationMixer;
 
-  protected animationActions: { [key: string]: AnimationAction } = {};
+  protected animationActions: Record<string, AnimationAction> = {};
   protected activeAction?: AnimationAction;
 
   protected particlesEffect?: SpriteParticleEffect;
@@ -40,9 +40,9 @@ export default class AnimatedObject extends Object3D {
     super();
   }
 
-  protected loadAnimations(_model: Object3D<Object3DEventMap>) {}
+  protected loadAnimations(_model: Object3D<Object3DEventMap>): void {}
 
-  protected async init(modelName: ObjectsMeshEnum) {
+  protected async init(modelName: ObjectsMeshEnum): Promise<void> {
     let model = MeshLoader.getMesh(modelName);
     if (!model) {
       return;
@@ -76,7 +76,7 @@ export default class AnimatedObject extends Object3D {
     this.playBounceAnimation();
   }
 
-  public playEffect() {
+  public playEffect(): void {
     this.particlesEffect?.restart();
   }
 
@@ -92,22 +92,22 @@ export default class AnimatedObject extends Object3D {
     });
   }
 
-  public update(delta: number) {
+  public update(delta: number): void {
     this.mixer?.update(delta);
     this.soundSourceInstance?.update(delta);
   }
 
-  public playIdle() {
+  public playIdle(): void {
     const action = this.animationActions["idle"];
     this.setAction(action);
   }
 
-  public playAction() {
+  public playAction(): void {
     const action = this.animationActions["action"];
     this.setAction(action);
   }
 
-  protected setAction(action: AnimationAction) {
+  protected setAction(action: AnimationAction): void {
     if (this.activeAction != action) {
       this.activeAction?.fadeOut(0.1);
       action.reset().fadeIn(0.1).play();

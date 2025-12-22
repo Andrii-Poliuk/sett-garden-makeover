@@ -12,7 +12,7 @@ export default class Ground extends PlaceableObject {
     }
   }
 
-  public async init() {
+  public async init(): Promise<void> {
     await super.init(ObjectsMeshEnum.Ground);
 
     const positions = [

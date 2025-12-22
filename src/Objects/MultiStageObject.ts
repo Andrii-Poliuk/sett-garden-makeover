@@ -47,7 +47,7 @@ export default class MultiStageObject extends Object3D {
     super();
   }
 
-  protected async init(modelName: ObjectsMeshEnum[]) {
+  protected async init(modelName: ObjectsMeshEnum[]): Promise<void> {
     const models: Object3D<Object3DEventMap>[] = [];
     for (let i = 0; i < modelName.length; i++) {
       const model = MeshLoader.getMesh(modelName[i]);
@@ -74,7 +74,7 @@ export default class MultiStageObject extends Object3D {
     this.add(this.interactiveArea);
   }
 
-  protected setStage(model: Object3D<Object3DEventMap>) {
+  protected setStage(model: Object3D<Object3DEventMap>): void {
     this.particlesEffect?.restart();
     if (this.activeModel) {
       this.remove(this.activeModel);
@@ -138,21 +138,21 @@ export default class MultiStageObject extends Object3D {
     await Promise.all([timeline, this.playEffect()]);
   }
 
-  public setStage1() {
+  public setStage1(): void {
     this.currentStageValue = 1;
     this.stage1Model && this.setStage(this.stage1Model);
     if (this.interactiveArea) {
       this.interactiveArea.visible = false;
     }
   }
-  public setStage2() {
+  public setStage2(): void {
     this.currentStageValue = 2;
     this.stage2Model && this.setStage(this.stage2Model);
     if (this.interactiveArea) {
       this.interactiveArea.visible = false;
     }
   }
-  public setStage3() {
+  public setStage3(): void {
     this.currentStageValue = 3;
     this.stage3Model && this.setStage(this.stage3Model);
     if (this.interactiveArea) {

@@ -23,8 +23,8 @@ export class InteractiveArea extends Mesh {
     this.visible = !this.blockedValue;
   }
 
-  public geometry: BufferGeometry;
-  public material: MeshBasicMaterial;
+  public override geometry: BufferGeometry;
+  public override material: MeshBasicMaterial;
 
   private hoveredScale: Vector3;
   private originalScale: Vector3;
@@ -54,7 +54,7 @@ export class InteractiveArea extends Mesh {
     this.scale.set(x, y, z);
   }
 
-  public disableInteractiveArea() {
+  public disableInteractiveArea(): void {
     this.onPress = undefined;
     RaycastManager.instance.removeInteractiveArea(this);
     this.visible = false;
@@ -83,7 +83,7 @@ export class InteractiveArea extends Mesh {
     this.visible = true;
   }
 
-  public update(delta: number) {
+  public update(delta: number): void {
     if (!this.visible) {
       return;
     }

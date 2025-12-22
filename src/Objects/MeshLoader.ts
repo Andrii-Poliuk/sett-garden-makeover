@@ -43,7 +43,7 @@ export default class MeshLoader {
     }
   }
 
-  public static async loadModelsAsync() {
+  public static async loadModelsAsync(): Promise<void> {
     const gltfLoader = new GLTFLoader();
     const [objects, ground] = await Promise.all([
       gltfLoader.loadAsync("models/objects2.glb"),

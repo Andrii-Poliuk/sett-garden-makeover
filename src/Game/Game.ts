@@ -102,7 +102,7 @@ export default class Game {
     this.toggleChickenGuide(false);
   }
 
-  public toggleChickenGuide(visible: boolean, left: boolean = true) {
+  public toggleChickenGuide(visible: boolean, left: boolean = true): void {
     if (!this.chickenGuide) return;
     this.chickenGuide.visible = visible;
     if (left) {

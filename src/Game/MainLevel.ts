@@ -55,7 +55,7 @@ export default class MainLevel extends GameLevel {
 
   public update(_delta: number): void {}
 
-  private async enableCropPlacement(cropType: CropType) {
+  private async enableCropPlacement(cropType: CropType): Promise<void> {
     const highlight: ObjectHighlight = new ObjectHighlight();
     if (cropType == CropType.Corn) {
       highlight.init(ObjectsMeshEnum.Corn1);
@@ -96,7 +96,7 @@ export default class MainLevel extends GameLevel {
     }
   }
 
-  private async finishDay() {
+  private async finishDay(): Promise<void> {
     this.disablePlacement();
     await Game.instance.dayNightController.setEvening();
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", async () => {
@@ -120,7 +120,7 @@ export default class MainLevel extends GameLevel {
     });
   }
 
-  private async rentCheck() {
+  private async rentCheck(): Promise<void> {
     Game.instance.toggleChickenGuide(true, false);
     const randomIndex = Math.floor(
       Math.random() * MainLevel.rentMessages.length,
@@ -169,7 +169,7 @@ export default class MainLevel extends GameLevel {
     return total;
   }
 
-  private async growCrops() {
+  private async growCrops(): Promise<void> {
     const crops = Game.instance.getCrops();
     crops.forEach((crop) => {
       crop.advanceStage();
@@ -182,7 +182,7 @@ export default class MainLevel extends GameLevel {
     });
   }
 
-  private async harvestCrop(crop: MultiStageObject) {
+  private async harvestCrop(crop: MultiStageObject): Promise<void> {
     let income = 0;
     switch (crop.cropType) {
       case CropType.Corn:
@@ -206,7 +206,7 @@ export default class MainLevel extends GameLevel {
     PixiAssetsLoader.instance.playSound(SoundAsset.Click);
   }
 
-  private async enableCattlePlacement(cattleType: CattleType) {
+  private async enableCattlePlacement(cattleType: CattleType): Promise<void> {
     let highlight!: ObjectHighlight;
     if (cattleType == CattleType.Cow) {
       const cowHighlight = new ObjectHighlight();
@@ -242,7 +242,7 @@ export default class MainLevel extends GameLevel {
     }
   }
 
-  private async enableLandPlacement(landType: LandType) {
+  private async enableLandPlacement(landType: LandType): Promise<void> {
     let highlight!: ObjectHighlight;
     if (landType == LandType.Fence) {
       const fenceHighlight = new ObjectHighlight();
@@ -276,7 +276,7 @@ export default class MainLevel extends GameLevel {
     });
   }
 
-  private checkBlockLandUiButtons() {
+  private checkBlockLandUiButtons(): void {
     if (this.landPlacements.length <= 0) {
       Game.instance.UIScene.landPlacementMenu.setEnabled(
         false,
@@ -286,10 +286,10 @@ export default class MainLevel extends GameLevel {
     }
   }
 
-  private checkBlockCattleUiButtons() {
+  private checkBlockCattleUiButtons(): void {
     // TODO
   }
-  private checkBlockCropUiButtons() {
+  private checkBlockCropUiButtons(): void {
     // TODO
   }
 
@@ -428,7 +428,7 @@ export default class MainLevel extends GameLevel {
       return await Game.instance.createGround();
     });
   }
-  private setNewObjectLocation(object: Object3D, location: Object3D) {
+  private setNewObjectLocation(object: Object3D, location: Object3D): void {
     object.rotation.set(0, location.rotation.y, 0);
     object.position.set(
       location.position.x,
@@ -436,14 +436,17 @@ export default class MainLevel extends GameLevel {
       location.position.z,
     );
   }
-  private setNewObjectLocationWorld(object: Object3D, location: Object3D) {
+  private setNewObjectLocationWorld(
+    object: Object3D,
+    location: Object3D,
+  ): void {
     const worldPosion = location.getWorldPosition(new Vector3());
     const worldRotation = location.getWorldQuaternion(new Quaternion());
     object.rotation.setFromQuaternion(worldRotation);
     object.position.set(worldPosion.x, worldPosion.y, worldPosion.z);
   }
 
-  private async createLandPlacementPoints() {
+  private async createLandPlacementPoints(): Promise<void> {
     const placement1 = await Game.instance.createInteractiveArea(6, 2, 10);
     placement1.position.set(-10, 0, 4.5);
     placement1.rotation.set(0, Math.PI / 2, 0);
@@ -455,7 +458,7 @@ export default class MainLevel extends GameLevel {
     this.landPlacements.push(placement2);
   }
 
-  private disablePlacement() {
+  private disablePlacement(): void {
     const fences = Game.instance.getFences();
     fences.forEach((fence) => {
       fence.disableInteraction();
@@ -470,7 +473,7 @@ export default class MainLevel extends GameLevel {
     });
   }
 
-  private bindUI() {
+  private bindUI(): void {
     Game.instance.UIScene.cattlePlacementMenu.onCowClick = () => {
       this.disablePlacement();
       this.enableCattlePlacement(CattleType.Cow);

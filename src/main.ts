@@ -66,7 +66,7 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
   const clock = new THREE.Clock();
   let delta = 0;
 
-  function loop() {
+  function loop(): void {
     delta = clock.getDelta();
     threeScene.update(delta);
     Game.instance.update(delta);
@@ -85,7 +85,7 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
 
   requestAnimationFrame(loop);
 
-  function handleResize() {
+  function handleResize(): void {
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
 
