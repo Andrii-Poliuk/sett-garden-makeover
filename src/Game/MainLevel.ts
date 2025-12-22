@@ -14,6 +14,7 @@ import MoneyCost, { MoneyCostType } from "./MoneyCost";
 import FloatingText from "../Particles/FloatingText";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
 import AnimatedObject from "../Objects/AnimatedObject";
+import SoundSource from "../Objects/SoundSource";
 import GameOverPopup from "../UI/Popups/GameOverPopup";
 import CameraPosition from "./CameraPosition";
 
@@ -362,14 +363,34 @@ export default class MainLevel extends GameLevel {
     const cost = MoneyCost[MoneyCostType.CowBuy];
     return await this.placeCattle(cost, location, async () => {
       PixiAssetsLoader.instance.playSound(SoundAsset.Cow);
-      return await Game.instance.createCow();
+      const cow = await Game.instance.createCow();
+      const soundSource = new SoundSource({
+        sound: SoundAsset.Cow,
+        minInterval: 15,
+        maxInterval: 90,
+        volume: 0.4,
+      });
+      cow.add(soundSource);
+      cow.soundSource = soundSource;
+      soundSource.start();
+      return cow;
     });
   }
   private async placeSheep(location: InteractiveArea): Promise<boolean> {
     const cost = MoneyCost[MoneyCostType.SheepBuy];
     return await this.placeCattle(cost, location, async () => {
       PixiAssetsLoader.instance.playSound(SoundAsset.Sheep);
-      return await Game.instance.createSheep();
+      const sheep = await Game.instance.createSheep();
+      const soundSource = new SoundSource({
+        sound: SoundAsset.Sheep,
+        minInterval: 15,
+        maxInterval: 90,
+        volume: 0.4,
+      });
+      sheep.add(soundSource);
+      sheep.soundSource = soundSource;
+      soundSource.start();
+      return sheep;
     });
   }
 

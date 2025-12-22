@@ -30,6 +30,15 @@ export default tseslint.config(
         },
       ],
       "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/explicit-member-accessibility": [
+        "error",
+        {
+          accessibility: "explicit",
+          overrides: {
+            constructors: "no-public",
+          },
+        },
+      ],
     },
   },
 );

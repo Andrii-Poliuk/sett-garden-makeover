@@ -90,16 +90,17 @@ export default class PixiAssetsLoader {
     return texture;
   }
 
-  public getSound(asset: SoundAsset): HTMLAudioElement | undefined {
-    return this.sounds.get(asset);
+  public createSound(asset: SoundAsset): HTMLAudioElement | undefined {
+    return new Audio(asset);
   }
 
-  public playSound(asset: SoundAsset, volume: number = 1): void {
+  public playSound(asset: SoundAsset, volume: number = 1, loop = false): void {
     const audio = this.sounds.get(asset);
     if (!audio) {
       return;
     }
     audio.volume = volume;
+    audio.loop = loop;
     audio.play();
   }
 }

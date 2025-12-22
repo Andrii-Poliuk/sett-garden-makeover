@@ -108,8 +108,7 @@ export default class Game {
       this.chickenGuide.rotation.set(-0.33, -0.98, 0);
     }
     if (visible) {
-      const click = PixiAssetsLoader.instance.getSound(SoundAsset.Chicken);
-      click && click.play();
+      PixiAssetsLoader.instance.playSound(SoundAsset.Chicken);
     }
   }
 
@@ -150,14 +149,7 @@ export default class Game {
   }
 
   public async startGame(): Promise<void> {
-    const themeMusic = await PixiAssetsLoader.instance.getSound(
-      SoundAsset.Theme,
-    );
-    if (themeMusic) {
-      themeMusic.volume = 0.2;
-      themeMusic.loop = true;
-      themeMusic.play();
-    }
+    PixiAssetsLoader.instance.playSound(SoundAsset.Theme, 0.2, true);
 
     const tutorialLevel = new TutorialLevel();
     tutorialLevel.init();

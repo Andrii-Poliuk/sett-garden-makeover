@@ -16,6 +16,7 @@ import MoneyCost, { MoneyCostType } from "./MoneyCost";
 import GameControls from "../UI/Menu/GameControls";
 import FloatingText from "../Particles/FloatingText";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
+import SoundSource from "../Objects/SoundSource";
 
 export default class TutorialLevel extends GameLevel {
   private cameraPosition?: CameraPosition;
@@ -126,6 +127,15 @@ export default class TutorialLevel extends GameLevel {
 
     await DialogPopup.instance.showPopup("Oh no... Your sheep has run amok!");
 
+    const sheepSound = new SoundSource({
+            sound: SoundAsset.Sheep,
+            minInterval: 3,
+            maxInterval: 10,
+            volume: 0.4,
+          });
+    this.sheep!.soundSource = sheepSound;
+    sheepSound.start();
+
     Game.instance.UIScene.showGameControls(GameControls.MONEY);
     this.tickingDamage = MoneyCost[MoneyCostType.SheepDamage];
 
@@ -161,6 +171,10 @@ export default class TutorialLevel extends GameLevel {
     const sheepHighlight = new ObjectHighlight();
     await sheepHighlight.init(ObjectsMeshEnum.Sheep);
     this.targetSheep.enableInteractiveArea(sheepHighlight, async (sender) => {
+      sheepSound.stop();
+      sheepSound.minInterval = 15;
+      sheepSound.maxInterval = 90;
+      sheepSound.start();
       await this.placeSheep(sender);
       this.targetSheep?.disableInteractiveArea();
       Game.instance.removeInteractiveArea(this.targetSheep!);
@@ -251,6 +265,14 @@ export default class TutorialLevel extends GameLevel {
       if (i == 0) {
         chicken.playAction();
       }
+      const soundSource = new SoundSource({
+              sound: SoundAsset.Chicken,
+              minInterval: 30,
+              maxInterval: 120,
+              volume: 0.2,
+            });
+      chicken.soundSource  = soundSource;
+      soundSource.start();
     }
 
     this.sheep = await Game.instance.createSheep();

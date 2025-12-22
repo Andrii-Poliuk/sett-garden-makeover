@@ -9,6 +9,7 @@ import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
 import { CattleType } from "../Game/Game";
+import SoundSource from "./SoundSource";
 
 export default class AnimatedObject extends Object3D {
   mixer?: AnimationMixer;
@@ -18,9 +19,19 @@ export default class AnimatedObject extends Object3D {
 
   protected particlesEffect?: SpriteParticleEffect;
   protected _cattleType: CattleType = CattleType.Chicken;
+  private _soundSource?: SoundSource;
 
   public get cattleType(): CattleType {
     return this._cattleType;
+  }
+
+  public get soundSource(): SoundSource | undefined {
+    return this._soundSource;
+  }
+
+  public set soundSource(value: SoundSource | undefined) {
+    value && this.add(value);
+    this._soundSource = value;
   }
 
   constructor() {
@@ -66,6 +77,7 @@ export default class AnimatedObject extends Object3D {
 
   public update(delta: number) {
     this.mixer?.update(delta);
+    this._soundSource?.update(delta);
   }
 
   public playIdle() {
@@ -90,5 +102,6 @@ export default class AnimatedObject extends Object3D {
     if (this.particlesEffect) {
       this.particlesEffect.destroy();
     }
+    this._soundSource?.destroy();
   }
 }
