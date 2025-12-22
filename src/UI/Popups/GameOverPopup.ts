@@ -28,7 +28,7 @@ export default class GameOverPopup extends PopupBase {
   public override init(width: number, height: number): void {
     super.init(width, height);
 
-    if (!this.dialogBackground || !this.messageText) {
+    if (!this.popupContainer || !this.messageText) {
       return;
     }
 
@@ -48,7 +48,7 @@ export default class GameOverPopup extends PopupBase {
     });
     this.sourceButton.x = -buttonSpacing - buttonWidth / 2;
     this.sourceButton.y = 50;
-    this.dialogBackground.addChild(this.sourceButton);
+    this.popupContainer.addChild(this.sourceButton);
 
     this.actionButton = new DialogButton({
       width: buttonWidth,
@@ -60,7 +60,7 @@ export default class GameOverPopup extends PopupBase {
     });
     this.actionButton.x = buttonSpacing + buttonWidth / 2;
     this.actionButton.y = 50;
-    this.dialogBackground.addChild(this.actionButton);
+    this.popupContainer.addChild(this.actionButton);
 
     this.eventMode = "static";
     this.visible = false;

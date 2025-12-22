@@ -20,6 +20,7 @@ import MultiStageObject from "../Objects/MultiStageObject";
 import AnimatedObject from "../Objects/AnimatedObject";
 import MainLevel from "./MainLevel";
 import PixiAssetsLoader, { SoundAsset } from "./PixiAssetsLoader";
+// import { Helpers } from "../Helpers";
 
 export enum CropType {
   Corn,
@@ -88,7 +89,7 @@ export default class Game {
     this.uiScene = uiScene;
     this.dayNightControllerInstance = new DayNightController(gameScene);
     this.dayNightController.setDay();
-    // Helpers.setupDayNightGUI(this._dayNightController);
+    // Helpers.setupDayNightGUI(this.dayNightController);
 
     const chicken = new Chicken();
     await chicken.init();

@@ -21,10 +21,10 @@ export default class DialogPopup extends PopupBase {
     const popupHeight = 180;
     super.init(width, height, popupWidth, popupHeight);
 
-    if (!this.dialogBackground || !this.messageText || !this.background) {
+    if (!this.popupContainer || !this.messageText || !this.background) {
       return;
     }
-    this.dialogBackground.y = height - popupHeight / 2 - 60;
+    this.popupContainer.y = height - popupHeight / 2 - 60;
     this.background.alpha = 0;
 
     this.messageText.text = "";
@@ -45,16 +45,16 @@ export default class DialogPopup extends PopupBase {
     super.hide();
   }
 
-  public resize(width: number, height: number, scale: number): void {
+  public override resize(width: number, height: number, scale: number): void {
     super.resize(width, height, scale);
-    if (!this.dialogBackground) {
+    if (!this.popupContainer) {
       return;
     }
     const popupHeight = 180;
     const popupX = width / 2;
     const popupY = height - (popupHeight / 2) * scale - 40;
-    this.dialogBackground.x = popupX;
-    this.dialogBackground.y = popupY;
-    this.dialogBackground.scale.set(scale);
+    this.popupContainer.x = popupX;
+    this.popupContainer.y = popupY;
+    this.popupContainer.scale.set(scale);
   }
 }

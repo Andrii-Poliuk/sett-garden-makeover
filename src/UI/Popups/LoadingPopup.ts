@@ -24,7 +24,7 @@ export default class LoadingPopup extends PopupBase {
   public override init(width: number, height: number): void {
     super.init(width, height);
 
-    if (!this.dialogBackground || !this.messageText) {
+    if (!this.popupContainer || !this.messageText) {
       return;
     }
 
@@ -44,7 +44,7 @@ export default class LoadingPopup extends PopupBase {
     });
     this.startButton.x = 0;
     this.startButton.y = 45;
-    this.dialogBackground.addChild(this.startButton);
+    this.popupContainer.addChild(this.startButton);
 
     this.eventMode = "static";
     this.visible = true;

@@ -3,6 +3,7 @@ import gsap from "gsap";
 
 export default class PopupBase extends Container {
   protected background?: Graphics;
+  protected popupContainer?: Container;
   protected dialogBackground?: Graphics;
   protected messageText?: Text;
   protected layoutWidth: number = 0;
@@ -32,6 +33,11 @@ export default class PopupBase extends Container {
     this.background.fill({ color: 0x000000, alpha: 0.5 });
     this.addChild(this.background);
 
+    this.popupContainer = new Container();
+    this.popupContainer.x = popupX;
+    this.popupContainer.y = popupY;
+    this.addChild(this.popupContainer);
+
     this.dialogBackground = new Graphics();
     this.dialogBackground.roundRect(
       -popupWidth / 2,
@@ -42,9 +48,7 @@ export default class PopupBase extends Container {
     );
     this.dialogBackground.fill({ color: 0x000000, alpha: 0.9 });
     this.dialogBackground.stroke({ color: 0xaaaaaa, width: 2 });
-    this.addChild(this.dialogBackground);
-    this.dialogBackground.x = popupX;
-    this.dialogBackground.y = popupY;
+    this.popupContainer.addChild(this.dialogBackground);
 
     this.messageText = new Text({
       text: "Lorem Ipsum",
@@ -58,7 +62,7 @@ export default class PopupBase extends Container {
       },
     });
     this.messageText.anchor.set(0.5);
-    this.dialogBackground.addChild(this.messageText);
+    this.popupContainer.addChild(this.messageText);
 
     this.eventMode = "static";
     this.visible = false;
@@ -93,15 +97,15 @@ export default class PopupBase extends Container {
     height: number,
     flexibleScale: number = 1,
   ): void {
-    if (!this.dialogBackground) return;
+    if (!this.popupContainer) return;
 
     const backgroundScaleX = width / this.layoutWidth;
     const backgroundScaleY = height / this.layoutHeight;
     const backgroundScale = Math.max(backgroundScaleX, backgroundScaleY);
 
-    this.dialogBackground.x = width / 2;
-    this.dialogBackground.y = height / 2;
-    this.dialogBackground.scale.set(flexibleScale);
+    this.popupContainer.x = width / 2;
+    this.popupContainer.y = height / 2;
+    this.popupContainer.scale.set(flexibleScale);
     this.background?.scale.set(backgroundScale);
   }
 }

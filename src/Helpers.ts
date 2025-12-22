@@ -119,43 +119,46 @@ export namespace Helpers {
     const dirFolder = gui.addFolder("Directional Light");
 
     const posFolder = dirFolder.addFolder("Position");
-    posFolder.add(light.position, "x", -50, 50, 0.5).name("X");
-    posFolder.add(light.position, "y", -50, 50, 0.5).name("Y");
-    posFolder.add(light.position, "z", -50, 50, 0.5).name("Z");
+    posFolder.add(light.position, "x", -50, 50, 0.5).name("X").listen();
+    posFolder.add(light.position, "y", -50, 50, 0.5).name("Y").listen();
+    posFolder.add(light.position, "z", -50, 50, 0.5).name("Z").listen();
 
     const posDisplay = {
-      get value() {
+      get value(): string {
         return `(${light.position.x.toFixed(2)}, ${light.position.y.toFixed(2)}, ${light.position.z.toFixed(2)})`;
       },
     };
     posFolder.add(posDisplay, "value").name("Display").listen().disable();
 
     const dirColorParams = {
-      color: `#${light.color.getHexString()}`,
-    };
-    dirFolder
-      .addColor(dirColorParams, "color")
-      .name("Color")
-      .onChange((value: string) => {
+      get color(): string {
+        return `#${light.color.getHexString()}`;
+      },
+      set color(value: string) {
         light.color.set(value);
-      });
+      },
+    };
+    dirFolder.addColor(dirColorParams, "color").name("Color").listen();
 
-    dirFolder.add(light, "intensity", 0, 5, 0.1).name("Intensity");
+    dirFolder.add(light, "intensity", 0, 3, 0.1).name("Intensity").listen();
 
     if (ambientLight) {
       const ambFolder = gui.addFolder("Ambient Light");
 
       const ambColorParams = {
-        color: `#${ambientLight.color.getHexString()}`,
-      };
-      ambFolder
-        .addColor(ambColorParams, "color")
-        .name("Color")
-        .onChange((value: string) => {
+        get color(): string {
+          return `#${ambientLight.color.getHexString()}`;
+        },
+        set color(value: string) {
           ambientLight.color.set(value);
-        });
+        },
+      };
+      ambFolder.addColor(ambColorParams, "color").name("Color").listen();
 
-      ambFolder.add(ambientLight, "intensity", 0, 5, 0.1).name("Intensity");
+      ambFolder
+        .add(ambientLight, "intensity", 0, 2, 0.1)
+        .name("Intensity")
+        .listen();
     }
 
     return gui;

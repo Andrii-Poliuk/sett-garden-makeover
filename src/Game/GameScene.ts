@@ -5,6 +5,7 @@ import MeshLoader from "../Objects/MeshLoader";
 // import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RaycastManager } from "./RaycastManager";
 import Game from "./Game";
+// import { Helpers } from "../Helpers";
 
 export default class GameScene {
   public scene: Scene;

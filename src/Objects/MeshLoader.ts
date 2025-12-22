@@ -50,7 +50,7 @@ export default class MeshLoader {
       gltfLoader.loadAsync("models/ground3.glb"),
     ]);
     ground.scene.static = true;
-    // objects.scene.static = true;
+    objects.scene.static = true;
     // MeshLoader.Instance.objects = objects;
     MeshLoader.Instance.ground = ground;
 

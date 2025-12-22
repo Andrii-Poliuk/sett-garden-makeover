@@ -25,7 +25,7 @@ export default class ConfirmationPopup extends PopupBase {
   public override init(width: number, height: number): void {
     super.init(width, height);
 
-    if (!this.dialogBackground || !this.messageText) {
+    if (!this.popupContainer || !this.messageText) {
       return;
     }
 
@@ -45,7 +45,7 @@ export default class ConfirmationPopup extends PopupBase {
     });
     this.yesButton.x = -buttonSpacing - buttonWidth / 2;
     this.yesButton.y = 50;
-    this.dialogBackground.addChild(this.yesButton);
+    this.popupContainer.addChild(this.yesButton);
 
     this.noButton = new DialogButton({
       width: buttonWidth,
@@ -57,7 +57,7 @@ export default class ConfirmationPopup extends PopupBase {
     });
     this.noButton.x = buttonSpacing + buttonWidth / 2;
     this.noButton.y = 50;
-    this.dialogBackground.addChild(this.noButton);
+    this.popupContainer.addChild(this.noButton);
 
     this.eventMode = "static";
     this.visible = false;
