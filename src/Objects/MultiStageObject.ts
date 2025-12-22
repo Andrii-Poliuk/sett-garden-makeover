@@ -8,10 +8,10 @@ import { CropType } from "../Game/Game";
 import gsap from "gsap";
 
 export default class MultiStageObject extends Object3D {
-  protected _cropType: CropType = CropType.Corn;
+  protected cropTypeValue: CropType = CropType.Corn;
 
   public get cropType(): CropType {
-    return this._cropType;
+    return this.cropTypeValue;
   }
   stage1Model?: Object3D<Object3DEventMap>;
   stage2Model?: Object3D<Object3DEventMap>;
@@ -22,24 +22,24 @@ export default class MultiStageObject extends Object3D {
   protected particlesEffect?: SpriteParticleEffect;
   protected interactiveArea?: InteractiveArea;
 
-  private _currentStage: number = 0;
-  private _placedAtArea?: InteractiveArea;
+  private currentStageValue: number = 0;
+  private placedAtAreaValue?: InteractiveArea;
 
   public get currentStage(): number {
-    return this._currentStage;
+    return this.currentStageValue;
   }
 
   public get placedAtArea(): InteractiveArea | undefined {
-    return this._placedAtArea;
+    return this.placedAtAreaValue;
   }
 
   public set placedAtArea(value: InteractiveArea | undefined) {
-    if (this._placedAtArea) {
-      this._placedAtArea.blocked = false;
+    if (this.placedAtAreaValue) {
+      this.placedAtAreaValue.blocked = false;
     }
-    this._placedAtArea = value;
-    if (this._placedAtArea) {
-      this._placedAtArea.blocked = true;
+    this.placedAtAreaValue = value;
+    if (this.placedAtAreaValue) {
+      this.placedAtAreaValue.blocked = true;
     }
   }
 
@@ -139,21 +139,21 @@ export default class MultiStageObject extends Object3D {
   }
 
   public setStage1() {
-    this._currentStage = 1;
+    this.currentStageValue = 1;
     this.stage1Model && this.setStage(this.stage1Model);
     if (this.interactiveArea) {
       this.interactiveArea.visible = false;
     }
   }
   public setStage2() {
-    this._currentStage = 2;
+    this.currentStageValue = 2;
     this.stage2Model && this.setStage(this.stage2Model);
     if (this.interactiveArea) {
       this.interactiveArea.visible = false;
     }
   }
   public setStage3() {
-    this._currentStage = 3;
+    this.currentStageValue = 3;
     this.stage3Model && this.setStage(this.stage3Model);
     if (this.interactiveArea) {
       this.interactiveArea.visible = true;
@@ -161,9 +161,9 @@ export default class MultiStageObject extends Object3D {
   }
 
   public advanceStage(): void {
-    if (this._currentStage >= 3) return;
+    if (this.currentStageValue >= 3) return;
 
-    switch (this._currentStage) {
+    switch (this.currentStageValue) {
       case 0:
       case 1:
         this.setStage2();
@@ -190,9 +190,9 @@ export default class MultiStageObject extends Object3D {
     if (this.interactiveArea) {
       this.interactiveArea.destroy();
     }
-    if (this._placedAtArea) {
-      this._placedAtArea.blocked = false;
-      this._placedAtArea = undefined;
+    if (this.placedAtAreaValue) {
+      this.placedAtAreaValue.blocked = false;
+      this.placedAtAreaValue = undefined;
     }
     if (this.particlesEffect) {
       this.particlesEffect.destroy();

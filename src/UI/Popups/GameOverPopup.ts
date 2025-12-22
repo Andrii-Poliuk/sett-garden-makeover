@@ -10,7 +10,7 @@ export default class GameOverPopup extends PopupBase {
   private actionButton?: DialogButton;
   private onActionCallback?: () => void;
 
-  private static readonly SOURCE_URL =
+  private static readonly sourceUrl =
     "https://github.com/Andrii-Poliuk/sett-garden-makeover";
 
   public static get instance(): GameOverPopup {
@@ -78,7 +78,7 @@ export default class GameOverPopup extends PopupBase {
 
   private handleSourceClick(): void {
     PixiAssetsLoader.instance.playSound(SoundAsset.Click);
-    window.open(GameOverPopup.SOURCE_URL, "_blank");
+    window.open(GameOverPopup.sourceUrl, "_blank");
   }
 
   private handleActionClick(): void {

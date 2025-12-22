@@ -7,7 +7,7 @@ import PixiAssetsLoader, { PixiAsset } from "../Game/PixiAssetsLoader";
 export default class FloatingText extends Container {
   private static pool: FloatingText[] = [];
   private static activeInstances: FloatingText[] = [];
-  private static readonly POOL_SIZE = 10;
+  private static readonly poolSize = 10;
   private static initialized = false;
   private static parentContainer: Container | null = null;
 
@@ -50,7 +50,7 @@ export default class FloatingText extends Container {
 
     FloatingText.parentContainer = parentContainer;
 
-    for (let i = 0; i < FloatingText.POOL_SIZE; i++) {
+    for (let i = 0; i < FloatingText.poolSize; i++) {
       const instance = new FloatingText();
       FloatingText.pool.push(instance);
       parentContainer.addChild(instance);

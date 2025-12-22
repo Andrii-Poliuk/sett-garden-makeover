@@ -19,21 +19,21 @@ export default class AnimatedObject extends Object3D {
   activeAction?: AnimationAction;
 
   protected particlesEffect?: SpriteParticleEffect;
-  protected _cattleType: CattleType = CattleType.Chicken;
-  private _soundSource?: SoundSource;
-  private _baseScale: number = 1;
+  protected cattleTypeValue: CattleType = CattleType.Chicken;
+  private soundSourceInstance?: SoundSource;
+  private baseScale: number = 1;
 
   public get cattleType(): CattleType {
-    return this._cattleType;
+    return this.cattleTypeValue;
   }
 
   public get soundSource(): SoundSource | undefined {
-    return this._soundSource;
+    return this.soundSourceInstance;
   }
 
   public set soundSource(value: SoundSource | undefined) {
     value && this.add(value);
-    this._soundSource = value;
+    this.soundSourceInstance = value;
   }
 
   constructor() {
@@ -50,7 +50,7 @@ export default class AnimatedObject extends Object3D {
     model = SkeletonUtils.clone(model);
     model.position.set(0, 0, 0);
 
-    this._baseScale = 0.97 + Math.random() * 0.05;
+    this.baseScale = 0.97 + Math.random() * 0.05;
 
     this.loadAnimations(model);
     this.mixer = new AnimationMixer(model);
@@ -81,12 +81,12 @@ export default class AnimatedObject extends Object3D {
   }
 
   public playBounceAnimation(): void {
-    const startScale = this._baseScale * 0.9;
+    const startScale = this.baseScale * 0.9;
     this.scale.set(startScale, startScale, startScale);
     gsap.to(this.scale, {
-      x: this._baseScale,
-      y: this._baseScale,
-      z: this._baseScale,
+      x: this.baseScale,
+      y: this.baseScale,
+      z: this.baseScale,
       duration: 0.4,
       ease: "elastic.out(1, 0.5)",
     });
@@ -94,7 +94,7 @@ export default class AnimatedObject extends Object3D {
 
   public update(delta: number) {
     this.mixer?.update(delta);
-    this._soundSource?.update(delta);
+    this.soundSourceInstance?.update(delta);
   }
 
   public playIdle() {
@@ -119,6 +119,6 @@ export default class AnimatedObject extends Object3D {
     if (this.particlesEffect) {
       this.particlesEffect.destroy();
     }
-    this._soundSource?.destroy();
+    this.soundSourceInstance?.destroy();
   }
 }

@@ -6,7 +6,7 @@ import { LandType } from "../Game/Game";
 export default class Ground extends PlaceableObject {
   constructor() {
     super();
-    this._landType = LandType.Ground;
+    this.landTypeValue = LandType.Ground;
     for (let i = 0; i < 6; i++) {
       this.interactiveAreas.push(new InteractiveArea());
     }

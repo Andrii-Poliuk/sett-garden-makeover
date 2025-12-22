@@ -6,7 +6,7 @@ import { LandType } from "../Game/Game";
 export default class Fence extends PlaceableObject {
   constructor() {
     super();
-    this._landType = LandType.Fence;
+    this.landTypeValue = LandType.Fence;
   }
 
   async init() {

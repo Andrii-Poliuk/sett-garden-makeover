@@ -51,23 +51,23 @@ export default class LandPlacementMenu extends MenuBase {
     this.backButton.sprite.scale.set(-backButtonScale.x, backButtonScale.y);
   }
 
-  public static readonly CROPLAND = 1 << 0;
-  public static readonly CATTLE_PEN = 1 << 1;
-  public static readonly BACK = 1 << 2;
-  public static readonly ALL =
-    LandPlacementMenu.CROPLAND |
-    LandPlacementMenu.CATTLE_PEN |
-    LandPlacementMenu.BACK;
+  public static readonly Cropland = 1 << 0;
+  public static readonly CattlePen = 1 << 1;
+  public static readonly Back = 1 << 2;
+  public static readonly All =
+    LandPlacementMenu.Cropland |
+    LandPlacementMenu.CattlePen |
+    LandPlacementMenu.Back;
 
   public setEnabled(
     enabled: boolean,
-    mask: number = LandPlacementMenu.ALL,
+    mask: number = LandPlacementMenu.All,
   ): void {
-    if (mask & LandPlacementMenu.CROPLAND)
+    if (mask & LandPlacementMenu.Cropland)
       this.croplandButton.setEnabled(enabled);
-    if (mask & LandPlacementMenu.CATTLE_PEN)
+    if (mask & LandPlacementMenu.CattlePen)
       this.cattlePenButton.setEnabled(enabled);
-    if (mask & LandPlacementMenu.BACK) this.backButton.setEnabled(enabled);
+    if (mask & LandPlacementMenu.Back) this.backButton.setEnabled(enabled);
   }
 
   private overrideButtonSprite(button: SpriteButton): void {

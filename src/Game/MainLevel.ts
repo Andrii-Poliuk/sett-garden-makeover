@@ -22,7 +22,7 @@ export default class MainLevel extends GameLevel {
   private landPlacements: InteractiveArea[] = [];
   private cameraPosition?: CameraPosition;
 
-  private static readonly RENT_MESSAGES: string[] = [
+  private static readonly rentMessages: string[] = [
     "Rent Time!",
     "Time to pay the rent!",
     "Rent is due!",
@@ -123,9 +123,9 @@ export default class MainLevel extends GameLevel {
   private async rentCheck() {
     Game.instance.toggleChickenGuide(true, false);
     const randomIndex = Math.floor(
-      Math.random() * MainLevel.RENT_MESSAGES.length,
+      Math.random() * MainLevel.rentMessages.length,
     );
-    const message = MainLevel.RENT_MESSAGES[randomIndex];
+    const message = MainLevel.rentMessages[randomIndex];
     await DialogPopup.instance.showPopup(message);
     const rent = MoneyCost[MoneyCostType.RentDaily];
     Game.instance.toggleChickenGuide(false);
@@ -280,9 +280,9 @@ export default class MainLevel extends GameLevel {
     if (this.landPlacements.length <= 0) {
       Game.instance.UIScene.landPlacementMenu.setEnabled(
         false,
-        LandPlacementMenu.CATTLE_PEN | LandPlacementMenu.CROPLAND,
+        LandPlacementMenu.CattlePen | LandPlacementMenu.Cropland,
       );
-      Game.instance.UIScene.homeMenu.setEnabled(false, HomeMenu.LAND);
+      Game.instance.UIScene.homeMenu.setEnabled(false, HomeMenu.Land);
     }
   }
 

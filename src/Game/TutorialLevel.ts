@@ -80,7 +80,7 @@ export default class TutorialLevel extends GameLevel {
     await DialogPopup.instance.showPopup(
       "Good job!\nYou can coninue without henholding",
     );
-    Game.instance.UIScene.showGameControls(GameControls.SKIP_DAY);
+    Game.instance.UIScene.showGameControls(GameControls.SkipDay);
     await DialogPopup.instance.showPopup(
       "You can rest till morning\nby pressing Next Day button.\nOr plant more Crops",
     );
@@ -136,7 +136,7 @@ export default class TutorialLevel extends GameLevel {
     this.sheep!.soundSource = sheepSound;
     sheepSound.start();
 
-    Game.instance.UIScene.showGameControls(GameControls.MONEY);
+    Game.instance.UIScene.showGameControls(GameControls.Money);
     this.tickingDamage = MoneyCost[MoneyCostType.SheepDamage];
 
     await DialogPopup.instance.showPopup(
@@ -146,11 +146,11 @@ export default class TutorialLevel extends GameLevel {
 
     Game.instance.UIScene.showHomeMenu();
     Game.instance.UIScene.homeMenu.setEnabled(false);
-    Game.instance.UIScene.homeMenu.setEnabled(true, HomeMenu.LAND);
+    Game.instance.UIScene.homeMenu.setEnabled(true, HomeMenu.Land);
     Game.instance.UIScene.landPlacementMenu.setEnabled(false);
     Game.instance.UIScene.landPlacementMenu.setEnabled(
       true,
-      LandPlacementMenu.CATTLE_PEN,
+      LandPlacementMenu.CattlePen,
     );
     Game.instance.UIScene.landPlacementMenu.onCattlePenClick = () => {
       this.createFencePlacement();

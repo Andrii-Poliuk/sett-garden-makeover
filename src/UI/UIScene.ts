@@ -11,13 +11,13 @@ import GameControls from "./Menu/GameControls";
 import FloatingText from "../Particles/FloatingText";
 
 export default class UIScene {
-  stage: Container;
+  public stage: Container;
 
-  private _homeMenu!: HomeMenu;
-  private _cropPlacementMenu!: CropPlacementMenu;
-  private _cattlePlacementMenu!: CattlePlacementMenu;
-  private _landPlacementMenu!: LandPlacementMenu;
-  private _gameControls!: GameControls;
+  private homeMenuInstance!: HomeMenu;
+  private cropPlacementMenuInstance!: CropPlacementMenu;
+  private cattlePlacementMenuInstance!: CattlePlacementMenu;
+  private landPlacementMenuInstance!: LandPlacementMenu;
+  private gameControlsInstance!: GameControls;
   private dialogPopup!: DialogPopup;
   private confirmationPopup!: ConfirmationPopup;
   private gameOverPopup!: GameOverPopup;
@@ -32,71 +32,71 @@ export default class UIScene {
   private currentScale: number = 1;
 
   public get homeMenu(): HomeMenu {
-    return this._homeMenu;
+    return this.homeMenuInstance;
   }
 
   public get cropPlacementMenu(): CropPlacementMenu {
-    return this._cropPlacementMenu;
+    return this.cropPlacementMenuInstance;
   }
 
   public get cattlePlacementMenu(): CattlePlacementMenu {
-    return this._cattlePlacementMenu;
+    return this.cattlePlacementMenuInstance;
   }
 
   public get landPlacementMenu(): LandPlacementMenu {
-    return this._landPlacementMenu;
+    return this.landPlacementMenuInstance;
   }
 
   public get gameControls(): GameControls {
-    return this._gameControls;
+    return this.gameControlsInstance;
   }
 
   public showHomeMenu() {
-    this._homeMenu.resize(this.currentScale);
-    this._homeMenu.show();
-    this._cropPlacementMenu.hide();
-    this._cattlePlacementMenu.hide();
-    this._landPlacementMenu.hide();
+    this.homeMenuInstance.resize(this.currentScale);
+    this.homeMenuInstance.show();
+    this.cropPlacementMenuInstance.hide();
+    this.cattlePlacementMenuInstance.hide();
+    this.landPlacementMenuInstance.hide();
   }
 
   public showCropMenu() {
-    this._cropPlacementMenu.resize(this.currentScale);
-    this._homeMenu.hide();
-    this._cropPlacementMenu.show();
-    this._cattlePlacementMenu.hide();
-    this._landPlacementMenu.hide();
+    this.cropPlacementMenuInstance.resize(this.currentScale);
+    this.homeMenuInstance.hide();
+    this.cropPlacementMenuInstance.show();
+    this.cattlePlacementMenuInstance.hide();
+    this.landPlacementMenuInstance.hide();
   }
 
   public showCattleMenu() {
-    this._cattlePlacementMenu.resize(this.currentScale);
-    this._homeMenu.hide();
-    this._cropPlacementMenu.hide();
-    this._cattlePlacementMenu.show();
-    this._landPlacementMenu.hide();
+    this.cattlePlacementMenuInstance.resize(this.currentScale);
+    this.homeMenuInstance.hide();
+    this.cropPlacementMenuInstance.hide();
+    this.cattlePlacementMenuInstance.show();
+    this.landPlacementMenuInstance.hide();
   }
 
   public showLandMenu() {
-    this._landPlacementMenu.resize(this.currentScale);
-    this._homeMenu.hide();
-    this._cropPlacementMenu.hide();
-    this._cattlePlacementMenu.hide();
-    this._landPlacementMenu.show();
+    this.landPlacementMenuInstance.resize(this.currentScale);
+    this.homeMenuInstance.hide();
+    this.cropPlacementMenuInstance.hide();
+    this.cattlePlacementMenuInstance.hide();
+    this.landPlacementMenuInstance.show();
   }
 
   public hideMenu() {
-    this._homeMenu.hide();
-    this._cropPlacementMenu.hide();
-    this._cattlePlacementMenu.hide();
-    this._landPlacementMenu.hide();
+    this.homeMenuInstance.hide();
+    this.cropPlacementMenuInstance.hide();
+    this.cattlePlacementMenuInstance.hide();
+    this.landPlacementMenuInstance.hide();
   }
 
-  public showGameControls(mask: number = GameControls.ALL): void {
-    this._gameControls.resize(this.currentWidth, this.currentHeight, this.currentScale);
-    this._gameControls.show(mask);
+  public showGameControls(mask: number = GameControls.All): void {
+    this.gameControlsInstance.resize(this.currentWidth, this.currentHeight, this.currentScale);
+    this.gameControlsInstance.show(mask);
   }
 
-  public hideGameControls(mask: number = GameControls.ALL): void {
-    this._gameControls.hide(mask);
+  public hideGameControls(mask: number = GameControls.All): void {
+    this.gameControlsInstance.hide(mask);
   }
 
   constructor() {
@@ -104,11 +104,11 @@ export default class UIScene {
   }
 
   public async init(): Promise<void> {
-    this._homeMenu = new HomeMenu();
-    this._homeMenu.position.set(60, 120);
-    this._homeMenu.setOriginalPosition(60, 120);
-    this._homeMenu.init();
-    this.stage.addChild(this._homeMenu);
+    this.homeMenuInstance = new HomeMenu();
+    this.homeMenuInstance.position.set(60, 120);
+    this.homeMenuInstance.setOriginalPosition(60, 120);
+    this.homeMenuInstance.init();
+    this.stage.addChild(this.homeMenuInstance);
     this.homeMenu.onCropClick = () => {
       this.showCropMenu();
     };
@@ -119,39 +119,39 @@ export default class UIScene {
       this.showLandMenu();
     };
 
-    this._cattlePlacementMenu = new CattlePlacementMenu();
-    this._cattlePlacementMenu.position.set(60, 120);
-    this._cattlePlacementMenu.setOriginalPosition(60, 120);
-    this._cattlePlacementMenu.init();
-    this.stage.addChild(this._cattlePlacementMenu);
-    this._cattlePlacementMenu.visible = false;
+    this.cattlePlacementMenuInstance = new CattlePlacementMenu();
+    this.cattlePlacementMenuInstance.position.set(60, 120);
+    this.cattlePlacementMenuInstance.setOriginalPosition(60, 120);
+    this.cattlePlacementMenuInstance.init();
+    this.stage.addChild(this.cattlePlacementMenuInstance);
+    this.cattlePlacementMenuInstance.visible = false;
     this.cattlePlacementMenu.onBackClick = () => {
       this.showHomeMenu();
     };
 
-    this._cropPlacementMenu = new CropPlacementMenu();
-    this._cropPlacementMenu.position.set(60, 120);
-    this._cropPlacementMenu.setOriginalPosition(60, 120);
-    this._cropPlacementMenu.init();
-    this.stage.addChild(this._cropPlacementMenu);
-    this._cropPlacementMenu.visible = false;
-    this._cropPlacementMenu.onBackClick = () => {
+    this.cropPlacementMenuInstance = new CropPlacementMenu();
+    this.cropPlacementMenuInstance.position.set(60, 120);
+    this.cropPlacementMenuInstance.setOriginalPosition(60, 120);
+    this.cropPlacementMenuInstance.init();
+    this.stage.addChild(this.cropPlacementMenuInstance);
+    this.cropPlacementMenuInstance.visible = false;
+    this.cropPlacementMenuInstance.onBackClick = () => {
       this.showHomeMenu();
     };
 
-    this._landPlacementMenu = new LandPlacementMenu();
-    this._landPlacementMenu.position.set(60, 120);
-    this._landPlacementMenu.setOriginalPosition(60, 120);
-    this._landPlacementMenu.init();
-    this.stage.addChild(this._landPlacementMenu);
-    this._landPlacementMenu.visible = false;
-    this._landPlacementMenu.onBackClick = () => {
+    this.landPlacementMenuInstance = new LandPlacementMenu();
+    this.landPlacementMenuInstance.position.set(60, 120);
+    this.landPlacementMenuInstance.setOriginalPosition(60, 120);
+    this.landPlacementMenuInstance.init();
+    this.stage.addChild(this.landPlacementMenuInstance);
+    this.landPlacementMenuInstance.visible = false;
+    this.landPlacementMenuInstance.onBackClick = () => {
       this.showHomeMenu();
     };
 
-    this._gameControls = new GameControls();
-    this._gameControls.init();
-    this.stage.addChild(this._gameControls);
+    this.gameControlsInstance = new GameControls();
+    this.gameControlsInstance.init();
+    this.stage.addChild(this.gameControlsInstance);
 
     this.dialogPopup = DialogPopup.instance;
     this.dialogPopup.init(window.innerWidth, window.innerHeight);
@@ -191,11 +191,11 @@ export default class UIScene {
     this.gameOverPopup.resize(width, height, flexibleScale);
     this.loadingPopup.resize(width, height, flexibleScale);
 
-    this._gameControls.resize(width, height, flexibleScale);
+    this.gameControlsInstance.resize(width, height, flexibleScale);
 
-    this._homeMenu.resize(flexibleScale);
-    this._cropPlacementMenu.resize(flexibleScale);
-    this._cattlePlacementMenu.resize(flexibleScale);
-    this._landPlacementMenu.resize(flexibleScale);
+    this.homeMenuInstance.resize(flexibleScale);
+    this.cropPlacementMenuInstance.resize(flexibleScale);
+    this.cattlePlacementMenuInstance.resize(flexibleScale);
+    this.landPlacementMenuInstance.resize(flexibleScale);
   }
 }

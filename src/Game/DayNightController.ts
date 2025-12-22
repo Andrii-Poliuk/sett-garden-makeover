@@ -1,4 +1,3 @@
-import { AmbientLight } from "three";
 import gsap from "gsap";
 import GameScene from "./GameScene";
 

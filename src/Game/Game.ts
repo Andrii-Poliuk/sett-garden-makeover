@@ -14,7 +14,6 @@ import GameScene from "./GameScene";
 import { PerspectiveCamera } from "three";
 import CameraPosition from "./CameraPosition";
 import DayNightController from "./DayNightController";
-import { Helpers } from "../Helpers";
 import { InteractiveArea } from "../Objects/InteractiveArea";
 import UIScene from "../UI/UIScene";
 import MultiStageObject from "../Objects/MultiStageObject";
@@ -55,24 +54,24 @@ export default class Game {
   private currentLevel: GameLevel | null = null;
   private gameScene: GameScene | null = null;
   private uiScene: UIScene | null = null;
-  private _dayNightController: DayNightController | null = null;
+  private dayNightControllerInstance: DayNightController | null = null;
 
   private cameraPositions: CameraPosition[] = [];
 
   private chickenGuide?: Chicken;
 
-  private _money: number = 0;
+  private moneyValue: number = 0;
 
   public get money(): number {
-    return this._money;
+    return this.moneyValue;
   }
 
   public set money(value: number) {
-    this._money = value;
-    if (this._money < 0) {
-      this._money = 0;
+    this.moneyValue = value;
+    if (this.moneyValue < 0) {
+      this.moneyValue = 0;
     }
-    this.uiScene?.gameControls.setMoney(this._money);
+    this.uiScene?.gameControls.setMoney(this.moneyValue);
   }
 
   private constructor() {}
@@ -87,7 +86,7 @@ export default class Game {
   public async init(gameScene: GameScene, uiScene: UIScene): Promise<void> {
     this.gameScene = gameScene;
     this.uiScene = uiScene;
-    this._dayNightController = new DayNightController(gameScene);
+    this.dayNightControllerInstance = new DayNightController(gameScene);
     this.dayNightController.setDay();
     // Helpers.setupDayNightGUI(this._dayNightController);
 
@@ -127,7 +126,7 @@ export default class Game {
   }
 
   public get dayNightController(): DayNightController {
-    return this._dayNightController!;
+    return this.dayNightControllerInstance!;
   }
 
   public getCattle(): AnimatedObject[] {

@@ -1,11 +1,10 @@
 import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import * as THREE from "three";
 import MeshLoader from "../Objects/MeshLoader";
-import { setupOrbitControls } from "../Helpers";
+// import { setupOrbitControls } from "../Helpers";
 // import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RaycastManager } from "./RaycastManager";
 import Game from "./Game";
-import { Helpers } from "../Helpers";
 
 export default class GameScene {
   scene: Scene;
@@ -71,27 +70,23 @@ export default class GameScene {
     this.directionalLight.shadow.camera.updateProjectionMatrix();
     this.scene.add(this.directionalLight);
 
-    // Debug: visualize shadow camera frustum
-    // const shadowHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera);
-    // this.scene.add(shadowHelper);
-
     // Helpers.setupDirectionalLightGUI(this.directionalLight, this.ambientLight, "Light");
   }
 
-  private static readonly BASE_FOV = 70;
-  private static readonly MAX_FOV = 110;
-  private static readonly ASPECT_THRESHOLD = 0.5;
-  private static readonly ASPECT_MIN = 0.3;
+  private static readonly baseFov = 70;
+  private static readonly maxFov = 110;
+  private static readonly aspectThreshold = 0.5;
+  private static readonly aspectMin = 0.3;
 
   public resize(width: number, height: number): void {
     const aspect = width / height;
     this.camera.aspect = aspect;
 
-    if (aspect < GameScene.ASPECT_THRESHOLD) {
-      const t = Math.max(0, (GameScene.ASPECT_THRESHOLD - aspect) / (GameScene.ASPECT_THRESHOLD - GameScene.ASPECT_MIN));
-      this.camera.fov = GameScene.BASE_FOV + (GameScene.MAX_FOV - GameScene.BASE_FOV) * Math.min(t, 1);
+    if (aspect < GameScene.aspectThreshold) {
+      const t = Math.max(0, (GameScene.aspectThreshold - aspect) / (GameScene.aspectThreshold - GameScene.aspectMin));
+      this.camera.fov = GameScene.baseFov + (GameScene.maxFov - GameScene.baseFov) * Math.min(t, 1);
     } else {
-      this.camera.fov = GameScene.BASE_FOV;
+      this.camera.fov = GameScene.baseFov;
     }
 
     this.camera.updateProjectionMatrix();

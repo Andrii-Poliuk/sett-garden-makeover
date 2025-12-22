@@ -5,7 +5,7 @@ import { CropType } from "../Game/Game";
 export default class Tomato extends MultiStageObject {
   constructor() {
     super();
-    this._cropType = CropType.Tomato;
+    this.cropTypeValue = CropType.Tomato;
   }
 
   async init() {

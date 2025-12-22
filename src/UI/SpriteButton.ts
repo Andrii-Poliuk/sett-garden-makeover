@@ -16,12 +16,12 @@ export interface SpriteButtonOptions {
 }
 
 export default class SpriteButton extends Container {
-  private _sprite: Sprite;
+  private spriteInstance: Sprite;
   private buttonLabel: Text;
   private disabledColorMatrix: ColorMatrixFilter;
 
   public get sprite(): Sprite {
-    return this._sprite;
+    return this.spriteInstance;
   }
   private hitZone: Graphics;
   private onClick: (() => void) | undefined;
@@ -53,10 +53,10 @@ export default class SpriteButton extends Container {
     this.hitZone.alpha = 0;
     this.addChild(this.hitZone);
 
-    this._sprite = new Sprite(options.texture);
-    this._sprite.scale = 0.3;
-    this._sprite.anchor.set(0.5);
-    this.addChild(this._sprite);
+    this.spriteInstance = new Sprite(options.texture);
+    this.spriteInstance.scale = 0.3;
+    this.spriteInstance.anchor.set(0.5);
+    this.addChild(this.spriteInstance);
 
     this.disabledColorMatrix = new ColorMatrixFilter();
     this.disabledColorMatrix.greyscale(0.1, false);
@@ -112,7 +112,7 @@ export default class SpriteButton extends Container {
   }
 
   public setTexture(texture: Texture): void {
-    this._sprite.texture = texture;
+    this.spriteInstance.texture = texture;
   }
 
   public setText(text: string): void {

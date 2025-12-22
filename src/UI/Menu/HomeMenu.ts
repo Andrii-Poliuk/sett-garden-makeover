@@ -46,14 +46,14 @@ export default class HomeMenu extends MenuBase {
     this.addChild(this.landButton);
   }
 
-  public static readonly CROP = 1 << 0;
-  public static readonly CATTLE = 1 << 1;
-  public static readonly LAND = 1 << 2;
-  public static readonly ALL = HomeMenu.CROP | HomeMenu.CATTLE | HomeMenu.LAND;
+  public static readonly Crop = 1 << 0;
+  public static readonly Cattle = 1 << 1;
+  public static readonly Land = 1 << 2;
+  public static readonly All = HomeMenu.Crop | HomeMenu.Cattle | HomeMenu.Land;
 
-  public setEnabled(enabled: boolean, mask: number = HomeMenu.ALL): void {
-    if (mask & HomeMenu.CROP) this.cropButton.setEnabled(enabled);
-    if (mask & HomeMenu.CATTLE) this.cattleButton.setEnabled(enabled);
-    if (mask & HomeMenu.LAND) this.landButton.setEnabled(enabled);
+  public setEnabled(enabled: boolean, mask: number = HomeMenu.All): void {
+    if (mask & HomeMenu.Crop) this.cropButton.setEnabled(enabled);
+    if (mask & HomeMenu.Cattle) this.cattleButton.setEnabled(enabled);
+    if (mask & HomeMenu.Land) this.landButton.setEnabled(enabled);
   }
 }

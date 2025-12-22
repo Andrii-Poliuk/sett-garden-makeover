@@ -20,10 +20,10 @@ import Game from "../Game/Game";
 const sharedMaterials: Map<string, THREE.MeshBasicMaterial> = new Map();
 
 // Particle texture paths to preload
-const PARTICLE_TEXTURES = ["./images/leaf.png", "./images/smoke.png"];
+const ParticleTextures = ["./images/leaf.png", "./images/smoke.png"];
 
 export class SpriteParticleEffect extends THREE.Object3D {
-  private particleSystem?: ParticleSystem;
+private particleSystem?: ParticleSystem;
   private colorRange?: ColorRange;
 
   constructor() {
@@ -33,7 +33,7 @@ export class SpriteParticleEffect extends THREE.Object3D {
   public static async preloadMaterials(): Promise<void> {
     const loader = new THREE.TextureLoader();
     await Promise.all(
-      PARTICLE_TEXTURES.map(async (path) => {
+      ParticleTextures.map(async (path) => {
         const texture = await loader.loadAsync(path);
         const material = new THREE.MeshBasicMaterial({
           map: texture,

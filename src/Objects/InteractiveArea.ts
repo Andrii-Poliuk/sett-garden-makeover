@@ -11,16 +11,16 @@ import { RaycastManager } from "../Game/RaycastManager";
 
 export class InteractiveArea extends Mesh {
   public hovered = false;
-  private _blocked = false;
+  private blockedValue = false;
   public onPress?: (sender: Object3D) => Promise<void>;
 
   public get blocked(): boolean {
-    return this._blocked;
+    return this.blockedValue;
   }
 
   public set blocked(value: boolean) {
-    this._blocked = value;
-    this.visible = !this._blocked;
+    this.blockedValue = value;
+    this.visible = !this.blockedValue;
   }
 
   geometry: BufferGeometry;

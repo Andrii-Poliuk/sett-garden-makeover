@@ -7,7 +7,7 @@ import { CattleType } from "../Game/Game";
 export default class Sheep extends AnimatedObject {
   constructor() {
     super();
-    this._cattleType = CattleType.Sheep;
+    this.cattleTypeValue = CattleType.Sheep;
   }
 
   public async init(): Promise<void> {

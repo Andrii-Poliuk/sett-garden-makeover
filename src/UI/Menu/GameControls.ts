@@ -45,22 +45,22 @@ export default class GameControls extends Container {
     this.skipDayButton.setEnabled(enabled);
   }
 
-  public static readonly MONEY = 1 << 0;
-  public static readonly SKIP_DAY = 1 << 1;
-  public static readonly INCOME = 1 << 2;
-  public static readonly ALL =
-    GameControls.MONEY | GameControls.SKIP_DAY | GameControls.INCOME;
+  public static readonly Money = 1 << 0;
+  public static readonly SkipDay = 1 << 1;
+  public static readonly Income = 1 << 2;
+  public static readonly All =
+    GameControls.Money | GameControls.SkipDay | GameControls.Income;
 
-  public show(mask: number = GameControls.ALL): void {
-    if (mask & GameControls.MONEY) this.moneyDisplay.visible = true;
-    if (mask & GameControls.SKIP_DAY) this.skipDayButton.visible = true;
-    if (mask & GameControls.INCOME) this.incomeContainer.visible = true;
+  public show(mask: number = GameControls.All): void {
+    if (mask & GameControls.Money) this.moneyDisplay.visible = true;
+    if (mask & GameControls.SkipDay) this.skipDayButton.visible = true;
+    if (mask & GameControls.Income) this.incomeContainer.visible = true;
   }
 
-  public hide(mask: number = GameControls.ALL): void {
-    if (mask & GameControls.MONEY) this.moneyDisplay.visible = false;
-    if (mask & GameControls.SKIP_DAY) this.skipDayButton.visible = false;
-    if (mask & GameControls.INCOME) this.incomeContainer.visible = false;
+  public hide(mask: number = GameControls.All): void {
+    if (mask & GameControls.Money) this.moneyDisplay.visible = false;
+    if (mask & GameControls.SkipDay) this.skipDayButton.visible = false;
+    if (mask & GameControls.Income) this.incomeContainer.visible = false;
   }
 
   public setMoney(amount: number): void {

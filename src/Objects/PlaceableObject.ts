@@ -8,10 +8,10 @@ import gsap from "gsap";
 
 export default class PlaceableObject extends Object3D {
   protected interactiveAreas: InteractiveArea[] = [];
-  protected _landType: LandType = LandType.Ground;
+  protected landTypeValue: LandType = LandType.Ground;
 
   public get landType(): LandType {
-    return this._landType;
+    return this.landTypeValue;
   }
 
   constructor() {

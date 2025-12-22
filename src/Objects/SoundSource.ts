@@ -10,32 +10,32 @@ export interface SoundSourceOptions {
 
 export default class SoundSource extends Object3D {
   private sound?: HTMLAudioElement;
-  private _minInterval: number;
-  private _maxInterval: number;
+  private minIntervalValue: number;
+  private maxIntervalValue: number;
   private timeUntilNextSound: number = 0;
   private isPlaying: boolean = false;
 
   public get minInterval(): number {
-    return this._minInterval;
+    return this.minIntervalValue;
   }
 
   public set minInterval(value: number) {
-    this._minInterval = value;
+    this.minIntervalValue = value;
   }
 
   public get maxInterval(): number {
-    return this._maxInterval;
+    return this.maxIntervalValue;
   }
 
   public set maxInterval(value: number) {
-    this._maxInterval = value;
+    this.maxIntervalValue = value;
   }
 
   constructor(options: SoundSourceOptions) {
     super();
 
-    this._minInterval = options.minInterval;
-    this._maxInterval = options.maxInterval;
+    this.minIntervalValue = options.minInterval;
+    this.maxIntervalValue = options.maxInterval;
 
     this.sound = PixiAssetsLoader.instance.createSound(options.sound);
     if (this.sound) {
@@ -46,8 +46,8 @@ export default class SoundSource extends Object3D {
   }
 
   private scheduleNextSound(): void {
-    const range = this._maxInterval - this._minInterval;
-    this.timeUntilNextSound = this._minInterval + Math.random() * range;
+    const range = this.maxIntervalValue - this.minIntervalValue;
+    this.timeUntilNextSound = this.minIntervalValue + Math.random() * range;
   }
 
   public start(): void {
