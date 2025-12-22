@@ -1,4 +1,4 @@
-import { Object3D, PerspectiveCamera, WebGLRenderer } from "three";
+import { AmbientLight, DirectionalLight, Object3D, PerspectiveCamera, WebGLRenderer } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import MultiStageObject from "./Objects/MultiStageObject";
@@ -78,18 +78,6 @@ export namespace Helpers {
     };
     posFolder.add(posDisplay, "value").name("Display").listen().disable();
 
-    // const rotFolder = gui.addFolder('Rotation');
-    // rotFolder.add(cameraPos.rotation, 'x', -Math.PI, Math.PI, 0.01).name('X');
-    // rotFolder.add(cameraPos.rotation, 'y', -Math.PI, Math.PI, 0.01).name('Y');
-    // rotFolder.add(cameraPos.rotation, 'z', -Math.PI, Math.PI, 0.01).name('Z');
-
-    // const rotDisplay = {
-    //   get value() {
-    //     return `(${cameraPos.rotation.x.toFixed(2)}, ${cameraPos.rotation.y.toFixed(2)}, ${cameraPos.rotation.z.toFixed(2)})`;
-    //   }
-    // };
-    // rotFolder.add(rotDisplay, 'value').name('Display').listen().disable();
-
     const targetFolder = gui.addFolder("Target Position");
     targetFolder
       .add(cameraPos.cameraTarget.position, "x", -20, 20, 0.1)
@@ -112,17 +100,57 @@ export namespace Helpers {
       .listen()
       .disable();
 
-    // const targetRotFolder = gui.addFolder('Target Rotation');
-    // targetRotFolder.add(cameraPos.cameraTarget.rotation, 'x', -Math.PI, Math.PI, 0.01).name('X');
-    // targetRotFolder.add(cameraPos.cameraTarget.rotation, 'y', -Math.PI, Math.PI, 0.01).name('Y');
-    // targetRotFolder.add(cameraPos.cameraTarget.rotation, 'z', -Math.PI, Math.PI, 0.01).name('Z');
+    return gui;
+  }
 
-    // const targetRotDisplay = {
-    //   get value() {
-    //     return `(${cameraPos.cameraTarget.rotation.x.toFixed(2)}, ${cameraPos.cameraTarget.rotation.y.toFixed(2)}, ${cameraPos.cameraTarget.rotation.z.toFixed(2)})`;
-    //   }
-    // };
-    // targetRotFolder.add(targetRotDisplay, 'value').name('Display').listen().disable();
+  export function setupDirectionalLightGUI(
+    light: DirectionalLight,
+    ambientLight?: AmbientLight,
+    name: string = "Light",
+  ): GUI {
+    const gui = new GUI({ title: name });
+
+    const dirFolder = gui.addFolder("Directional Light");
+
+    const posFolder = dirFolder.addFolder("Position");
+    posFolder.add(light.position, "x", -50, 50, 0.5).name("X");
+    posFolder.add(light.position, "y", -50, 50, 0.5).name("Y");
+    posFolder.add(light.position, "z", -50, 50, 0.5).name("Z");
+
+    const posDisplay = {
+      get value() {
+        return `(${light.position.x.toFixed(2)}, ${light.position.y.toFixed(2)}, ${light.position.z.toFixed(2)})`;
+      },
+    };
+    posFolder.add(posDisplay, "value").name("Display").listen().disable();
+
+    const dirColorParams = {
+      color: `#${light.color.getHexString()}`,
+    };
+    dirFolder
+      .addColor(dirColorParams, "color")
+      .name("Color")
+      .onChange((value: string) => {
+        light.color.set(value);
+      });
+
+    dirFolder.add(light, "intensity", 0, 5, 0.1).name("Intensity");
+
+    if (ambientLight) {
+      const ambFolder = gui.addFolder("Ambient Light");
+
+      const ambColorParams = {
+        color: `#${ambientLight.color.getHexString()}`,
+      };
+      ambFolder
+        .addColor(ambColorParams, "color")
+        .name("Color")
+        .onChange((value: string) => {
+          ambientLight.color.set(value);
+        });
+
+      ambFolder.add(ambientLight, "intensity", 0, 5, 0.1).name("Intensity");
+    }
 
     return gui;
   }

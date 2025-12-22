@@ -1,5 +1,5 @@
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { AnimationClip, Object3D, Object3DEventMap } from "three";
+import { AnimationClip, FrontSide, Material, MeshBasicMaterial, MeshStandardMaterial, Object3D, Object3DEventMap } from "three";
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
 
 export default class MeshLoader {
@@ -47,18 +47,51 @@ export default class MeshLoader {
     const gltfLoader = new GLTFLoader();
     const [objects, ground] = await Promise.all([
       gltfLoader.loadAsync("models/objects2.glb"),
-      gltfLoader.loadAsync("models/ground2.glb"),
+      gltfLoader.loadAsync("models/ground3.glb"),
     ]);
     ground.scene.static = true;
     // objects.scene.static = true;
     MeshLoader.Instance.objects = objects;
     MeshLoader.Instance.ground = ground;
 
+    const terrain = ground.scene.getObjectByName("terrain");
+    if (terrain) {
+      terrain.children[0].receiveShadow = true;
+    }
+
+    ground.scene.traverse((child) => {
+      if (
+        child.name.startsWith("hay") ||
+        child.name.startsWith("bush") ||
+        child.name.startsWith("ground") ||
+        child.name.startsWith("fence") ||
+        child.name.startsWith("milk") ||
+        child.name.startsWith("pumpkin") ||
+        child.name.startsWith("tree") ||
+        child.name.startsWith("ambar") ||
+        child.name.startsWith("storage")
+      ) {
+        child.traverse((child) => {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        });
+        child.castShadow = true;
+        child.receiveShadow = true;
+        console.log(child.name);
+      }
+    });
+
+    console.log(ground);
+
     for (const key of Object.values(ObjectsMeshEnum)) {
       const mesh = objects.scene.getObjectByName(
         key,
       ) as Object3D<Object3DEventMap>;
       if (mesh) {
+         mesh.traverse((child) => {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        });
         MeshLoader.Instance.meshes.set(key, mesh);
       }
     }

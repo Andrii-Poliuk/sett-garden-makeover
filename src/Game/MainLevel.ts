@@ -121,7 +121,7 @@ export default class MainLevel extends GameLevel {
   }
 
   private async rentCheck() {
-    Game.instance.toggleChickenGuide(true, true);
+    Game.instance.toggleChickenGuide(true, false);
     const randomIndex = Math.floor(
       Math.random() * MainLevel.RENT_MESSAGES.length,
     );

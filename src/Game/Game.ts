@@ -14,6 +14,7 @@ import GameScene from "./GameScene";
 import { PerspectiveCamera } from "three";
 import CameraPosition from "./CameraPosition";
 import DayNightController from "./DayNightController";
+import { Helpers } from "../Helpers";
 import { InteractiveArea } from "../Objects/InteractiveArea";
 import UIScene from "../UI/UIScene";
 import MultiStageObject from "../Objects/MultiStageObject";
@@ -88,12 +89,17 @@ export default class Game {
     this.uiScene = uiScene;
     this._dayNightController = new DayNightController(gameScene);
     this.dayNightController.setDay();
+    // Helpers.setupDayNightGUI(this._dayNightController);
 
     const chicken = new Chicken();
     await chicken.init();
     const camera = this.getCamera();
     camera!.add(chicken);
     this.chickenGuide = chicken;
+    this.chickenGuide.traverse((child) => {
+      child.castShadow = false;
+      child.receiveShadow = false;
+    })
     this.toggleChickenGuide(false);
   }
 
@@ -149,6 +155,7 @@ export default class Game {
   }
 
   public async startGame(): Promise<void> {
+// return;
     PixiAssetsLoader.instance.playSound(SoundAsset.Theme, 0.2, true);
 
     const tutorialLevel = new TutorialLevel();

@@ -1,10 +1,11 @@
 import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import * as THREE from "three";
 import MeshLoader from "../Objects/MeshLoader";
-// import { setupOrbitControls } from "../Helpers";
+import { setupOrbitControls } from "../Helpers";
 // import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RaycastManager } from "./RaycastManager";
 import Game from "./Game";
+import { Helpers } from "../Helpers";
 
 export default class GameScene {
   scene: Scene;
@@ -12,6 +13,7 @@ export default class GameScene {
   renderer: WebGLRenderer;
   // controls: OrbitControls;
   ambientLight?: THREE.AmbientLight;
+  directionalLight?: THREE.DirectionalLight;
 
   constructor(renderer: WebGLRenderer) {
     const width = window.innerWidth;
@@ -31,6 +33,7 @@ export default class GameScene {
     // this.controls = setupOrbitControls(threeCamera, renderer);
 
     scene.background = new THREE.Color(0.3, 0.5, 1);
+    scene.environmentIntensity = 0;
   }
 
   public async init() {
@@ -43,8 +46,36 @@ export default class GameScene {
 
     this.scene.add(Game.instance.getBatchRenderer());
 
-    this.ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    this.ambientLight = new THREE.AmbientLight(0xffffff, .5);
     this.scene.add(this.ambientLight);
+
+    this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    this.directionalLight.target.position.set(0,0,0);
+    this.directionalLight.position.set(10, 10, 10);
+    this.directionalLight.castShadow = true;
+    this.scene.add(this.directionalLight.target);
+    // this.directionalLight.shadow.mapSize.width = 2048;
+    // this.directionalLight.shadow.mapSize.height = 2048;
+    // this.directionalLight.shadow.mapSize.width = 1024;
+    // this.directionalLight.shadow.mapSize.height = 1024;
+    this.directionalLight.shadow.mapSize.width = 512;
+    this.directionalLight.shadow.mapSize.height = 512;
+    // this.directionalLight.shadow.radius = 4;
+    this.directionalLight.shadow.bias = -0.001;
+    this.directionalLight.shadow.camera.near = 0.1;
+    this.directionalLight.shadow.camera.far = 100;
+    this.directionalLight.shadow.camera.left = -30;
+    this.directionalLight.shadow.camera.right = 30;
+    this.directionalLight.shadow.camera.top = 30;
+    this.directionalLight.shadow.camera.bottom = -30;
+    this.directionalLight.shadow.camera.updateProjectionMatrix();
+    this.scene.add(this.directionalLight);
+
+    // Debug: visualize shadow camera frustum
+    // const shadowHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera);
+    // this.scene.add(shadowHelper);
+
+    // Helpers.setupDirectionalLightGUI(this.directionalLight, this.ambientLight, "Light");
   }
 
   private static readonly BASE_FOV = 70;
@@ -68,6 +99,7 @@ export default class GameScene {
 
   public update(_delta: number): void {
     // this.controls.update();
+    this.directionalLight?.lookAt(0, 0, 0);
   }
 
   public setEnvironmentColors(
@@ -78,6 +110,13 @@ export default class GameScene {
     skyR: number,
     skyG: number,
     skyB: number,
+    dirLightR: number,
+    dirLightG: number,
+    dirLightB: number,
+    dirLightIntensity: number,
+    dirLightX: number,
+    dirLightY: number,
+    dirLightZ: number,
   ): void {
     if (this.ambientLight) {
       this.ambientLight.color.setRGB(lightR, lightG, lightB);
@@ -85,6 +124,11 @@ export default class GameScene {
     }
     if (this.scene.background instanceof THREE.Color) {
       this.scene.background.setRGB(skyR, skyG, skyB);
+    }
+    if (this.directionalLight) {
+      this.directionalLight.color.setRGB(dirLightR, dirLightG, dirLightB);
+      this.directionalLight.intensity = dirLightIntensity;
+      this.directionalLight.position.set(dirLightX, dirLightY, dirLightZ);
     }
   }
 }

@@ -24,6 +24,9 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
   threeRenderer.setPixelRatio(window.devicePixelRatio);
   threeRenderer.setSize(WIDTH, HEIGHT);
   threeRenderer.setClearColor(0xdddddd, 1);
+  threeRenderer.shadowMap.enabled = true;
+  threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  threeRenderer.outputColorSpace = THREE.SRGBColorSpace;
   document.body.appendChild(threeRenderer.domElement);
 
   const pixiRenderer = new WebGLRenderer();
