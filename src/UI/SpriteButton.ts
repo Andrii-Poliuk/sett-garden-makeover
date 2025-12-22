@@ -31,9 +31,9 @@ export default class SpriteButton extends Container {
   public setEnabled(enabled: boolean): void {
     this.interactive = enabled;
     if (enabled) {
-      this.sprite.filters = undefined;
+      this.sprite.filters = [];
     } else {
-      this.sprite.filters = this.disabledColorMatrix;
+      this.sprite.filters = [this.disabledColorMatrix];
     }
   }
 
@@ -60,7 +60,7 @@ export default class SpriteButton extends Container {
 
     this.disabledColorMatrix = new ColorMatrixFilter();
     this.disabledColorMatrix.greyscale(0.1, false);
-    this.sprite.filters = this.disabledColorMatrix;
+    this.sprite.filters = [this.disabledColorMatrix];
 
     this.buttonLabel = new Text({
       text: options.text ?? "",
