@@ -4,6 +4,7 @@ import { ObjectsMeshEnum } from "./ObjectsMeshEnum";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { InteractiveArea } from "./InteractiveArea";
 import { LandType } from "../Game/Game";
+import gsap from "gsap";
 
 export default class PlaceableObject extends Object3D {
   protected interactiveAreas: InteractiveArea[] = [];
@@ -26,6 +27,7 @@ export default class PlaceableObject extends Object3D {
     model.position.set(0, 0, 0);
 
     this.add(model);
+    this.playBounceAnimation();
   }
 
   public getInteractiveAreas(): InteractiveArea[] {
@@ -59,6 +61,17 @@ export default class PlaceableObject extends Object3D {
   public update(delta: number): void {
     this.interactiveAreas.forEach((area) => {
       area.update(delta);
+    });
+  }
+
+  public playBounceAnimation(): void {
+    this.scale.set(0.9, 0.9, 0.9);
+    gsap.to(this.scale, {
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: 0.4,
+      ease: "elastic.out(1, 0.5)",
     });
   }
 

@@ -1,6 +1,7 @@
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { AnimationClip, FrontSide, Material, MeshBasicMaterial, MeshStandardMaterial, Object3D, Object3DEventMap } from "three";
+import { AnimationClip, Object3D, Object3DEventMap } from "three";
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
+import * as THREE from "three";
 
 export default class MeshLoader {
   objects?: GLTF;
@@ -73,24 +74,32 @@ export default class MeshLoader {
       ) {
         child.traverse((child) => {
           child.castShadow = true;
-          child.receiveShadow = true;
         });
         child.castShadow = true;
+      }
+      if (child.name.startsWith("ambar") || child.name.startsWith("hay") || child.name.startsWith("ground"))
+      {
+        child.traverse((child) => {
+          child.receiveShadow = true;
+        });
         child.receiveShadow = true;
-        console.log(child.name);
       }
     });
-
-    console.log(ground);
 
     for (const key of Object.values(ObjectsMeshEnum)) {
       const mesh = objects.scene.getObjectByName(
         key,
       ) as Object3D<Object3DEventMap>;
       if (mesh) {
+        if (mesh.name.startsWith("ground")) {
+            mesh.receiveShadow = true;
+          }
          mesh.traverse((child) => {
           child.castShadow = true;
-          child.receiveShadow = true;
+          if (mesh.name.startsWith("ground")) {
+            child.receiveShadow = true;
+          }
+          // child.receiveShadow = true;
         });
         MeshLoader.Instance.meshes.set(key, mesh);
       }

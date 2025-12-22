@@ -95,7 +95,7 @@ export class SpriteParticleEffect extends THREE.Object3D {
       duration: 0.5,
       looping: false,
       startLife: new IntervalValue(1, 2),
-      startSpeed: new IntervalValue(2, 3),
+      startSpeed: new IntervalValue(2.5, 3.5),
       startSize: new IntervalValue(1, 1.5),
       startRotation: new IntervalValue(0, Math.PI * 2),
       startColor: this.colorRange,

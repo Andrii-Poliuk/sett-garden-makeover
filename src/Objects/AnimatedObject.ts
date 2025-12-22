@@ -10,6 +10,7 @@ import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
 import { CattleType } from "../Game/Game";
 import SoundSource from "./SoundSource";
+import gsap from "gsap";
 
 export default class AnimatedObject extends Object3D {
   mixer?: AnimationMixer;
@@ -20,6 +21,7 @@ export default class AnimatedObject extends Object3D {
   protected particlesEffect?: SpriteParticleEffect;
   protected _cattleType: CattleType = CattleType.Chicken;
   private _soundSource?: SoundSource;
+  private _baseScale: number = 1;
 
   public get cattleType(): CattleType {
     return this._cattleType;
@@ -48,6 +50,8 @@ export default class AnimatedObject extends Object3D {
     model = SkeletonUtils.clone(model);
     model.position.set(0, 0, 0);
 
+    this._baseScale = 0.97 + Math.random() * 0.05;
+
     this.loadAnimations(model);
     this.mixer = new AnimationMixer(model);
 
@@ -69,10 +73,23 @@ export default class AnimatedObject extends Object3D {
     this.add(smoke);
     smoke.position.set(0, 2, 0);
     smoke.scale.set(1.1, 1.1, 1.1);
+    this.playBounceAnimation();
   }
 
   public playEffect() {
     this.particlesEffect?.restart();
+  }
+
+  public playBounceAnimation(): void {
+    const startScale = this._baseScale * 0.9;
+    this.scale.set(startScale, startScale, startScale);
+    gsap.to(this.scale, {
+      x: this._baseScale,
+      y: this._baseScale,
+      z: this._baseScale,
+      duration: 0.4,
+      ease: "elastic.out(1, 0.5)",
+    });
   }
 
   public update(delta: number) {

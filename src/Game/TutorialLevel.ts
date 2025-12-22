@@ -288,7 +288,7 @@ export default class TutorialLevel extends GameLevel {
     Game.instance.money += income;
     const index = this.corn.indexOf(corn);
     this.corn.splice(index, 1);
-    await corn.playEffect();
+    await corn.playDisappearAnimation();
     Game.instance.destroyMultiStageObject(corn);
     if (this.corn.length <= 0) {
       this.gameQuestResolved?.();

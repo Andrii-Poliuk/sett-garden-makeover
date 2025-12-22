@@ -5,6 +5,7 @@ import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
 import { InteractiveArea } from "./InteractiveArea";
 import { CropType } from "../Game/Game";
+import gsap from "gsap";
 
 export default class MultiStageObject extends Object3D {
   protected _cropType: CropType = CropType.Corn;
@@ -81,12 +82,60 @@ export default class MultiStageObject extends Object3D {
     if (model) {
       this.add(model);
       this.activeModel = model;
+      this.playBounceAnimation();
     }
+  }
+
+  private playBounceAnimation(): void {
+    this.scale.set(0.9, 0.9, 0.9);
+    gsap.to(this.scale, {
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: 0.4,
+      ease: "elastic.out(1, 0.5)",
+    });
   }
 
   public async playEffect(): Promise<void> {
     this.particlesEffect?.restart();
     await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+
+  public async playDisappearAnimation(): Promise<void> {
+    const timeline = gsap.timeline();
+
+    timeline.to(
+      this.scale,
+      {
+        x: 0.9,
+        y: 0.9,
+        z: 0.9,
+        duration: 0.2,
+        ease: "elastic.in(1, 0.5)",
+      },
+      "<"
+    );
+    timeline.to(
+      this.rotation,
+      {
+        y: this.rotation.y + 0.1,
+        duration: 0.05,
+        // ease: "power1.inOut",
+      },
+      "<"
+    );
+    timeline.to(this.rotation, {
+      y: this.rotation.y - 0.1,
+      duration: 0.05,
+      // ease: "power1.inOut",
+    });
+    timeline.to(this.rotation, {
+      y: this.rotation.y + 0.1,
+      duration: 0.05,
+    });
+
+    await Promise.all([timeline, this.playEffect()]);
   }
 
   public setStage1() {

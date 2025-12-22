@@ -21,10 +21,11 @@ export default class DialogPopup extends PopupBase {
     const popupHeight = 180;
     super.init(width, height, popupWidth, popupHeight);
 
-    if (!this.dialogBackground || !this.messageText) {
+    if (!this.dialogBackground || !this.messageText ||!this.background) {
       return;
     }
     this.dialogBackground.y = height - popupHeight / 2 - 60;
+    this.background.alpha = 0;
 
     this.messageText.text = "";
 

@@ -1,4 +1,3 @@
-import { Graphics } from "pixi.js";
 import gsap from "gsap";
 import PixiAssetsLoader, { SoundAsset } from "../../Game/PixiAssetsLoader";
 import DialogButton from "./DialogButton";

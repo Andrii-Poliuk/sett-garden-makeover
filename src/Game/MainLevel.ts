@@ -201,7 +201,7 @@ export default class MainLevel extends GameLevel {
     const cropPosition = crop.getWorldPosition(new Vector3());
     Game.instance.money += income;
     FloatingText.playEffect(income, cropPosition);
-    await crop.playEffect();
+    await crop.playDisappearAnimation();
     Game.instance.destroyMultiStageObject(crop);
     PixiAssetsLoader.instance.playSound(SoundAsset.Click);
   }
