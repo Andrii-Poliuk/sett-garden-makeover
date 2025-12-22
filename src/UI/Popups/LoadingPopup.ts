@@ -62,6 +62,9 @@ export default class LoadingPopup extends PopupBase {
   }
 
   private handleStartClick(): void {
+    if (this.startButton) {
+      this.startButton.interactive = false;
+    }
     PixiAssetsLoader.instance.playSound(SoundAsset.Click);
     gsap.to(this, {
       alpha: 0,
