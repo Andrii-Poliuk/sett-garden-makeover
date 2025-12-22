@@ -73,10 +73,10 @@ export default class GameScene {
     // Helpers.setupDirectionalLightGUI(this.directionalLight, this.ambientLight, "Light");
   }
 
-  private static readonly baseFov = 70;
-  private static readonly maxFov = 110;
-  private static readonly aspectThreshold = 0.5;
-  private static readonly aspectMin = 0.3;
+  private static readonly baseFov = 60;
+  private static readonly maxFov = 90;
+  private static readonly aspectThreshold = 0.7;
+  private static readonly aspectMin = 0.4;
 
   public resize(width: number, height: number): void {
     const aspect = width / height;
