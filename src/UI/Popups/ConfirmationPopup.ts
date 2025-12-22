@@ -7,8 +7,8 @@ import PopupBase from "./PopupBase";
 export default class ConfirmationPopup extends PopupBase {
   private static _instance: ConfirmationPopup;
 
-  private yesButton?: Graphics;
-  private noButton?: Graphics;
+  private yesButton?: DialogButton;
+  private noButton?: DialogButton;
   private onYesCallback?: () => void;
 
   public static get instance(): ConfirmationPopup {

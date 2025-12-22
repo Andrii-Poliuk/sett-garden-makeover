@@ -95,7 +95,10 @@ export default class PixiAssetsLoader {
   }
 
   public playSound(asset: SoundAsset, volume: number = 1): void {
-    const audio = new Audio(asset);
+    const audio = this.sounds.get(asset);
+    if (!audio) {
+      return;
+    }
     audio.volume = volume;
     audio.play();
   }

@@ -28,11 +28,12 @@ export default class PopupBase extends Container {
     this.addChild(this.background);
 
     this.dialogBackground = new Graphics();
-    this.dialogBackground.rect(
+    this.dialogBackground.roundRect(
       -popupWidth / 2,
       -popupHeight / 2,
       popupWidth,
-      popupHeight
+      popupHeight,
+      2
     );
     this.dialogBackground.fill({ color: 0x000000, alpha: 0.9 });
     this.dialogBackground.stroke({ color: 0xaaaaaa, width: 2 });
