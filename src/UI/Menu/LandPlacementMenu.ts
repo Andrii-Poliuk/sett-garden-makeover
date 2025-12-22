@@ -1,3 +1,4 @@
+import { Graphics, Sprite } from "pixi.js";
 import SpriteButton from "../SpriteButton";
 import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
 import MenuBase from "./MenuBase";
@@ -27,6 +28,7 @@ export default class LandPlacementMenu extends MenuBase {
       onClick: () => this.onCroplandClick?.(),
     });
     this.croplandButton.position.set(0, 0);
+    this.overrideButtonSprite(this.croplandButton);
     this.addChild(this.croplandButton);
 
     this.cattlePenButton = new SpriteButton({
@@ -35,6 +37,7 @@ export default class LandPlacementMenu extends MenuBase {
       onClick: () => this.onCattlePenClick?.(),
     });
     this.cattlePenButton.position.set(0, spacing);
+    this.overrideButtonSprite(this.cattlePenButton);
     this.addChild(this.cattlePenButton);
 
     this.backButton = new SpriteButton({
@@ -65,5 +68,36 @@ export default class LandPlacementMenu extends MenuBase {
     if (mask & LandPlacementMenu.CATTLE_PEN)
       this.cattlePenButton.setEnabled(enabled);
     if (mask & LandPlacementMenu.BACK) this.backButton.setEnabled(enabled);
+  }
+
+  private overrideButtonSprite(button: SpriteButton): void {
+    const sprite = button.sprite;
+    const currentScale = sprite.scale;
+    sprite.scale.set(currentScale.x * 0.8, currentScale.y * 0.8);
+
+    const bounds = sprite.getBounds();
+    const cornerRadius = 6;
+    const padding = 2;
+
+    const background = new Graphics();
+    background.roundRect(
+      -bounds.width/2 -padding,
+      -bounds.height/2 -padding,
+      bounds.width + padding*2,
+      bounds.height + padding*2,
+      cornerRadius,
+    );
+    background.stroke({ color: 0xffffff, width: 2 });
+
+    button.addChildAt(background, button.getChildIndex(sprite));
+    background.x = sprite.x;
+    background.y = sprite.y;
+
+    const plusSprite = new Sprite(PixiAssetsLoader.instance.getTexture(PixiAsset.Plus));
+        plusSprite.scale = 0.1;
+        plusSprite.anchor.set(0.5);
+        button.addChild(plusSprite);
+        plusSprite.x = sprite.x + bounds.width * 0.5;
+        plusSprite.y = sprite.y + bounds.height * 0.25;
   }
 }
