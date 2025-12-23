@@ -6,6 +6,7 @@ import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
 import { InteractiveArea } from "./InteractiveArea";
 import { CropType } from "../Game/Game";
 import gsap from "gsap";
+import { time } from "three/tsl";
 
 export default class MultiStageObject extends Object3D {
   protected cropTypeValue: CropType = CropType.Corn;
@@ -22,6 +23,7 @@ export default class MultiStageObject extends Object3D {
   protected particlesEffect?: SpriteParticleEffect;
   protected interactiveArea?: InteractiveArea;
 
+  private shakeTimeline?: gsap.core.Timeline;
   private currentStageValue: number = 0;
   private placedAtAreaValue?: InteractiveArea;
 
@@ -100,6 +102,40 @@ export default class MultiStageObject extends Object3D {
   public async playEffect(): Promise<void> {
     this.particlesEffect?.restart();
     await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+
+  public playShakeAnimation(): void {
+    this.stopShakeAnimation();
+    const repeatDelay = 2;
+    const initialDelay = Math.random() * 2;
+    this.shakeTimeline = gsap.timeline({ delay: initialDelay });
+
+    this.shakeTimeline.to(
+      this.scale,
+      {
+        x: 1.1,
+        y: 1.1,
+        z: 1.1,
+        duration: 0.5,
+        ease: "elastic.in(1, 0.5)",
+        yoyo: true,
+        delay: repeatDelay,
+        onComplete: () => {
+          this.shakeTimeline?.restart();
+        },
+      },
+      "<",
+    );
+
+    this.shakeTimeline.play();
+  }
+
+  public stopShakeAnimation(): void {
+    if (this.shakeTimeline) {
+      this.shakeTimeline.kill();
+      this.shakeTimeline = undefined;
+      this.scale.set(1, 1, 1);
+    }
   }
 
   public async playDisappearAnimation(): Promise<void> {
@@ -187,6 +223,7 @@ export default class MultiStageObject extends Object3D {
   }
 
   public destroy(): void {
+    this.stopShakeAnimation();
     if (this.interactiveArea) {
       this.interactiveArea.destroy();
     }

@@ -106,6 +106,7 @@ export default class TutorialLevel extends GameLevel {
     Game.instance.toggleChickenGuide(false);
 
     this.corn.forEach((corn) => {
+      corn.playShakeAnimation();
       corn.enableInteraction(async (_obj) => {
         this.collectCorn(corn);
         PixiAssetsLoader.instance.playSound(SoundAsset.Click);

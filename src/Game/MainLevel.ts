@@ -194,6 +194,7 @@ export default class MainLevel extends GameLevel {
       crop.advanceStage();
       const readyToHarvest = crop.currentStage >= 3;
       if (readyToHarvest) {
+        crop.playShakeAnimation();
         crop.enableInteraction(async (_sender) => {
           await this.harvestCrop(crop);
         });
