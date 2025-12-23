@@ -78,7 +78,7 @@ export default class TutorialLevel extends GameLevel {
 
     Game.instance.toggleChickenGuide(true, true);
     await DialogPopup.instance.showPopup(
-      "Good job!\nYou can coninue without henholding",
+      "Good job!\nYou can continue without henholding",
     );
     Game.instance.UIScene.showGameControls(GameControls.SkipDay);
     await DialogPopup.instance.showPopup(

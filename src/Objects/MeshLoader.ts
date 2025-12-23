@@ -1,10 +1,24 @@
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { AnimationClip, Object3D, Object3DEventMap } from "three";
+import {
+  AnimationClip,
+  BufferAttribute,
+  BufferGeometry,
+  Color,
+  InstancedMesh,
+  Matrix4,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Object3DEventMap,
+} from "three";
+
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
 
 export default class MeshLoader {
-  // private objects?: GLTF;
+  private objects?: GLTF;
   private ground?: GLTF;
+  private groundInstancedMeshes: InstancedMesh[] = [];
+  private groundInstancedScene?: Object3D;
   private meshes: Map<ObjectsMeshEnum, Object3D<Object3DEventMap>> = new Map();
   private animations: Map<ObjectAnimationsEnum, AnimationClip> = new Map();
 
@@ -23,8 +37,16 @@ export default class MeshLoader {
     return MeshLoader.Instance.ground!.scene;
   }
 
+  public static getGroundInstancedMeshes(): InstancedMesh[] {
+    return MeshLoader.Instance.groundInstancedMeshes;
+  }
+
+  public static getGroundInstancedScene(): Object3D | undefined {
+    return MeshLoader.Instance.groundInstancedScene;
+  }
+
   public static getMesh(
-    mesh: ObjectsMeshEnum,
+    mesh: ObjectsMeshEnum
   ): Object3D<Object3DEventMap> | undefined {
     if (MeshLoader.Instance.meshes.has(mesh)) {
       return MeshLoader.Instance.meshes.get(mesh);
@@ -34,7 +56,7 @@ export default class MeshLoader {
   }
 
   public static getAnimation(
-    animation: ObjectAnimationsEnum,
+    animation: ObjectAnimationsEnum
   ): AnimationClip | undefined {
     if (MeshLoader.Instance.animations.has(animation)) {
       return MeshLoader.Instance.animations.get(animation);
@@ -50,47 +72,23 @@ export default class MeshLoader {
       gltfLoader.loadAsync("models/ground3.glb"),
     ]);
     ground.scene.static = true;
-    objects.scene.static = true;
-    // MeshLoader.Instance.objects = objects;
+    // objects.scene.static = true;
+    MeshLoader.Instance.objects = objects;
     MeshLoader.Instance.ground = ground;
 
-    const terrain = ground.scene.getObjectByName("terrain");
-    if (terrain) {
-      terrain.children[0].receiveShadow = true;
-    }
+    console.log(ground);
 
-    ground.scene.traverse((child) => {
-      if (
-        child.name.startsWith("hay") ||
-        child.name.startsWith("bush") ||
-        child.name.startsWith("ground") ||
-        child.name.startsWith("fence") ||
-        child.name.startsWith("milk") ||
-        child.name.startsWith("pumpkin") ||
-        child.name.startsWith("tree") ||
-        child.name.startsWith("ambar") ||
-        child.name.startsWith("storage")
-      ) {
-        child.traverse((child) => {
-          child.castShadow = true;
-        });
-        child.castShadow = true;
-      }
-      if (
-        child.name.startsWith("ambar") ||
-        child.name.startsWith("hay") ||
-        child.name.startsWith("ground")
-      ) {
-        child.traverse((child) => {
-          child.receiveShadow = true;
-        });
-        child.receiveShadow = true;
-      }
-    });
+    // Create instanced meshes from ground
+    // MeshLoader.Instance.groundInstancedMeshes =
+    //   this.createInstancedMeshFromGLTF(ground, 200);
+
+    // Create instanced scene from ground
+    MeshLoader.Instance.groundInstancedScene =
+      this.createInstancedSceneFromGLTF(ground, 200);
 
     for (const key of Object.values(ObjectsMeshEnum)) {
       const mesh = objects.scene.getObjectByName(
-        key,
+        key
       ) as Object3D<Object3DEventMap>;
       if (mesh) {
         if (mesh.name.startsWith("ground")) {
@@ -104,12 +102,143 @@ export default class MeshLoader {
           // child.receiveShadow = true;
         });
         MeshLoader.Instance.meshes.set(key, mesh);
+
+        mesh.position.set(0, 0, 0);
+        // mesh.rotat.set(0,0,0);
+
+        if (!mesh.name.startsWith("cow")
+          && !mesh.name.startsWith("chicken")
+        && !mesh.name.startsWith("sheep")) {
+        mesh.matrixAutoUpdate = false;
+        mesh.updateMatrix();
+
+        mesh.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.matrixAutoUpdate = false;
+            child.updateMatrix();
+          }
+        });
       }
-    }
     for (let i = 0; i < objects.animations.length; i++) {
       const animation = objects.animations[i];
       const key = animation.name as ObjectAnimationsEnum;
       MeshLoader.Instance.animations.set(key, animation);
     }
+  }
+}
+  }
+
+  public static createInstancedMeshFromGLTF(
+    gltf: GLTF,
+    maxInstances: number = 100
+  ): InstancedMesh[] {
+    const instancedMeshes: InstancedMesh[] = [];
+
+    // Key: geometry UUID + color hex to group same geometry with same color
+    const meshDataMap = new Map<
+      string,
+      { geometry: BufferGeometry; matrices: Matrix4[] }
+    >();
+
+    // Traverse and collect mesh data, grouping by geometry+color
+    gltf.scene.traverse((child) => {
+      if (!(child instanceof Mesh)) return;
+
+      const mesh = child as Mesh;
+      const geometry = mesh.geometry as BufferGeometry;
+      const material = mesh.material as MeshStandardMaterial;
+
+      // Extract color from PBR material
+      const color = new Color();
+      if (material && material.color) {
+        color.copy(material.color);
+      } else {
+        color.setRGB(1, 1, 1);
+      }
+
+      // Create key from geometry UUID and color
+      const key = `${geometry.uuid}_${color.getHexString()}`;
+
+      // Get world matrix
+      mesh.updateWorldMatrix(true, false);
+      const matrix = new Matrix4().copy(mesh.matrixWorld);
+
+      if (!meshDataMap.has(key)) {
+        // Clone geometry and bake vertex colors
+        const coloredGeometry = geometry.clone();
+        const vertexCount = coloredGeometry.getAttribute("position").count;
+        const colorArray = new Float32Array(vertexCount * 3);
+
+        for (let i = 0; i < vertexCount; i++) {
+          colorArray[i * 3] = color.r;
+          colorArray[i * 3 + 1] = color.g;
+          colorArray[i * 3 + 2] = color.b;
+        }
+
+        coloredGeometry.setAttribute(
+          "color",
+          new BufferAttribute(colorArray, 3)
+        );
+        meshDataMap.set(key, { geometry: coloredGeometry, matrices: [] });
+      }
+
+      const data = meshDataMap.get(key)!;
+      data.matrices.push(matrix);
+    });
+
+    // Create shared material for all instanced meshes
+    const sharedMaterial = new MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 1,
+      metalness: 0.0,
+    });
+
+    // Create instanced meshes for each unique geometry+color combination
+    meshDataMap.forEach((data) => {
+      const instanceCount = Math.min(data.matrices.length, maxInstances);
+      const instancedMesh = new InstancedMesh(
+        data.geometry,
+        sharedMaterial,
+        maxInstances
+      );
+
+      // Set matrices for each instance
+      for (let i = 0; i < instanceCount; i++) {
+        instancedMesh.setMatrixAt(i, data.matrices[i]);
+      }
+
+      instancedMesh.count = instanceCount;
+      instancedMesh.instanceMatrix.needsUpdate = true;
+      instancedMesh.castShadow = true;
+      instancedMesh.receiveShadow = true;
+
+      instancedMeshes.push(instancedMesh);
+    });
+
+    return instancedMeshes;
+  }
+
+  public static createInstancedSceneFromGLTF(
+    gltf: GLTF,
+    maxInstances: number = 100
+  ): Object3D {
+    const scene = new Object3D();
+    scene.name = gltf.scene.name + "_instanced";
+
+    // Copy transform from original scene
+    scene.position.copy(gltf.scene.position);
+    scene.rotation.copy(gltf.scene.rotation);
+    scene.scale.copy(gltf.scene.scale);
+
+    // Create instanced meshes and add them to the scene
+    const instancedMeshes = this.createInstancedMeshFromGLTF(
+      gltf,
+      maxInstances
+    );
+    for (const instancedMesh of instancedMeshes) {
+      scene.add(instancedMesh);
+    }
+
+    return scene;
   }
 }

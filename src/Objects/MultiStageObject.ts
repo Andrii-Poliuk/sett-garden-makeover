@@ -104,29 +104,30 @@ export default class MultiStageObject extends Object3D {
   }
 
   public playShakeAnimation(): void {
-    this.stopShakeAnimation();
-    const repeatDelay = 2;
-    const initialDelay = Math.random() * 2;
-    this.shakeTimeline = gsap.timeline({ delay: initialDelay });
+    return;
+    // this.stopShakeAnimation();
+    // const repeatDelay = 2;
+    // const initialDelay = Math.random() * 2;
+    // this.shakeTimeline = gsap.timeline({ delay: initialDelay });
 
-    this.shakeTimeline.to(
-      this.scale,
-      {
-        x: 1.1,
-        y: 1.1,
-        z: 1.1,
-        duration: 0.5,
-        ease: "elastic.in(1, 0.5)",
-        yoyo: true,
-        delay: repeatDelay,
-        onComplete: () => {
-          this.shakeTimeline?.restart();
-        },
-      },
-      "<",
-    );
+    // this.shakeTimeline.to(
+    //   this.scale,
+    //   {
+    //     x: 1.1,
+    //     y: 1.1,
+    //     z: 1.1,
+    //     duration: 0.5,
+    //     ease: "elastic.in(1, 0.5)",
+    //     yoyo: true,
+    //     delay: repeatDelay,
+    //     onComplete: () => {
+    //       this.shakeTimeline?.restart();
+    //     },
+    //   },
+    //   "<",
+    // );
 
-    this.shakeTimeline.play();
+    // this.shakeTimeline.play();
   }
 
   public stopShakeAnimation(): void {

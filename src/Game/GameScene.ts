@@ -1,8 +1,8 @@
 import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import * as THREE from "three";
 import MeshLoader from "../Objects/MeshLoader";
-// import { setupOrbitControls } from "../Helpers";
-// import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { setupOrbitControls } from "../Helpers";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RaycastManager } from "./RaycastManager";
 import Game from "./Game";
 // import { Helpers } from "../Helpers";
@@ -11,9 +11,10 @@ export default class GameScene {
   public scene: Scene;
   public camera: PerspectiveCamera;
   private renderer: WebGLRenderer;
-  // private controls: OrbitControls;
+  private controls: OrbitControls;
   private ambientLight?: THREE.AmbientLight;
   private directionalLight?: THREE.DirectionalLight;
+  private shadowHelper?: THREE.CameraHelper;
 
   constructor(renderer: WebGLRenderer) {
     const width = window.innerWidth;
@@ -30,7 +31,7 @@ export default class GameScene {
     threeCamera.far = 90;
     scene.add(threeCamera);
     this.renderer = renderer;
-    // this.controls = setupOrbitControls(threeCamera, renderer);
+    this.controls = setupOrbitControls(threeCamera, renderer);
 
     scene.background = new THREE.Color(0.3, 0.5, 1);
     scene.environmentIntensity = 0;
@@ -40,9 +41,11 @@ export default class GameScene {
     RaycastManager.instance.init(this.renderer, this.camera);
 
     await MeshLoader.loadModelsAsync();
-    const farm = MeshLoader.getScene();
+    const farm = MeshLoader.getGroundInstancedScene();
+    if (farm) {
     farm.position.set(0, -4.5, 0);
     this.scene.add(farm);
+    }
 
     this.scene.add(Game.instance.getBatchRenderer());
 
@@ -62,14 +65,17 @@ export default class GameScene {
     this.directionalLight.shadow.mapSize.height = 512;
     // this.directionalLight.shadow.radius = 4;
     this.directionalLight.shadow.bias = -0.001;
-    this.directionalLight.shadow.camera.near = 0.1;
-    this.directionalLight.shadow.camera.far = 100;
-    this.directionalLight.shadow.camera.left = -30;
-    this.directionalLight.shadow.camera.right = 30;
-    this.directionalLight.shadow.camera.top = 30;
-    this.directionalLight.shadow.camera.bottom = -30;
+    this.directionalLight.shadow.camera.near = 1;
+    this.directionalLight.shadow.camera.far = 80;
+    this.directionalLight.shadow.camera.left = -20;
+    this.directionalLight.shadow.camera.right = 25;
+    this.directionalLight.shadow.camera.top = 25;
+    this.directionalLight.shadow.camera.bottom = -20;
     this.directionalLight.shadow.camera.updateProjectionMatrix();
     this.scene.add(this.directionalLight);
+
+    this.shadowHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera);
+    this.scene.add(this.shadowHelper);
 
     // Helpers.setupDirectionalLightGUI(this.directionalLight, this.ambientLight, "Light");
   }
@@ -100,7 +106,7 @@ export default class GameScene {
   }
 
   public update(_delta: number): void {
-    // this.controls.update();
+    this.controls.update();
     this.directionalLight?.lookAt(0, 0, 0);
   }
 
