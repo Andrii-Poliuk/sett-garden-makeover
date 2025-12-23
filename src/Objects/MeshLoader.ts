@@ -69,20 +69,22 @@ export default class MeshLoader {
 
     // Create instanced scene from ground
     MeshLoader.Instance.groundInstancedScene =
-      this.createInstancedSceneFromGLTF(ground, 200,
-        ["hay",
-        "bush",
-        "ground",
-        "fence",
-        "milk",
-        "pumpkin",
-        "tree",
-        "ambar",
-        "storage"],
- ["ambar",
-        "hay",
-        "ground","terrain"],
-        ["terrain"]
+      this.createInstancedSceneFromGLTF(
+        ground,
+        200,
+        [
+          "hay",
+          "bush",
+          "ground",
+          "fence",
+          "milk",
+          "pumpkin",
+          "tree",
+          "ambar",
+          "storage",
+        ],
+        ["ambar", "hay", "ground", "terrain"],
+        ["terrain"],
       );
 
     for (const key of Object.values(ObjectsMeshEnum)) {
@@ -154,7 +156,10 @@ export default class MeshLoader {
     >();
 
     // Helper to determine shadow batch
-    const getShadowBatch = (castShadow: boolean, receiveShadow: boolean): ShadowBatch => {
+    const getShadowBatch = (
+      castShadow: boolean,
+      receiveShadow: boolean,
+    ): ShadowBatch => {
       if (!castShadow && !receiveShadow) return 0;
       if (castShadow && !receiveShadow) return 1;
       if (!castShadow && receiveShadow) return 2;
@@ -175,7 +180,10 @@ export default class MeshLoader {
 
     // Check if mesh should be skipped due to singleChildFilter
     // Returns true if mesh should be skipped (is not first child of a matching parent)
-    const shouldSkipForSingleChild = (obj: Object3D, prefixes: string[]): boolean => {
+    const shouldSkipForSingleChild = (
+      obj: Object3D,
+      prefixes: string[],
+    ): boolean => {
       let current: Object3D | null = obj.parent;
       let child: Object3D = obj;
       while (current) {
@@ -196,7 +204,10 @@ export default class MeshLoader {
       const mesh = child as Mesh;
 
       // Skip if not first child of a singleChildFilter matching parent
-      if (singleChildFilter && shouldSkipForSingleChild(mesh, singleChildFilter)) {
+      if (
+        singleChildFilter &&
+        shouldSkipForSingleChild(mesh, singleChildFilter)
+      ) {
         return;
       }
       const geometry = mesh.geometry as BufferGeometry;
@@ -284,8 +295,10 @@ export default class MeshLoader {
       instancedMesh.instanceMatrix.needsUpdate = true;
 
       // Set shadow properties based on batch
-      instancedMesh.castShadow = data.shadowBatch === 1 || data.shadowBatch === 3;
-      instancedMesh.receiveShadow = data.shadowBatch === 2 || data.shadowBatch === 3;
+      instancedMesh.castShadow =
+        data.shadowBatch === 1 || data.shadowBatch === 3;
+      instancedMesh.receiveShadow =
+        data.shadowBatch === 2 || data.shadowBatch === 3;
 
       instancedMeshes.push(instancedMesh);
     });
@@ -298,7 +311,7 @@ export default class MeshLoader {
     maxInstances: number = 100,
     castShadowFilter?: string[],
     receiveShadowFilter?: string[],
-    singleChildFilter?: string[]
+    singleChildFilter?: string[],
   ): Object3D {
     const scene = new Object3D();
     scene.name = gltf.scene.name + "_instanced";

@@ -16,6 +16,7 @@ A 3D farming simulation game built with Three.js and PixiJS where players manage
 ## Architecture Overview
 
 The game uses a dual-renderer architecture:
+
 - **Three.js** handles 3D scene rendering (farm, objects, lighting)
 - **PixiJS** handles 2D UI overlay (menus, popups, HUD)
 
@@ -159,12 +160,15 @@ SpriteParticleEffect # Particle systems (leaves, smoke), uses three-quarks
 ## Key Systems
 
 ### Day/Night Cycle
+
 `DayNightController` interpolates lighting, sky color, and shadow positions between time-of-day presets (morning, day, evening, night).
 
 ### Object Interaction
+
 `InteractiveArea` creates clickable 3D regions. `RaycastManager` converts screen touches to 3D raycasts. `ObjectHighlight` shows transparent previews during placement.
 
 ### Economy
+
 `MoneyCost` defines all prices and incomes. `EconomyHint` displays cost/income on menu buttons. `FloatingText` shows animated currency changes.
 
 ## Project Structure

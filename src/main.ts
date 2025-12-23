@@ -1,6 +1,6 @@
 import { EventSystem, WebGLRenderer } from "pixi.js";
 import * as THREE from "three";
-// import Stats from "three/addons/libs/stats.module.js";
+import Stats from "three/addons/libs/stats.module.js";
 import GameScene from "./Game/GameScene";
 import UIScene from "./UI/UIScene";
 import Game from "./Game/Game";
@@ -82,8 +82,8 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
   eventSystem.resolution = pixiRenderer.resolution;
   uiScene.stage.eventMode = "static";
 
-  // const stats = new Stats();
-  // document.body.appendChild(stats.dom);
+  const stats = new Stats();
+  document.body.appendChild(stats.dom);
 
   const clock = new THREE.Clock();
   let delta = 0;
@@ -100,7 +100,7 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
     pixiRenderer.resetState();
     pixiRenderer.render({ container: uiScene.stage });
 
-    // stats.update();
+    stats.update();
 
     requestAnimationFrame(loop);
   }
