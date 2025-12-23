@@ -18,12 +18,12 @@ export default class PlaceableObject extends Object3D {
     super();
   }
 
-  protected async init(modelName: ObjectsMeshEnum): Promise<void> {
-    let model = MeshLoader.getMesh(modelName);
-    if (!model) {
+  protected async init(modelName: ObjectsMeshEnum) {
+    const mesh = MeshLoader.getMesh(modelName);
+    if (!mesh) {
       return;
     }
-    model = SkeletonUtils.clone(model);
+    const model = SkeletonUtils.clone(mesh);
     model.position.set(0, 0, 0);
 
     this.add(model);

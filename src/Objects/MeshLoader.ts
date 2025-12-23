@@ -15,9 +15,7 @@ import {
 import { ObjectAnimationsEnum, ObjectsMeshEnum } from "./ObjectsMeshEnum";
 
 export default class MeshLoader {
-  private objects?: GLTF;
   private ground?: GLTF;
-  private groundInstancedMeshes: InstancedMesh[] = [];
   private groundInstancedScene?: Object3D;
   private meshes: Map<ObjectsMeshEnum, Object3D<Object3DEventMap>> = new Map();
   private animations: Map<ObjectAnimationsEnum, AnimationClip> = new Map();
@@ -35,10 +33,6 @@ export default class MeshLoader {
 
   public static getScene(): Object3D {
     return MeshLoader.Instance.ground!.scene;
-  }
-
-  public static getGroundInstancedMeshes(): InstancedMesh[] {
-    return MeshLoader.Instance.groundInstancedMeshes;
   }
 
   public static getGroundInstancedScene(): Object3D | undefined {
@@ -71,16 +65,7 @@ export default class MeshLoader {
       gltfLoader.loadAsync("models/objects2.glb"),
       gltfLoader.loadAsync("models/ground3.glb"),
     ]);
-    ground.scene.static = true;
-    // objects.scene.static = true;
-    MeshLoader.Instance.objects = objects;
     MeshLoader.Instance.ground = ground;
-
-    console.log(ground);
-
-    // Create instanced meshes from ground
-    // MeshLoader.Instance.groundInstancedMeshes =
-    //   this.createInstancedMeshFromGLTF(ground, 200);
 
     // Create instanced scene from ground
     MeshLoader.Instance.groundInstancedScene =
@@ -99,33 +84,34 @@ export default class MeshLoader {
           if (mesh.name.startsWith("ground")) {
             child.receiveShadow = true;
           }
-          // child.receiveShadow = true;
         });
         MeshLoader.Instance.meshes.set(key, mesh);
 
         mesh.position.set(0, 0, 0);
-        // mesh.rotat.set(0,0,0);
 
-        if (!mesh.name.startsWith("cow")
-          && !mesh.name.startsWith("chicken")
-        && !mesh.name.startsWith("sheep")) {
-        mesh.matrixAutoUpdate = false;
-        mesh.updateMatrix();
+        if (
+          !mesh.name.startsWith("cow") &&
+          !mesh.name.startsWith("chicken") &&
+          !mesh.name.startsWith("sheep")
+        ) {
+          mesh.matrixAutoUpdate = false;
+          mesh.updateMatrix();
 
-        mesh.traverse((child) => {
-          if (child instanceof Mesh) {
-            child.matrixAutoUpdate = false;
-            child.updateMatrix();
-          }
-        });
+          mesh.traverse((child) => {
+            if (child instanceof Mesh) {
+              child.matrixAutoUpdate = false;
+              child.updateMatrix();
+            }
+          });
+        }
       }
+    }
+
     for (let i = 0; i < objects.animations.length; i++) {
       const animation = objects.animations[i];
       const key = animation.name as ObjectAnimationsEnum;
       MeshLoader.Instance.animations.set(key, animation);
     }
-  }
-}
   }
 
   public static createInstancedMeshFromGLTF(
@@ -240,5 +226,64 @@ export default class MeshLoader {
     }
 
     return scene;
+  }
+
+  public static createInstancedMeshFromObject3D(
+    object: Object3D,
+    maxInstances: number = 100
+  ): InstancedMesh | undefined {
+    // Find the first mesh in the object hierarchy
+    let sourceMesh: Mesh | undefined;
+    object.traverse((child) => {
+      if (!sourceMesh && child instanceof Mesh) {
+        sourceMesh = child;
+      }
+    });
+
+    if (!sourceMesh) return undefined;
+
+    const geometry = sourceMesh.geometry as BufferGeometry;
+    const material = sourceMesh.material as MeshStandardMaterial;
+
+    // Extract color from PBR material
+    const color = new Color();
+    if (material && material.color) {
+      color.copy(material.color);
+    } else {
+      color.setRGB(1, 1, 1);
+    }
+
+    // Clone geometry and bake vertex colors
+    const coloredGeometry = geometry.clone();
+    const vertexCount = coloredGeometry.getAttribute("position").count;
+    const colorArray = new Float32Array(vertexCount * 3);
+
+    for (let i = 0; i < vertexCount; i++) {
+      colorArray[i * 3] = color.r;
+      colorArray[i * 3 + 1] = color.g;
+      colorArray[i * 3 + 2] = color.b;
+    }
+
+    coloredGeometry.setAttribute("color", new BufferAttribute(colorArray, 3));
+
+    // Create material with vertex colors
+    const instancedMaterial = new MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 1,
+      metalness: 0.0,
+    });
+
+    const instancedMesh = new InstancedMesh(
+      coloredGeometry,
+      instancedMaterial,
+      maxInstances
+    );
+
+    instancedMesh.count = 0;
+    instancedMesh.castShadow = true;
+    instancedMesh.receiveShadow = true;
+    instancedMesh.name = object.name + "_instanced";
+
+    return instancedMesh;
   }
 }

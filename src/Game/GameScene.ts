@@ -1,8 +1,8 @@
 import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import * as THREE from "three";
 import MeshLoader from "../Objects/MeshLoader";
-import { setupOrbitControls } from "../Helpers";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+// import { setupOrbitControls } from "../Helpers";
+// import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RaycastManager } from "./RaycastManager";
 import Game from "./Game";
 // import { Helpers } from "../Helpers";
@@ -11,7 +11,7 @@ export default class GameScene {
   public scene: Scene;
   public camera: PerspectiveCamera;
   private renderer: WebGLRenderer;
-  private controls: OrbitControls;
+  // private controls: OrbitControls;
   private ambientLight?: THREE.AmbientLight;
   private directionalLight?: THREE.DirectionalLight;
   private shadowHelper?: THREE.CameraHelper;
@@ -31,7 +31,7 @@ export default class GameScene {
     threeCamera.far = 90;
     scene.add(threeCamera);
     this.renderer = renderer;
-    this.controls = setupOrbitControls(threeCamera, renderer);
+    // this.controls = setupOrbitControls(threeCamera, renderer);
 
     scene.background = new THREE.Color(0.3, 0.5, 1);
     scene.environmentIntensity = 0;
@@ -74,8 +74,8 @@ export default class GameScene {
     this.directionalLight.shadow.camera.updateProjectionMatrix();
     this.scene.add(this.directionalLight);
 
-    this.shadowHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera);
-    this.scene.add(this.shadowHelper);
+    // this.shadowHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera);
+    // this.scene.add(this.shadowHelper);
 
     // Helpers.setupDirectionalLightGUI(this.directionalLight, this.ambientLight, "Light");
   }
@@ -106,7 +106,7 @@ export default class GameScene {
   }
 
   public update(_delta: number): void {
-    this.controls.update();
+    // this.controls.update();
     this.directionalLight?.lookAt(0, 0, 0);
   }
 

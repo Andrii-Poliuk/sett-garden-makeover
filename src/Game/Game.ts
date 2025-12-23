@@ -163,13 +163,8 @@ export default class Game {
     const mainLevel = new MainLevel();
     mainLevel.init();
 
-    this.money = 50000;
+    this.money = 500;
 
-    // TODO: remove
-    // this.currentLevel = mainLevel;
-    // await mainLevel.startLevel();
-    //   return;
-    //<<<<<<<<<<<<<<<<<<
 
     tutorialLevel.onLevelFinished = async () => {
       this.currentLevel = mainLevel;
@@ -177,8 +172,6 @@ export default class Game {
     };
     this.currentLevel = tutorialLevel;
     await tutorialLevel.startLevel();
-    // this.levels.push(tutorialLevel);
-    // await this.currentLevel.startLevel();
   }
 
   public resetGame(): void {

@@ -51,12 +51,13 @@ export default class MultiStageObject extends Object3D {
   protected async init(modelName: ObjectsMeshEnum[]): Promise<void> {
     const models: Object3D<Object3DEventMap>[] = [];
     for (let i = 0; i < modelName.length; i++) {
-      const model = MeshLoader.getMesh(modelName[i]);
-      if (!model) {
+      const mesh = MeshLoader.getMesh(modelName[i]);
+      if (!mesh) {
         continue;
       }
+      const model = SkeletonUtils.clone(mesh);
       model.position.set(0, 0, 0);
-      models.push(SkeletonUtils.clone(model));
+      models.push(model);
     }
 
     [this.stage1Model, this.stage2Model, this.stage3Model] = models;
@@ -104,30 +105,29 @@ export default class MultiStageObject extends Object3D {
   }
 
   public playShakeAnimation(): void {
-    return;
-    // this.stopShakeAnimation();
-    // const repeatDelay = 2;
-    // const initialDelay = Math.random() * 2;
-    // this.shakeTimeline = gsap.timeline({ delay: initialDelay });
+    this.stopShakeAnimation();
+    const repeatDelay = 2;
+    const initialDelay = Math.random() * 2;
+    this.shakeTimeline = gsap.timeline({ delay: initialDelay });
 
-    // this.shakeTimeline.to(
-    //   this.scale,
-    //   {
-    //     x: 1.1,
-    //     y: 1.1,
-    //     z: 1.1,
-    //     duration: 0.5,
-    //     ease: "elastic.in(1, 0.5)",
-    //     yoyo: true,
-    //     delay: repeatDelay,
-    //     onComplete: () => {
-    //       this.shakeTimeline?.restart();
-    //     },
-    //   },
-    //   "<",
-    // );
+    this.shakeTimeline.to(
+      this.scale,
+      {
+        x: 1.1,
+        y: 1.1,
+        z: 1.1,
+        duration: 0.5,
+        ease: "elastic.in(1, 0.5)",
+        yoyo: true,
+        delay: repeatDelay,
+        onComplete: () => {
+          this.shakeTimeline?.restart();
+        },
+      },
+      "<",
+    );
 
-    // this.shakeTimeline.play();
+    this.shakeTimeline.play();
   }
 
   public stopShakeAnimation(): void {
