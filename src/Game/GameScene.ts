@@ -64,9 +64,9 @@ export default class GameScene {
     this.directionalLight.shadow.mapSize.height = 512;
     // this.directionalLight.shadow.radius = 4;
     this.directionalLight.shadow.bias = -0.001;
-    this.directionalLight.shadow.camera.near = 1;
-    this.directionalLight.shadow.camera.far = 80;
-    this.directionalLight.shadow.camera.left = -20;
+    this.directionalLight.shadow.camera.near = 8;
+    this.directionalLight.shadow.camera.far = 70;
+    this.directionalLight.shadow.camera.left = -22;
     this.directionalLight.shadow.camera.right = 25;
     this.directionalLight.shadow.camera.top = 25;
     this.directionalLight.shadow.camera.bottom = -20;

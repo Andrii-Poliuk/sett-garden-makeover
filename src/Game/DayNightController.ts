@@ -69,10 +69,10 @@ export default class DayNightController {
     TimeOfDay,
     { x: number; y: number; z: number }
   > = {
-    [TimeOfDay.Morning]: { x: 15, y: 15, z: -50 },
+    [TimeOfDay.Morning]: { x: 15, y: 10, z: -30 },
     [TimeOfDay.Day]: { x: 17, y: 20, z: 3 },
-    [TimeOfDay.Evening]: { x: 3, y: 16, z: 50 },
-    [TimeOfDay.Night]: { x: 0, y: -50, z: 0 },
+    [TimeOfDay.Evening]: { x: 3, y: 10, z: 30 },
+    [TimeOfDay.Night]: { x: 7, y: -50, z: 0 },
   };
 
   private readonly transitionDuration: number = 1.5;
