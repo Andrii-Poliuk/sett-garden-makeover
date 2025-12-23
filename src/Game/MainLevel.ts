@@ -113,7 +113,9 @@ export default class MainLevel extends GameLevel {
     this.skipDayCyclePlaying = true;
     this.disablePlacement();
     await Game.instance.dayNightController.setEvening();
+    this.skipDayCyclePlaying = false;
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", async () => {
+      this.skipDayCyclePlaying = true;
       const income = this.collectCattleIncome();
       if (!this.gameIsWon) {
         const victoryByDays =
