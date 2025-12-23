@@ -19,11 +19,10 @@ export default class LandPlacementMenu extends MenuBase {
   }
 
   public init(): void {
-    const assets = PixiAssetsLoader.instance;
     const spacing = 80;
 
     this.croplandButton = new SpriteButton({
-      texture: assets.getTexture(PixiAsset.Corn),
+      texture: PixiAsset.Corn,
       text: "Cropland",
       onClick: () => this.onCroplandClick?.(),
     });
@@ -32,7 +31,7 @@ export default class LandPlacementMenu extends MenuBase {
     this.addChild(this.croplandButton);
 
     this.cattlePenButton = new SpriteButton({
-      texture: assets.getTexture(PixiAsset.Cow),
+      texture: PixiAsset.Cow,
       text: "Cattle Pen",
       onClick: () => this.onCattlePenClick?.(),
     });
@@ -41,14 +40,14 @@ export default class LandPlacementMenu extends MenuBase {
     this.addChild(this.cattlePenButton);
 
     this.backButton = new SpriteButton({
-      texture: assets.getTexture(PixiAsset.SkipDay),
+      texture: PixiAsset.SkipDay,
       text: "Back",
       onClick: () => this.onBackClick?.(),
     });
     this.backButton.position.set(0, spacing * 2);
     this.addChild(this.backButton);
-    const backButtonScale = this.backButton.sprite.scale;
-    this.backButton.sprite.scale.set(-backButtonScale.x, backButtonScale.y);
+    const backButtonScale = this.backButton.spriteScale;
+    this.backButton.spriteScale = { x: -backButtonScale.x, y: backButtonScale.y };
   }
 
   public static readonly Cropland = 1 << 0;
@@ -71,27 +70,26 @@ export default class LandPlacementMenu extends MenuBase {
   }
 
   private overrideButtonSprite(button: SpriteButton): void {
-    const sprite = button.sprite;
-    const currentScale = sprite.scale;
-    sprite.scale.set(currentScale.x * 0.8, currentScale.y * 0.8);
+    const currentScale = button.spriteScale;
+    button.spriteScale = {x: currentScale.x * 0.8, y: currentScale.y * 0.8};
+    const iconRect = button.getSpriteRect();
 
-    const bounds = sprite.getBounds();
     const cornerRadius = 6;
     const padding = 2;
 
     const background = new Graphics();
     background.roundRect(
-      -bounds.width / 2 - padding,
-      -bounds.height / 2 - padding,
-      bounds.width + padding * 2,
-      bounds.height + padding * 2,
+      -iconRect.width / 2 - padding,
+      -iconRect.height / 2 - padding,
+      iconRect.width + padding * 2,
+      iconRect.height + padding * 2,
       cornerRadius,
     );
     background.stroke({ color: 0xffffff, width: 2 });
 
-    button.addChildAt(background, button.getChildIndex(sprite));
-    background.x = sprite.x;
-    background.y = sprite.y;
+    button.addChildAt(background, 1);
+    background.x = iconRect.x;
+    background.y = iconRect.y;
 
     const plusSprite = new Sprite(
       PixiAssetsLoader.instance.getTexture(PixiAsset.Plus),
@@ -99,7 +97,7 @@ export default class LandPlacementMenu extends MenuBase {
     plusSprite.scale = 0.1;
     plusSprite.anchor.set(0.5);
     button.addChild(plusSprite);
-    plusSprite.x = sprite.x + bounds.width * 0.5;
-    plusSprite.y = sprite.y + bounds.height * 0.25;
+    plusSprite.x = iconRect.x + iconRect.width * 0.5;
+    plusSprite.y = iconRect.y + iconRect.height * 0.25;
   }
 }

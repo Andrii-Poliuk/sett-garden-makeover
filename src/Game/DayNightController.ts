@@ -39,17 +39,17 @@ export default class DayNightController {
     TimeOfDay,
     { r: number; g: number; b: number; i: number }
   > = {
-    [TimeOfDay.Morning]: { r: 1.0, g: 0.9, b: 0.8, i: 0.05 },
-    [TimeOfDay.Day]: { r: 1.0, g: 1.0, b: 1.0, i: 0.1 },
-    [TimeOfDay.Evening]: { r: 1.0, g: 0.7, b: 0.5, i: 0.05 },
-    [TimeOfDay.Night]: { r: 0.3, g: 0.3, b: 0.6, i: 0.1 },
+    [TimeOfDay.Morning]: { r: 1.0, g: 0.9, b: 0.8, i: 0.3 },
+    [TimeOfDay.Day]: { r: 1.0, g: 1.0, b: 1.0, i: 0.3 },
+    [TimeOfDay.Evening]: { r: 1.0, g: 0.7, b: 0.5, i: 0.2 },
+    [TimeOfDay.Night]: { r: 0.2, g: 0.2, b: 0.7, i: 0.2 },
   };
 
   private readonly dirLightColors: Record<
     TimeOfDay,
     { r: number; g: number; b: number; i: number }
   > = {
-    [TimeOfDay.Morning]: { r: 1.0, g: 0.85, b: 0.7, i: 2 },
+    [TimeOfDay.Morning]: { r: 1.0, g: 0.85, b: 0.7, i: 1.5 },
     [TimeOfDay.Day]: { r: 1.0, g: 1.0, b: 0.95, i: 1.5 },
     [TimeOfDay.Evening]: { r: 1.0, g: 0.6, b: 0.4, i: 1 },
     [TimeOfDay.Night]: { r: 0.2, g: 0.2, b: 0.4, i: 0.1 },
@@ -151,7 +151,7 @@ export default class DayNightController {
       this.currentDirLightColor.i,
       this.currentDirLightPosition.x,
       this.currentDirLightPosition.y,
-      this.currentDirLightPosition.z
+      this.currentDirLightPosition.z,
     );
   }
 

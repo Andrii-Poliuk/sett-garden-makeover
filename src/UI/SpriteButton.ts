@@ -1,28 +1,40 @@
 import {
+  Bounds,
   Container,
   FederatedPointerEvent,
   Graphics,
   Sprite,
   Text,
-  Texture,
   ColorMatrixFilter,
+  Rectangle,
 } from "pixi.js";
-import PixiAssetsLoader, { SoundAsset } from "../Game/PixiAssetsLoader";
+import PixiAssetsLoader, { PixiAsset, SoundAsset } from "../Game/PixiAssetsLoader";
 
 export interface SpriteButtonOptions {
-  texture: Texture;
+  texture: PixiAsset;
   text?: string;
   onClick?: () => void;
 }
 
 export default class SpriteButton extends Container {
-  private spriteInstance: Sprite;
+  private spriteEnabled: Sprite;
+  private spriteDisabled: Sprite;
   private buttonLabel: Text;
-  private disabledColorMatrix: ColorMatrixFilter;
 
-  public get sprite(): Sprite {
-    return this.spriteInstance;
+  public get spriteScale(): { x: number; y: number } {
+    return { x: this.spriteEnabled.scale.x, y: this.spriteEnabled.scale.y };
   }
+
+  public set spriteScale(value: { x: number; y: number }) {
+    this.spriteEnabled.scale.set(value.x, value.y);
+    this.spriteDisabled.scale.set(value.x, value.y);
+  }
+
+  public getSpriteRect(): Rectangle {
+    const sprite = this.spriteEnabled;
+    return new Rectangle(sprite.x, sprite.y, sprite.width, sprite.height);
+  }
+
   private hitZone: Graphics;
   private onClick: (() => void) | undefined;
   private originalScale: number = 1;
@@ -31,9 +43,11 @@ export default class SpriteButton extends Container {
   public setEnabled(enabled: boolean): void {
     this.interactive = enabled;
     if (enabled) {
-      this.sprite.filters = [];
+      this.spriteDisabled.visible = true;
+      this.spriteDisabled.visible = false;
     } else {
-      this.sprite.filters = [this.disabledColorMatrix];
+      this.spriteDisabled.visible = false;
+      this.spriteDisabled.visible = true;
     }
   }
 
@@ -53,14 +67,21 @@ export default class SpriteButton extends Container {
     this.hitZone.alpha = 0;
     this.addChild(this.hitZone);
 
-    this.spriteInstance = new Sprite(options.texture);
-    this.spriteInstance.scale = 0.3;
-    this.spriteInstance.anchor.set(0.5);
-    this.addChild(this.spriteInstance);
+    const enabledTexture = PixiAssetsLoader.instance.getTexture(options.texture);
+    this.spriteEnabled = new Sprite(enabledTexture);
+    this.spriteEnabled.scale = 0.3;
+    this.spriteEnabled.anchor.set(0.5);
+    this.addChild(this.spriteEnabled);
 
-    this.disabledColorMatrix = new ColorMatrixFilter();
-    this.disabledColorMatrix.greyscale(0.1, false);
-    this.sprite.filters = [this.disabledColorMatrix];
+    const disabledTexture = PixiAssetsLoader.instance.getTextureFilter(options.texture);
+    this.spriteDisabled = new Sprite(disabledTexture);
+    this.spriteDisabled.scale = 0.3;
+    this.spriteDisabled.anchor.set(0.5);
+    this.addChild(this.spriteDisabled);
+
+    const disabledColorMatrix = new ColorMatrixFilter();
+    disabledColorMatrix.greyscale(0.1, false);
+    this.spriteDisabled.filters = [disabledColorMatrix];
 
     this.buttonLabel = new Text({
       text: options.text ?? "",
@@ -109,10 +130,6 @@ export default class SpriteButton extends Container {
   private handleHoverEnd(): void {
     this.hitZone.alpha = 0;
     this.scale.set(this.originalScale);
-  }
-
-  public setTexture(texture: Texture): void {
-    this.spriteInstance.texture = texture;
   }
 
   public setText(text: string): void {

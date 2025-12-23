@@ -1,5 +1,5 @@
 import SpriteButton from "../SpriteButton";
-import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
+import { PixiAsset } from "../../Game/PixiAssetsLoader";
 import MenuBase from "./MenuBase";
 
 export default class CattlePlacementMenu extends MenuBase {
@@ -18,11 +18,10 @@ export default class CattlePlacementMenu extends MenuBase {
   }
 
   public init(): void {
-    const assets = PixiAssetsLoader.instance;
     const spacing = 80;
 
     this.cowButton = new SpriteButton({
-      texture: assets.getTexture(PixiAsset.Cow),
+      texture: PixiAsset.Cow,
       text: "Cow",
       onClick: () => this.onCowClick?.(),
     });
@@ -30,7 +29,7 @@ export default class CattlePlacementMenu extends MenuBase {
     this.addChild(this.cowButton);
 
     this.sheepButton = new SpriteButton({
-      texture: assets.getTexture(PixiAsset.Sheep),
+      texture: PixiAsset.Sheep,
       text: "Sheep",
       onClick: () => this.onSheepClick?.(),
     });
@@ -38,14 +37,14 @@ export default class CattlePlacementMenu extends MenuBase {
     this.addChild(this.sheepButton);
 
     this.backButton = new SpriteButton({
-      texture: assets.getTexture(PixiAsset.SkipDay),
+      texture: PixiAsset.SkipDay,
       text: "Back",
       onClick: () => this.onBackClick?.(),
     });
     this.backButton.position.set(0, spacing * 2);
     this.addChild(this.backButton);
-    const backButtonScale = this.backButton.sprite.scale;
-    this.backButton.sprite.scale.set(-backButtonScale.x, backButtonScale.y);
+    const backButtonScale = this.backButton.spriteScale;
+    this.backButton.spriteScale = { x: -backButtonScale.x, y: backButtonScale.y };
   }
 
   public static readonly Cow = 1 << 0;

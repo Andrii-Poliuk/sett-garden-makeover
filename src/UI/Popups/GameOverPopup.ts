@@ -26,7 +26,9 @@ export default class GameOverPopup extends PopupBase {
   }
 
   public override init(width: number, height: number): void {
-    super.init(width, height);
+    const popupWidth = 500;
+    const popupHeight = 220;
+    super.init(width, height, popupWidth, popupHeight);
 
     if (!this.popupContainer || !this.messageText) {
       return;
@@ -34,7 +36,7 @@ export default class GameOverPopup extends PopupBase {
 
     this.messageText.y = -30;
 
-    const buttonWidth = 100;
+    const buttonWidth = 120;
     const buttonHeight = 40;
     const buttonSpacing = 30;
 
