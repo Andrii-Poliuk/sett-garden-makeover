@@ -30,9 +30,6 @@ export default class PixiAssetsLoader {
   private textures: Map<PixiAsset, Texture> = new Map();
   private sounds: Map<SoundAsset, HTMLAudioElement> = new Map();
 
-  // to break feedback loop
-  private filteredTextures: Map<PixiAsset, Texture> = new Map();
-
   private constructor() {}
 
   public static get instance(): PixiAssetsLoader {
@@ -49,13 +46,8 @@ export default class PixiAssetsLoader {
       assetKeys.map((path) => Assets.load(path)),
     );
 
-    const loadedFilteredTextures = await Promise.all(
-      assetKeys.map((path) => Assets.load(path)),
-    );
-
     assetKeys.forEach((key, index) => {
       this.textures.set(key, loadedTextures[index]);
-      this.filteredTextures.set(key, loadedFilteredTextures[index]);
     });
 
     await this.loadSounds();
@@ -92,14 +84,6 @@ export default class PixiAssetsLoader {
 
   public getTexture(asset: PixiAsset): Texture {
     const texture = this.textures.get(asset);
-    if (!texture) {
-      throw new Error(`Texture not found: ${asset}`);
-    }
-    return texture;
-  }
-
-  public getTextureFilter(asset: PixiAsset): Texture {
-    const texture = this.filteredTextures.get(asset);
     if (!texture) {
       throw new Error(`Texture not found: ${asset}`);
     }

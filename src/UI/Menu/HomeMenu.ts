@@ -1,5 +1,5 @@
 import SpriteButton from "../SpriteButton";
-import { PixiAsset } from "../../Game/PixiAssetsLoader";
+import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
 import MenuBase from "./MenuBase";
 
 export default class HomeMenu extends MenuBase {
@@ -18,10 +18,11 @@ export default class HomeMenu extends MenuBase {
   }
 
   public init(): void {
+    const assets = PixiAssetsLoader.instance;
     const spacing = 80;
 
     this.cropButton = new SpriteButton({
-      texture: PixiAsset.Corn,
+      texture: assets.getTexture(PixiAsset.Corn),
       text: "Crop",
       onClick: () => this.onCropClick?.(),
     });
@@ -29,7 +30,7 @@ export default class HomeMenu extends MenuBase {
     this.addChild(this.cropButton);
 
     this.cattleButton = new SpriteButton({
-      texture: PixiAsset.Cow,
+      texture: assets.getTexture(PixiAsset.Cow),
       text: "Cattle",
       onClick: () => this.onCattleClick?.(),
     });
@@ -37,7 +38,7 @@ export default class HomeMenu extends MenuBase {
     this.addChild(this.cattleButton);
 
     this.landButton = new SpriteButton({
-      texture: PixiAsset.Plus,
+      texture: assets.getTexture(PixiAsset.Plus),
       text: "Land",
       onClick: () => this.onLandClick?.(),
     });

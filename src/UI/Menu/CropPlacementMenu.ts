@@ -1,5 +1,5 @@
 import SpriteButton from "../SpriteButton";
-import { PixiAsset } from "../../Game/PixiAssetsLoader";
+import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
 import MenuBase from "./MenuBase";
 
 export default class CropPlacementMenu extends MenuBase {
@@ -22,10 +22,11 @@ export default class CropPlacementMenu extends MenuBase {
   }
 
   public init(): void {
+    const assets = PixiAssetsLoader.instance;
     const spacing = 80;
 
     this.cornButton = new SpriteButton({
-      texture: PixiAsset.Corn,
+      texture: assets.getTexture(PixiAsset.Corn),
       text: "Corn",
       onClick: () => this.onCornClick?.(),
     });
@@ -33,7 +34,7 @@ export default class CropPlacementMenu extends MenuBase {
     this.addChild(this.cornButton);
 
     this.tomatoButton = new SpriteButton({
-      texture: PixiAsset.Tomato,
+      texture: assets.getTexture(PixiAsset.Tomato),
       text: "Tomato",
       onClick: () => this.onTomatoClick?.(),
     });
@@ -41,7 +42,7 @@ export default class CropPlacementMenu extends MenuBase {
     this.addChild(this.tomatoButton);
 
     this.grapeButton = new SpriteButton({
-      texture: PixiAsset.Grape,
+      texture: assets.getTexture(PixiAsset.Grape),
       text: "Grape",
       onClick: () => this.onGrapeClick?.(),
     });
@@ -49,7 +50,7 @@ export default class CropPlacementMenu extends MenuBase {
     this.addChild(this.grapeButton);
 
     this.strawberryButton = new SpriteButton({
-      texture: PixiAsset.Strawberry,
+      texture: assets.getTexture(PixiAsset.Strawberry),
       text: "Strawberry",
       onClick: () => this.onStrawberryClick?.(),
     });
@@ -57,14 +58,14 @@ export default class CropPlacementMenu extends MenuBase {
     this.addChild(this.strawberryButton);
 
     this.backButton = new SpriteButton({
-      texture: PixiAsset.SkipDay,
+      texture: assets.getTexture(PixiAsset.SkipDay),
       text: "Back",
       onClick: () => this.onBackClick?.(),
     });
     this.backButton.position.set(0, spacing * 4);
     this.addChild(this.backButton);
-    const backButtonScale = this.backButton.spriteScale;
-    this.backButton.spriteScale = { x: -backButtonScale.x, y: backButtonScale.y };
+    const backButtonScale = this.backButton.sprite.scale;
+    this.backButton.sprite.scale.set(-backButtonScale.x, backButtonScale.y);
   }
 
   public static readonly Corn = 1 << 0;
