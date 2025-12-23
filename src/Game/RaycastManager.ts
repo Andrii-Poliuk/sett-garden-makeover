@@ -1,6 +1,6 @@
 import { Camera, Raycaster, Vector2, WebGLRenderer } from "three";
 import { InteractiveArea } from "../Objects/InteractiveArea";
-import { Container, EventBoundary, Point } from "pixi.js";
+import { Container, EventBoundary } from "pixi.js";
 
 export class RaycastManager {
   private static _instance: RaycastManager | null = null;

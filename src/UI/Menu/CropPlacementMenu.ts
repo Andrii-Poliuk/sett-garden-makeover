@@ -1,6 +1,8 @@
 import SpriteButton from "../SpriteButton";
 import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
 import MenuBase from "./MenuBase";
+import EconomyHint from "../EconomyHint";
+import MoneyCost, { MoneyCostType } from "../../Game/MoneyCost";
 
 export default class CropPlacementMenu extends MenuBase {
   private cornButton!: SpriteButton;
@@ -32,6 +34,10 @@ export default class CropPlacementMenu extends MenuBase {
     });
     this.cornButton.position.set(0, 0);
     this.addChild(this.cornButton);
+    EconomyHint.addEconomyHintToButton(this.cornButton, {
+      cost: MoneyCost[MoneyCostType.CornPlant],
+      income: MoneyCost[MoneyCostType.CornHarvest],
+    });
 
     this.tomatoButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.Tomato),
@@ -40,22 +46,34 @@ export default class CropPlacementMenu extends MenuBase {
     });
     this.tomatoButton.position.set(0, spacing);
     this.addChild(this.tomatoButton);
-
-    this.grapeButton = new SpriteButton({
-      texture: assets.getTexture(PixiAsset.Grape),
-      text: "Grape",
-      onClick: () => this.onGrapeClick?.(),
+    EconomyHint.addEconomyHintToButton(this.tomatoButton, {
+      cost: MoneyCost[MoneyCostType.TomatoPlant],
+      income: MoneyCost[MoneyCostType.TomatoHarvest],
     });
-    this.grapeButton.position.set(0, spacing * 2);
-    this.addChild(this.grapeButton);
 
     this.strawberryButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.Strawberry),
       text: "Strawberry",
       onClick: () => this.onStrawberryClick?.(),
     });
-    this.strawberryButton.position.set(0, spacing * 3);
+    this.strawberryButton.position.set(0, spacing * 2);
     this.addChild(this.strawberryButton);
+    EconomyHint.addEconomyHintToButton(this.strawberryButton, {
+      cost: MoneyCost[MoneyCostType.StrawberryPlant],
+      income: MoneyCost[MoneyCostType.StrawberryHarvest],
+    });
+
+    this.grapeButton = new SpriteButton({
+      texture: assets.getTexture(PixiAsset.Grape),
+      text: "Grape",
+      onClick: () => this.onGrapeClick?.(),
+    });
+    this.grapeButton.position.set(0, spacing * 3);
+    this.addChild(this.grapeButton);
+    EconomyHint.addEconomyHintToButton(this.grapeButton, {
+      cost: MoneyCost[MoneyCostType.GrapePlant],
+      income: MoneyCost[MoneyCostType.GrapeHarvest],
+    });
 
     this.backButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.SkipDay),
@@ -82,7 +100,7 @@ export default class CropPlacementMenu extends MenuBase {
 
   public setEnabled(
     enabled: boolean,
-    mask: number = CropPlacementMenu.All,
+    mask: number = CropPlacementMenu.All
   ): void {
     if (mask & CropPlacementMenu.Corn) this.cornButton.setEnabled(enabled);
     if (mask & CropPlacementMenu.Tomato) this.tomatoButton.setEnabled(enabled);

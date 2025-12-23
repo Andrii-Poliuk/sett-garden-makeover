@@ -2,6 +2,8 @@ import { Graphics, Sprite } from "pixi.js";
 import SpriteButton from "../SpriteButton";
 import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
 import MenuBase from "./MenuBase";
+import EconomyHint from "../EconomyHint";
+import MoneyCost, { MoneyCostType } from "../../Game/MoneyCost";
 
 export default class LandPlacementMenu extends MenuBase {
   private croplandButton!: SpriteButton;
@@ -30,6 +32,10 @@ export default class LandPlacementMenu extends MenuBase {
     this.croplandButton.position.set(0, 0);
     this.overrideButtonSprite(this.croplandButton);
     this.addChild(this.croplandButton);
+    EconomyHint.addEconomyHintToButton(this.croplandButton, {
+      cost: MoneyCost[MoneyCostType.GroundMake],
+      income: 0,
+    });
 
     this.cattlePenButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.Cow),
@@ -39,6 +45,10 @@ export default class LandPlacementMenu extends MenuBase {
     this.cattlePenButton.position.set(0, spacing);
     this.overrideButtonSprite(this.cattlePenButton);
     this.addChild(this.cattlePenButton);
+    EconomyHint.addEconomyHintToButton(this.cattlePenButton, {
+      cost: MoneyCost[MoneyCostType.FenceMake],
+      income: 0,
+    });
 
     this.backButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.SkipDay),
@@ -61,7 +71,7 @@ export default class LandPlacementMenu extends MenuBase {
 
   public setEnabled(
     enabled: boolean,
-    mask: number = LandPlacementMenu.All,
+    mask: number = LandPlacementMenu.All
   ): void {
     if (mask & LandPlacementMenu.Cropland)
       this.croplandButton.setEnabled(enabled);
@@ -85,7 +95,7 @@ export default class LandPlacementMenu extends MenuBase {
       -bounds.height / 2 - padding,
       bounds.width + padding * 2,
       bounds.height + padding * 2,
-      cornerRadius,
+      cornerRadius
     );
     background.stroke({ color: 0xffffff, width: 2 });
 
@@ -94,7 +104,7 @@ export default class LandPlacementMenu extends MenuBase {
     background.y = sprite.y;
 
     const plusSprite = new Sprite(
-      PixiAssetsLoader.instance.getTexture(PixiAsset.Plus),
+      PixiAssetsLoader.instance.getTexture(PixiAsset.Plus)
     );
     plusSprite.scale = 0.1;
     plusSprite.anchor.set(0.5);

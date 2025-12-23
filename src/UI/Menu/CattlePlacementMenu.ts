@@ -1,6 +1,8 @@
 import SpriteButton from "../SpriteButton";
 import PixiAssetsLoader, { PixiAsset } from "../../Game/PixiAssetsLoader";
 import MenuBase from "./MenuBase";
+import EconomyHint from "../EconomyHint";
+import MoneyCost, { getMoneyCost, MoneyCostType } from "../../Game/MoneyCost";
 
 export default class CattlePlacementMenu extends MenuBase {
   private cowButton!: SpriteButton;
@@ -28,6 +30,10 @@ export default class CattlePlacementMenu extends MenuBase {
     });
     this.cowButton.position.set(0, 0);
     this.addChild(this.cowButton);
+      EconomyHint.addEconomyHintToButton(this.cowButton, {
+      cost: MoneyCost[MoneyCostType.CowBuy],
+      income: MoneyCost[MoneyCostType.CowDaily],
+    });
 
     this.sheepButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.Sheep),
@@ -36,6 +42,10 @@ export default class CattlePlacementMenu extends MenuBase {
     });
     this.sheepButton.position.set(0, spacing);
     this.addChild(this.sheepButton);
+      EconomyHint.addEconomyHintToButton(this.sheepButton, {
+      cost: MoneyCost[MoneyCostType.SheepBuy],
+      income: MoneyCost[MoneyCostType.SheepDaily],
+    });
 
     this.backButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.SkipDay),

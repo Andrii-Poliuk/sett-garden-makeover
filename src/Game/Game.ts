@@ -163,7 +163,7 @@ export default class Game {
     const mainLevel = new MainLevel();
     mainLevel.init();
 
-    this.money = 1000;
+    this.money = 500;
 
     // TODO: remove
     // this.currentLevel = mainLevel;

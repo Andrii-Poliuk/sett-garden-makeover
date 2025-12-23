@@ -118,6 +118,10 @@ export default class SpriteButton extends Container {
     this.buttonLabel.text = text;
   }
 
+  public setTextOffset(y: number): void {
+    this.buttonLabel.y = y;
+  }
+
   public setOnClick(handler: () => void): void {
     this.onClick = handler;
   }

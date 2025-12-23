@@ -72,14 +72,19 @@ export default class GameOverPopup extends PopupBase {
     message: string,
     gameOver: boolean,
     onAction: () => void,
-  ): void {
-    this.messageText!.text = message;
-    this.actionButton!.text = gameOver ? "Restart" : "Continue";
-    this.onActionCallback = onAction;
-    this.visible = true;
-    this.alpha = 0;
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      this.messageText!.text = message;
+      this.actionButton!.text = gameOver ? "Restart" : "Continue";
+      this.onActionCallback = () => {
+        onAction();
+        resolve();
+      };
+      this.visible = true;
+      this.alpha = 0;
 
-    gsap.to(this, { alpha: 1, duration: 0.2 });
+      gsap.to(this, { alpha: 1, duration: 0.2 });
+    });
   }
 
   private handleSourceClick(): void {

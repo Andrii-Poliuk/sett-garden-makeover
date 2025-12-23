@@ -25,6 +25,9 @@ export default class MainLevel extends GameLevel {
   private worldPositionVector = new Vector3();
   private worldRotationQuaternion = new Quaternion();
 
+  private dayCounter: number = 0;
+  private gameIsWon: boolean = false;
+
   private static readonly rentMessages: string[] = [
     "Rent Time!",
     "Time to pay the rent!",
@@ -41,6 +44,9 @@ export default class MainLevel extends GameLevel {
   public async startLevel(): Promise<void> {
     this.bindUI();
     this.createLandPlacementPoints();
+
+    this.dayCounter = 0;
+    this.gameIsWon = false;
 
     Game.instance.UIScene.showHomeMenu();
     Game.instance.UIScene.showGameControls();
@@ -104,14 +110,19 @@ export default class MainLevel extends GameLevel {
     await Game.instance.dayNightController.setEvening();
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", async () => {
       const income = this.collectCattleIncome();
-      if (income + MoneyCost[MoneyCostType.RentDaily] > 0) {
-        await GameOverPopup.instance.showPopup(
-          "Congratulations!\nYou've defeated the Rent",
-          false,
-          () => {
-            // TODO: Congratulations?
-          },
-        );
+      if (!this.gameIsWon) {
+        const victoryByDays = this.dayCounter >= 30 && this.landPlacements.length == 0;
+        const victoryByIncome = income + this.totalCurrentRent() > 0;
+        if (victoryByDays || victoryByIncome) {
+          await GameOverPopup.instance.showPopup(
+            "Congratulations!\nYou've defeated the Rent",
+            false,
+            () => {
+              this.gameIsWon = true;
+              // TODO: Congratulations?
+            },
+          );
+        }
       }
       await Game.instance.dayNightController.setNight();
       await Game.instance.dayNightController.setMorning();
@@ -120,7 +131,12 @@ export default class MainLevel extends GameLevel {
       await this.rentCheck();
 
       await Game.instance.dayNightController.setDay();
+      this.dayCounter += 1;
     });
+  }
+
+  private totalCurrentRent(): number {
+    return MoneyCost[MoneyCostType.RentDaily] + (this.dayCounter * MoneyCost[MoneyCostType.RentIncrease]);
   }
 
   private async rentCheck(): Promise<void> {
@@ -130,7 +146,7 @@ export default class MainLevel extends GameLevel {
     );
     const message = MainLevel.rentMessages[randomIndex];
     await DialogPopup.instance.showPopup(message);
-    const rent = MoneyCost[MoneyCostType.RentDaily];
+    const rent = this.totalCurrentRent();
     Game.instance.toggleChickenGuide(false);
     const money = Game.instance.money + rent;
     if (money < 0) {
