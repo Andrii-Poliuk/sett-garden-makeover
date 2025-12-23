@@ -6,16 +6,17 @@ export default class MenuBase extends Container {
   private currentTween: gsap.core.Tween | null = null;
   private originalX: number = 0;
   private originalY: number = 0;
+  private flexibleScale: number = 0;
 
   public show(): void {
     if (this.visible && !this.currentTween) return;
     this.killCurrentTween();
     this.visible = true;
     this.alpha = 0;
-    this.x = this.originalX - this.slideOffset;
+    this.x = this.originalX * this.flexibleScale - this.slideOffset;
     this.currentTween = gsap.to(this, {
       alpha: 1,
-      x: this.originalX,
+      x: this.originalX * this.flexibleScale,
       duration: 0.2,
       delay: 0.1,
       onComplete: () => {
@@ -29,11 +30,11 @@ export default class MenuBase extends Container {
     this.killCurrentTween();
     this.currentTween = gsap.to(this, {
       alpha: 0,
-      x: this.originalX - this.slideOffset,
+      x: this.originalX * this.flexibleScale - this.slideOffset,
       duration: 0.2,
       onComplete: () => {
         this.visible = false;
-        this.x = this.originalX;
+        this.x = this.originalX * this.flexibleScale;
         this.currentTween = null;
       },
     });
@@ -43,7 +44,7 @@ export default class MenuBase extends Container {
     if (this.currentTween) {
       this.currentTween.kill();
       this.currentTween = null;
-      this.x = this.originalX;
+      this.x = this.originalX * this.flexibleScale;
       this.alpha = 1;
     }
   }
@@ -56,10 +57,11 @@ export default class MenuBase extends Container {
   }
 
   public resize(flexibleScale: number): void {
+    this.flexibleScale = flexibleScale;
     this.scale.set(flexibleScale);
     this.position.set(
       this.originalX * flexibleScale,
-      this.originalY * flexibleScale,
+      this.originalY * flexibleScale
     );
   }
 }
