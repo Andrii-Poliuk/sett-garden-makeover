@@ -69,7 +69,21 @@ export default class MeshLoader {
 
     // Create instanced scene from ground
     MeshLoader.Instance.groundInstancedScene =
-      this.createInstancedSceneFromGLTF(ground, 200);
+      this.createInstancedSceneFromGLTF(ground, 200,
+        ["hay",
+        "bush",
+        "ground",
+        "fence",
+        "milk",
+        "pumpkin",
+        "tree",
+        "ambar",
+        "storage"],
+ ["ambar",
+        "hay",
+        "ground","terrain"],
+        ["terrain"]
+      );
 
     for (const key of Object.values(ObjectsMeshEnum)) {
       const mesh = objects.scene.getObjectByName(
@@ -86,7 +100,6 @@ export default class MeshLoader {
           }
         });
         MeshLoader.Instance.meshes.set(key, mesh);
-
         mesh.position.set(0, 0, 0);
 
         if (
@@ -117,20 +130,75 @@ export default class MeshLoader {
   public static createInstancedMeshFromGLTF(
     gltf: GLTF,
     maxInstances: number = 100,
+    castShadowFilter?: string[],
+    receiveShadowFilter?: string[],
+    singleChildFilter?: string[],
   ): InstancedMesh[] {
     const instancedMeshes: InstancedMesh[] = [];
 
-    // Key: geometry UUID + color hex to group same geometry with same color
+    // 4 batches based on shadow interaction:
+    // 0: no shadows (no cast, no receive)
+    // 1: cast only
+    // 2: receive only
+    // 3: cast and receive
+    type ShadowBatch = 0 | 1 | 2 | 3;
+
+    // Key: geometry UUID + color hex + shadow batch to group same geometry with same color and shadow settings
     const meshDataMap = new Map<
       string,
-      { geometry: BufferGeometry; matrices: Matrix4[] }
+      {
+        geometry: BufferGeometry;
+        matrices: Matrix4[];
+        shadowBatch: ShadowBatch;
+      }
     >();
 
-    // Traverse and collect mesh data, grouping by geometry+color
+    // Helper to determine shadow batch
+    const getShadowBatch = (castShadow: boolean, receiveShadow: boolean): ShadowBatch => {
+      if (!castShadow && !receiveShadow) return 0;
+      if (castShadow && !receiveShadow) return 1;
+      if (!castShadow && receiveShadow) return 2;
+      return 3;
+    };
+
+    // Check if mesh or any of its ancestors match the filter
+    const matchesFilter = (obj: Object3D, prefixes: string[]): boolean => {
+      let current: Object3D | null = obj;
+      while (current) {
+        if (prefixes.some((prefix) => current!.name.startsWith(prefix))) {
+          return true;
+        }
+        current = current.parent;
+      }
+      return false;
+    };
+
+    // Check if mesh should be skipped due to singleChildFilter
+    // Returns true if mesh should be skipped (is not first child of a matching parent)
+    const shouldSkipForSingleChild = (obj: Object3D, prefixes: string[]): boolean => {
+      let current: Object3D | null = obj.parent;
+      let child: Object3D = obj;
+      while (current) {
+        if (prefixes.some((prefix) => current!.name.startsWith(prefix))) {
+          // Found matching parent, check if child is first
+          return current.children.indexOf(child) !== 0;
+        }
+        child = current;
+        current = current.parent;
+      }
+      return false;
+    };
+
+    // Traverse and collect mesh data, grouping by geometry+color+shadowBatch
     gltf.scene.traverse((child) => {
       if (!(child instanceof Mesh)) return;
 
       const mesh = child as Mesh;
+
+      // Skip if not first child of a singleChildFilter matching parent
+      if (singleChildFilter && shouldSkipForSingleChild(mesh, singleChildFilter)) {
+        return;
+      }
       const geometry = mesh.geometry as BufferGeometry;
       const material = mesh.material as MeshStandardMaterial;
 
@@ -142,8 +210,17 @@ export default class MeshLoader {
         color.setRGB(1, 1, 1);
       }
 
-      // Create key from geometry UUID and color
-      const key = `${geometry.uuid}_${color.getHexString()}`;
+      // Determine shadow settings based on filters
+      const castShadow = castShadowFilter
+        ? matchesFilter(mesh, castShadowFilter)
+        : true;
+      const receiveShadow = receiveShadowFilter
+        ? matchesFilter(mesh, receiveShadowFilter)
+        : true;
+      const shadowBatch = getShadowBatch(castShadow, receiveShadow);
+
+      // Create key from geometry UUID, color, and shadow batch
+      const key = `${geometry.uuid}_${color.getHexString()}_${shadowBatch}`;
 
       // Get world matrix
       mesh.updateWorldMatrix(true, false);
@@ -165,26 +242,36 @@ export default class MeshLoader {
           "color",
           new BufferAttribute(colorArray, 3),
         );
-        meshDataMap.set(key, { geometry: coloredGeometry, matrices: [] });
+
+        meshDataMap.set(key, {
+          geometry: coloredGeometry,
+          matrices: [],
+          shadowBatch,
+        });
       }
 
       const data = meshDataMap.get(key)!;
       data.matrices.push(matrix);
     });
 
-    // Create shared material for all instanced meshes
-    const sharedMaterial = new MeshStandardMaterial({
-      vertexColors: true,
-      roughness: 1,
-      metalness: 0.0,
-    });
+    // Create 4 shared materials for each shadow batch (allows renderer to batch by material)
+    const sharedMaterials: MeshStandardMaterial[] = [];
+    for (let i = 0; i < 4; i++) {
+      sharedMaterials.push(
+        new MeshStandardMaterial({
+          vertexColors: true,
+          roughness: 1,
+          metalness: 0.0,
+        }),
+      );
+    }
 
-    // Create instanced meshes for each unique geometry+color combination
+    // Create instanced meshes for each unique geometry+color+shadowBatch combination
     meshDataMap.forEach((data) => {
       const instanceCount = Math.min(data.matrices.length, maxInstances);
       const instancedMesh = new InstancedMesh(
         data.geometry,
-        sharedMaterial,
+        sharedMaterials[data.shadowBatch],
         maxInstances,
       );
 
@@ -195,8 +282,10 @@ export default class MeshLoader {
 
       instancedMesh.count = instanceCount;
       instancedMesh.instanceMatrix.needsUpdate = true;
-      instancedMesh.castShadow = true;
-      instancedMesh.receiveShadow = true;
+
+      // Set shadow properties based on batch
+      instancedMesh.castShadow = data.shadowBatch === 1 || data.shadowBatch === 3;
+      instancedMesh.receiveShadow = data.shadowBatch === 2 || data.shadowBatch === 3;
 
       instancedMeshes.push(instancedMesh);
     });
@@ -207,6 +296,9 @@ export default class MeshLoader {
   public static createInstancedSceneFromGLTF(
     gltf: GLTF,
     maxInstances: number = 100,
+    castShadowFilter?: string[],
+    receiveShadowFilter?: string[],
+    singleChildFilter?: string[]
   ): Object3D {
     const scene = new Object3D();
     scene.name = gltf.scene.name + "_instanced";
@@ -220,6 +312,9 @@ export default class MeshLoader {
     const instancedMeshes = this.createInstancedMeshFromGLTF(
       gltf,
       maxInstances,
+      castShadowFilter,
+      receiveShadowFilter,
+      singleChildFilter,
     );
     for (const instancedMesh of instancedMeshes) {
       scene.add(instancedMesh);
