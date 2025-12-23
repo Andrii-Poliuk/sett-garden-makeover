@@ -71,7 +71,7 @@ export default class LandPlacementMenu extends MenuBase {
 
   public setEnabled(
     enabled: boolean,
-    mask: number = LandPlacementMenu.All
+    mask: number = LandPlacementMenu.All,
   ): void {
     if (mask & LandPlacementMenu.Cropland)
       this.croplandButton.setEnabled(enabled);
@@ -95,7 +95,7 @@ export default class LandPlacementMenu extends MenuBase {
       -bounds.height / 2 - padding,
       bounds.width + padding * 2,
       bounds.height + padding * 2,
-      cornerRadius
+      cornerRadius,
     );
     background.stroke({ color: 0xffffff, width: 2 });
 
@@ -104,7 +104,7 @@ export default class LandPlacementMenu extends MenuBase {
     background.y = sprite.y;
 
     const plusSprite = new Sprite(
-      PixiAssetsLoader.instance.getTexture(PixiAsset.Plus)
+      PixiAssetsLoader.instance.getTexture(PixiAsset.Plus),
     );
     plusSprite.scale = 0.1;
     plusSprite.anchor.set(0.5);

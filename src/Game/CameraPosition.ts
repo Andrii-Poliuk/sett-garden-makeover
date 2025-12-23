@@ -12,7 +12,7 @@ export default class CameraPosition extends Object3D {
   private camera?: PerspectiveCamera;
   private currentLookAt: Vector3 = new Vector3();
 
-  private targetVector: Vector3 = new Vector3;
+  private targetVector: Vector3 = new Vector3();
 
   constructor() {
     super();

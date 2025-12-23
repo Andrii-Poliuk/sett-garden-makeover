@@ -116,7 +116,8 @@ export default class MainLevel extends GameLevel {
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", async () => {
       const income = this.collectCattleIncome();
       if (!this.gameIsWon) {
-        const victoryByDays = this.dayCounter >= 30 && this.landPlacements.length == 0;
+        const victoryByDays =
+          this.dayCounter >= 30 && this.landPlacements.length == 0;
         const victoryByIncome = income + this.totalCurrentRent() > 0;
         if (victoryByDays || victoryByIncome) {
           await GameOverPopup.instance.showPopup(
@@ -142,7 +143,10 @@ export default class MainLevel extends GameLevel {
   }
 
   private totalCurrentRent(): number {
-    return MoneyCost[MoneyCostType.RentDaily] + (this.dayCounter * MoneyCost[MoneyCostType.RentIncrease]);
+    return (
+      MoneyCost[MoneyCostType.RentDaily] +
+      this.dayCounter * MoneyCost[MoneyCostType.RentIncrease]
+    );
   }
 
   private async rentCheck(): Promise<void> {
@@ -470,7 +474,9 @@ export default class MainLevel extends GameLevel {
     location: Object3D,
   ): void {
     const worldPosion = location.getWorldPosition(this.worldPositionVector);
-    const worldRotation = location.getWorldQuaternion(this.worldRotationQuaternion);
+    const worldRotation = location.getWorldQuaternion(
+      this.worldRotationQuaternion,
+    );
     object.rotation.setFromQuaternion(worldRotation);
     object.position.set(worldPosion.x, worldPosion.y, worldPosion.z);
   }

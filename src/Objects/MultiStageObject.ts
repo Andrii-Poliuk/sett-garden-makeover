@@ -6,7 +6,6 @@ import { SpriteParticleEffect } from "../Particles/SpriteParticleEffect";
 import { InteractiveArea } from "./InteractiveArea";
 import { CropType } from "../Game/Game";
 import gsap from "gsap";
-import { time } from "three/tsl";
 
 export default class MultiStageObject extends Object3D {
   protected cropTypeValue: CropType = CropType.Corn;

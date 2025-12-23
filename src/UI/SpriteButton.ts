@@ -5,7 +5,6 @@ import {
   Sprite,
   Text,
   Texture,
-  ColorMatrixFilter,
 } from "pixi.js";
 import PixiAssetsLoader, { SoundAsset } from "../Game/PixiAssetsLoader";
 
@@ -30,10 +29,10 @@ export default class SpriteButton extends Container {
   public setEnabled(enabled: boolean): void {
     this.interactive = enabled;
     if (enabled) {
-      this.sprite.tint = 0xffffff
+      this.sprite.tint = 0xffffff;
       this.sprite.alpha = 1;
     } else {
-      this.sprite.tint = 0x808080
+      this.sprite.tint = 0x808080;
       this.sprite.alpha = 0.6;
     }
   }

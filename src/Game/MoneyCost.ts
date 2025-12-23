@@ -17,7 +17,7 @@ export enum MoneyCostType {
   ChickenBuy,
   ChickenDaily,
   RentDaily,
-  RentIncrease
+  RentIncrease,
 }
 
 const MoneyCost: Record<MoneyCostType, number> = {

@@ -100,7 +100,7 @@ export default class CropPlacementMenu extends MenuBase {
 
   public setEnabled(
     enabled: boolean,
-    mask: number = CropPlacementMenu.All
+    mask: number = CropPlacementMenu.All,
   ): void {
     if (mask & CropPlacementMenu.Corn) this.cornButton.setEnabled(enabled);
     if (mask & CropPlacementMenu.Tomato) this.tomatoButton.setEnabled(enabled);

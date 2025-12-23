@@ -365,7 +365,9 @@ export default class TutorialLevel extends GameLevel {
       this.damageTimer = 0;
       Game.instance.money += this.tickingDamage;
       if (this.sheep) {
-        const sheepPosition = this.sheep.getWorldPosition(this.worldPositionTarget);
+        const sheepPosition = this.sheep.getWorldPosition(
+          this.worldPositionTarget,
+        );
         FloatingText.playEffect(this.tickingDamage, sheepPosition);
         PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
       }

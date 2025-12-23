@@ -14,7 +14,7 @@ export default class EconomyHint extends Container {
     button: SpriteButton,
     options: EconomyHintOptions,
   ): void {
-    const textOffset: number = (options.income != 0) ? -12 : 0;
+    const textOffset: number = options.income != 0 ? -12 : 0;
     const hint = new EconomyHint(options);
     hint.position.set(50, 12 + textOffset);
     button.addChild(hint);
