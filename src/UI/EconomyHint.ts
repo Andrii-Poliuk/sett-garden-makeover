@@ -13,12 +13,13 @@ export default class EconomyHint extends Container {
   public static addEconomyHintToButton(
     button: SpriteButton,
     options: EconomyHintOptions,
-  ): void {
+  ): EconomyHint {
     const textOffset: number = options.income != 0 ? -12 : 0;
     const hint = new EconomyHint(options);
     hint.position.set(50, 12 + textOffset);
     button.addChild(hint);
     button.setTextOffset(textOffset);
+    return hint;
   }
 
   constructor(options: EconomyHintOptions) {

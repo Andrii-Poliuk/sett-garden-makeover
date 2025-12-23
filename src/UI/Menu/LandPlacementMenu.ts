@@ -10,6 +10,9 @@ export default class LandPlacementMenu extends MenuBase {
   private cattlePenButton!: SpriteButton;
   private backButton!: SpriteButton;
 
+  private croplandHint?: EconomyHint;
+  private cattlePenHint?: EconomyHint;
+
   public onCroplandClick?: () => void;
   public onCattlePenClick?: () => void;
   public onBackClick?: () => void;
@@ -32,10 +35,13 @@ export default class LandPlacementMenu extends MenuBase {
     this.croplandButton.position.set(0, 0);
     this.overrideButtonSprite(this.croplandButton);
     this.addChild(this.croplandButton);
-    EconomyHint.addEconomyHintToButton(this.croplandButton, {
-      cost: MoneyCost[MoneyCostType.GroundMake],
-      income: 0,
-    });
+    this.croplandHint = EconomyHint.addEconomyHintToButton(
+      this.croplandButton,
+      {
+        cost: MoneyCost[MoneyCostType.GroundMake],
+        income: 0,
+      },
+    );
 
     this.cattlePenButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.Cow),
@@ -45,10 +51,13 @@ export default class LandPlacementMenu extends MenuBase {
     this.cattlePenButton.position.set(0, spacing);
     this.overrideButtonSprite(this.cattlePenButton);
     this.addChild(this.cattlePenButton);
-    EconomyHint.addEconomyHintToButton(this.cattlePenButton, {
-      cost: MoneyCost[MoneyCostType.FenceMake],
-      income: 0,
-    });
+    this.cattlePenHint = EconomyHint.addEconomyHintToButton(
+      this.cattlePenButton,
+      {
+        cost: MoneyCost[MoneyCostType.FenceMake],
+        income: 0,
+      },
+    );
 
     this.backButton = new SpriteButton({
       texture: assets.getTexture(PixiAsset.SkipDay),
@@ -78,6 +87,15 @@ export default class LandPlacementMenu extends MenuBase {
     if (mask & LandPlacementMenu.CattlePen)
       this.cattlePenButton.setEnabled(enabled);
     if (mask & LandPlacementMenu.Back) this.backButton.setEnabled(enabled);
+  }
+
+  public setHintsVisible(visible: boolean): void {
+    if (this.croplandHint) {
+      this.croplandHint.visible = visible;
+    }
+    if (this.cattlePenHint) {
+      this.cattlePenHint.visible = visible;
+    }
   }
 
   private overrideButtonSprite(button: SpriteButton): void {

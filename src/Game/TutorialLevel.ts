@@ -145,6 +145,7 @@ export default class TutorialLevel extends GameLevel {
     );
     Game.instance.toggleChickenGuide(false);
 
+    Game.instance.UIScene.landPlacementMenu.setHintsVisible(false);
     Game.instance.UIScene.showHomeMenu();
     Game.instance.UIScene.homeMenu.setEnabled(false);
     Game.instance.UIScene.homeMenu.setEnabled(true, HomeMenu.Land);
@@ -196,6 +197,7 @@ export default class TutorialLevel extends GameLevel {
     await DialogPopup.instance.showPopup(
       "Cattle in the Pens provide income every morning",
     );
+    Game.instance.UIScene.landPlacementMenu.setHintsVisible(true);
   }
 
   private async playFarmTour(): Promise<void> {
