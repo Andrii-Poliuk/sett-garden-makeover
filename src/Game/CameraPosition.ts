@@ -12,6 +12,8 @@ export default class CameraPosition extends Object3D {
   private camera?: PerspectiveCamera;
   private currentLookAt: Vector3 = new Vector3();
 
+  private targetVector: Vector3 = new Vector3;
+
   constructor() {
     super();
 
@@ -45,7 +47,7 @@ export default class CameraPosition extends Object3D {
     );
 
     const targetWorldPosition = this.cameraTarget.getWorldPosition(
-      new Vector3(),
+      this.targetVector,
     );
     this.currentLookAt.x = lerp(
       this.currentLookAt.x,

@@ -350,6 +350,7 @@ export default class TutorialLevel extends GameLevel {
     }
   }
 
+  private worldPositionTarget = new Vector3();
   public override update(delta: number): void {
     super.update(delta);
     this.targetFence?.update(delta);
@@ -360,7 +361,7 @@ export default class TutorialLevel extends GameLevel {
       this.damageTimer = 0;
       Game.instance.money += this.tickingDamage;
       if (this.sheep) {
-        const sheepPosition = this.sheep.getWorldPosition(new Vector3());
+        const sheepPosition = this.sheep.getWorldPosition(this.worldPositionTarget);
         FloatingText.playEffect(this.tickingDamage, sheepPosition);
         PixiAssetsLoader.instance.playSound(SoundAsset.ThrowSpear);
       }

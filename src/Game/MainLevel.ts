@@ -22,6 +22,9 @@ export default class MainLevel extends GameLevel {
   private landPlacements: InteractiveArea[] = [];
   private cameraPosition?: CameraPosition;
 
+  private worldPositionVector = new Vector3();
+  private worldRotationQuaternion = new Quaternion();
+
   private static readonly rentMessages: string[] = [
     "Rent Time!",
     "Time to pay the rent!",
@@ -163,7 +166,7 @@ export default class MainLevel extends GameLevel {
       }
       total += income;
       Game.instance.money += income;
-      const animalPosition = animal.getWorldPosition(new Vector3());
+      const animalPosition = animal.getWorldPosition(this.worldPositionVector);
       FloatingText.playEffect(income, animalPosition);
     });
     return total;
@@ -198,7 +201,7 @@ export default class MainLevel extends GameLevel {
         income = MoneyCost[MoneyCostType.StrawberryHarvest];
         break;
     }
-    const cropPosition = crop.getWorldPosition(new Vector3());
+    const cropPosition = crop.getWorldPosition(this.worldPositionVector);
     Game.instance.money += income;
     FloatingText.playEffect(income, cropPosition);
     await crop.playDisappearAnimation();
@@ -306,7 +309,7 @@ export default class MainLevel extends GameLevel {
       return false;
     }
     Game.instance.money += cost;
-    const position = location.getWorldPosition(new Vector3());
+    const position = location.getWorldPosition(this.worldPositionVector);
     FloatingText.playEffect(cost, position);
     const crop = await cropConstructor();
     crop.setStage1();
@@ -353,7 +356,7 @@ export default class MainLevel extends GameLevel {
       return false;
     }
     Game.instance.money += cost;
-    const position = location.getWorldPosition(new Vector3());
+    const position = location.getWorldPosition(this.worldPositionVector);
     FloatingText.playEffect(cost, position);
     const cattle = await cattleConstructor();
     this.setNewObjectLocationWorld(cattle, location);
@@ -440,8 +443,8 @@ export default class MainLevel extends GameLevel {
     object: Object3D,
     location: Object3D,
   ): void {
-    const worldPosion = location.getWorldPosition(new Vector3());
-    const worldRotation = location.getWorldQuaternion(new Quaternion());
+    const worldPosion = location.getWorldPosition(this.worldPositionVector);
+    const worldRotation = location.getWorldQuaternion(this.worldRotationQuaternion);
     object.rotation.setFromQuaternion(worldRotation);
     object.position.set(worldPosion.x, worldPosion.y, worldPosion.z);
   }

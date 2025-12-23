@@ -10,6 +10,8 @@ export class RaycastManager {
   // private renderer?: WebGLRenderer;
   // private camera?: Camera;
 
+  private currentMouse: Vector2 = new Vector2();
+
   public enabled: boolean = true;
 
   private uiStage?: Container;
@@ -23,8 +25,7 @@ export class RaycastManager {
   private isOverUI(x: number, y: number): boolean {
     if (!this.eventBoundary || !this.uiStage) return false;
 
-    const point = new Point(x, y);
-    const hit = this.eventBoundary.hitTest(point.x, point.y);
+    const hit = this.eventBoundary.hitTest(x, y);
 
     return hit !== null && hit !== this.uiStage;
   }
@@ -36,13 +37,12 @@ export class RaycastManager {
     renderer.domElement.addEventListener("mousemove", (e) => {
       if (!this.enabled) return;
 
-      const mouse: Vector2 = new Vector2();
-      mouse.set(
+      this.currentMouse.set(
         (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
         -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
       );
 
-      this.raycaster.setFromCamera(mouse, camera);
+      this.raycaster.setFromCamera(this.currentMouse, camera);
 
       const intersects = this.raycaster.intersectObjects(
         this.interactiveAreas,
@@ -61,13 +61,12 @@ export class RaycastManager {
       // Check if click is over UI element
       if (this.isOverUI(e.clientX, e.clientY)) return;
 
-      const mouse: Vector2 = new Vector2();
-      mouse.set(
+      this.currentMouse.set(
         (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
         -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
       );
 
-      this.raycaster.setFromCamera(mouse, camera);
+      this.raycaster.setFromCamera(this.currentMouse, camera);
 
       const intersects = this.raycaster.intersectObjects(
         this.interactiveAreas,

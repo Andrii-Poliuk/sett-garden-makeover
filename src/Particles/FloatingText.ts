@@ -112,6 +112,7 @@ export default class FloatingText extends Container {
     });
   }
 
+  private static worldProjcetionVector = new Vector3();
   private static worldToScreen(worldPosition: Vector3): {
     x: number;
     y: number;
@@ -119,11 +120,12 @@ export default class FloatingText extends Container {
     const camera = Game.instance.getCamera();
     if (!camera) return { x: 0, y: 0 };
 
-    const vector = worldPosition.clone();
-    vector.project(camera);
+    const projection = this.worldProjcetionVector;
+    projection.set(worldPosition.x, worldPosition.y, worldPosition.z);
+    projection.project(camera);
 
-    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
-    const y = (-vector.y * 0.5 + 0.5) * window.innerHeight;
+    const x = (projection.x * 0.5 + 0.5) * window.innerWidth;
+    const y = (-projection.y * 0.5 + 0.5) * window.innerHeight;
 
     return { x, y };
   }
