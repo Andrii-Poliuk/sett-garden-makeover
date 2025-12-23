@@ -73,7 +73,7 @@ export default class AnimatedObject extends Object3D {
     this.add(smoke);
     smoke.position.set(0, 2, 0);
     smoke.scale.set(1.1, 1.1, 1.1);
-    this.playBounceAnimation();
+    this.particlesEffect.stop();
   }
 
   public playEffect(): void {
@@ -90,6 +90,11 @@ export default class AnimatedObject extends Object3D {
       duration: 0.4,
       ease: "elastic.out(1, 0.5)",
     });
+  }
+
+  public playAppearAnimation(): void {
+    this.playBounceAnimation();
+    this.playEffect();
   }
 
   public update(delta: number): void {

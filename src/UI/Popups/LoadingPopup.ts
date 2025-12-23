@@ -44,6 +44,7 @@ export default class LoadingPopup extends PopupBase {
     });
     this.startButton.x = 0;
     this.startButton.y = 45;
+    this.startButton.visible = false;
     this.popupContainer.addChild(this.startButton);
 
     this.eventMode = "static";

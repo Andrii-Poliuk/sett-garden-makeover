@@ -367,6 +367,7 @@ export default class MainLevel extends GameLevel {
     return await this.placeCattle(cost, location, async () => {
       PixiAssetsLoader.instance.playSound(SoundAsset.Cow);
       const cow = await Game.instance.createCow();
+      cow.playAppearAnimation();
       const soundSource = new SoundSource({
         sound: SoundAsset.Cow,
         minInterval: 15,
@@ -384,6 +385,7 @@ export default class MainLevel extends GameLevel {
     return await this.placeCattle(cost, location, async () => {
       PixiAssetsLoader.instance.playSound(SoundAsset.Sheep);
       const sheep = await Game.instance.createSheep();
+      sheep.playAppearAnimation();
       const soundSource = new SoundSource({
         sound: SoundAsset.Sheep,
         minInterval: 15,

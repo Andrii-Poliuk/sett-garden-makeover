@@ -107,6 +107,12 @@ export default class UIScene {
     this.stage = new Container();
   }
 
+  public initLoading(): void {
+    this.loadingPopup = LoadingPopup.instance;
+    this.loadingPopup.init(window.innerWidth, window.innerHeight);
+    this.stage.addChild(this.loadingPopup);
+  }
+
   public async init(): Promise<void> {
     this.homeMenuInstance = new HomeMenu();
     this.homeMenuInstance.position.set(60, 120);
@@ -122,6 +128,7 @@ export default class UIScene {
     this.homeMenu.onLandClick = () => {
       this.showLandMenu();
     };
+    this.homeMenuInstance.visible = false;
 
     this.cattlePlacementMenuInstance = new CattlePlacementMenu();
     this.cattlePlacementMenuInstance.position.set(60, 120);
@@ -156,6 +163,7 @@ export default class UIScene {
     this.gameControlsInstance = new GameControls();
     this.gameControlsInstance.init();
     this.stage.addChild(this.gameControlsInstance);
+    this.gameControls.visible = false;
 
     this.dialogPopup = DialogPopup.instance;
     this.dialogPopup.init(window.innerWidth, window.innerHeight);
@@ -169,8 +177,8 @@ export default class UIScene {
     this.gameOverPopup.init(window.innerWidth, window.innerHeight);
     this.stage.addChild(this.gameOverPopup);
 
-    this.loadingPopup = LoadingPopup.instance;
-    this.loadingPopup.init(window.innerWidth, window.innerHeight);
+    // Re-add loading popup on top of other UI elements
+    this.stage.removeChild(this.loadingPopup);
     this.stage.addChild(this.loadingPopup);
 
     this.floatingTextContainer = new Container();
@@ -190,16 +198,18 @@ export default class UIScene {
     this.currentHeight = height;
     this.currentScale = flexibleScale;
 
-    this.dialogPopup.resize(width, height, flexibleScale);
-    this.confirmationPopup.resize(width, height, flexibleScale);
-    this.gameOverPopup.resize(width, height, flexibleScale);
-    this.loadingPopup.resize(width, height, flexibleScale);
+    this.loadingPopup?.resize(width, height, flexibleScale);
 
-    this.gameControlsInstance.resize(width, height, flexibleScale);
+    // These may not be initialized yet during loading
+    this.dialogPopup?.resize(width, height, flexibleScale);
+    this.confirmationPopup?.resize(width, height, flexibleScale);
+    this.gameOverPopup?.resize(width, height, flexibleScale);
 
-    this.homeMenuInstance.resize(flexibleScale);
-    this.cropPlacementMenuInstance.resize(flexibleScale);
-    this.cattlePlacementMenuInstance.resize(flexibleScale);
-    this.landPlacementMenuInstance.resize(flexibleScale);
+    this.gameControlsInstance?.resize(width, height, flexibleScale);
+
+    this.homeMenuInstance?.resize(flexibleScale);
+    this.cropPlacementMenuInstance?.resize(flexibleScale);
+    this.cattlePlacementMenuInstance?.resize(flexibleScale);
+    this.landPlacementMenuInstance?.resize(flexibleScale);
   }
 }

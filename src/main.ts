@@ -1,6 +1,6 @@
 import { EventSystem, WebGLRenderer } from "pixi.js";
 import * as THREE from "three";
-// import Stats from 'three/addons/libs/stats.module.js'
+import Stats from 'three/addons/libs/stats.module.js'
 import GameScene from "./Game/GameScene";
 import UIScene from "./UI/UIScene";
 import Game from "./Game/Game";
@@ -13,9 +13,7 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
   let WIDTH = window.innerWidth;
   let HEIGHT = window.innerHeight;
 
-  await PixiAssetsLoader.instance.loadAssets();
-  await SpriteParticleEffect.preloadMaterials();
-
+  // Create renderers first so we can show loading UI
   const threeRenderer = new THREE.WebGLRenderer({
     antialias: true,
     stencil: true,
@@ -38,11 +36,35 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
     clearBeforeRender: false,
   });
 
+  // Initialize UI scene with loading popup first
   const uiScene = new UIScene();
+  uiScene.initLoading();
+  uiScene.resize(WIDTH, HEIGHT);
+
+  // Start rendering loading screen while assets load
+  let loadingComplete = false;
+  function renderLoading(): void {
+    if (loadingComplete) return;
+    threeRenderer.resetState();
+    threeRenderer.setRenderTarget(null);
+    threeRenderer.clear();
+    pixiRenderer.resetState();
+    pixiRenderer.render({ container: uiScene.stage });
+    requestAnimationFrame(renderLoading);
+  }
+  requestAnimationFrame(renderLoading);
+
+  // Now load assets while showing loading UI
+  await PixiAssetsLoader.instance.loadAssets();
+  await SpriteParticleEffect.preloadMaterials();
+
+  // Complete UI initialization
   await uiScene.init();
 
   const threeScene = new GameScene(threeRenderer);
   await threeScene.init();
+
+  loadingComplete = true;
 
   Game.instance.init(threeScene, uiScene);
 
@@ -60,8 +82,8 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
   eventSystem.resolution = pixiRenderer.resolution;
   uiScene.stage.eventMode = "static";
 
-  // const stats = new Stats()
-  // document.body.appendChild(stats.dom)
+  const stats = new Stats()
+  document.body.appendChild(stats.dom)
 
   const clock = new THREE.Clock();
   let delta = 0;
@@ -78,7 +100,7 @@ import { SpriteParticleEffect } from "./Particles/SpriteParticleEffect";
     pixiRenderer.resetState();
     pixiRenderer.render({ container: uiScene.stage });
 
-    // stats.update()
+    stats.update()
 
     requestAnimationFrame(loop);
   }

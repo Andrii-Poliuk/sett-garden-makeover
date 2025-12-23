@@ -262,6 +262,7 @@ export default class TutorialLevel extends GameLevel {
       const location = chickenLocations[i];
       chicken.position.set(location.x, -0.28, location.z);
       chicken.rotation.set(0, location.r, 0);
+      chicken.playAppearAnimation();
       if (i == 0) {
         chicken.playAction();
       }
@@ -278,6 +279,7 @@ export default class TutorialLevel extends GameLevel {
     this.sheep = await Game.instance.createSheep();
     this.sheep.position.set(-8.2, 0, 8.05);
     this.sheep.rotation.set(0, 0.36, 0);
+    this.sheep.playAppearAnimation();
     this.sheep.playAction();
   }
 
