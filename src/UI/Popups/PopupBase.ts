@@ -1,8 +1,8 @@
-import { Container, Graphics, Text } from "pixi.js";
+import { Container, Graphics, Rectangle, Text } from "pixi.js";
 import gsap from "gsap";
 
 export default class PopupBase extends Container {
-  protected background?: Graphics;
+  protected background?: Container;
   protected popupContainer?: Container;
   protected dialogBackground?: Graphics;
   protected messageText?: Text;
@@ -28,9 +28,8 @@ export default class PopupBase extends Container {
     const popupX = layoutWidth / 2;
     const popupY = layoutHeight / 2;
 
-    this.background = new Graphics();
-    this.background.rect(0, 0, layoutWidth, layoutHeight);
-    this.background.fill({ color: 0x000000, alpha: 0.5 });
+    this.background = new Container();
+    this.background.hitArea = new Rectangle(0, 0, layoutWidth, layoutHeight);
     this.addChild(this.background);
 
     this.popupContainer = new Container();
@@ -107,5 +106,6 @@ export default class PopupBase extends Container {
     this.popupContainer.y = height / 2;
     this.popupContainer.scale.set(flexibleScale);
     this.background?.scale.set(backgroundScale);
+    // this.hitArea = new Rectangle(0, 0, width, height);
   }
 }
