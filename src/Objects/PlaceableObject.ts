@@ -18,7 +18,7 @@ export default class PlaceableObject extends Object3D {
     super();
   }
 
-  protected async init(modelName: ObjectsMeshEnum) {
+  protected async init(modelName: ObjectsMeshEnum): Promise<void> {
     const mesh = MeshLoader.getMesh(modelName);
     if (!mesh) {
       return;

@@ -14,7 +14,6 @@ export default class GameScene {
   // private controls: OrbitControls;
   private ambientLight?: THREE.AmbientLight;
   private directionalLight?: THREE.DirectionalLight;
-  private shadowHelper?: THREE.CameraHelper;
 
   constructor(renderer: WebGLRenderer) {
     const width = window.innerWidth;
@@ -43,8 +42,8 @@ export default class GameScene {
     await MeshLoader.loadModelsAsync();
     const farm = MeshLoader.getGroundInstancedScene();
     if (farm) {
-    farm.position.set(0, -4.5, 0);
-    this.scene.add(farm);
+      farm.position.set(0, -4.5, 0);
+      this.scene.add(farm);
     }
 
     this.scene.add(Game.instance.getBatchRenderer());
@@ -73,9 +72,6 @@ export default class GameScene {
     this.directionalLight.shadow.camera.bottom = -20;
     this.directionalLight.shadow.camera.updateProjectionMatrix();
     this.scene.add(this.directionalLight);
-
-    // this.shadowHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera);
-    // this.scene.add(this.shadowHelper);
 
     // Helpers.setupDirectionalLightGUI(this.directionalLight, this.ambientLight, "Light");
   }

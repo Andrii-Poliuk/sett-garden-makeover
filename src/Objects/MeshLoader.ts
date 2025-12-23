@@ -40,7 +40,7 @@ export default class MeshLoader {
   }
 
   public static getMesh(
-    mesh: ObjectsMeshEnum
+    mesh: ObjectsMeshEnum,
   ): Object3D<Object3DEventMap> | undefined {
     if (MeshLoader.Instance.meshes.has(mesh)) {
       return MeshLoader.Instance.meshes.get(mesh);
@@ -50,7 +50,7 @@ export default class MeshLoader {
   }
 
   public static getAnimation(
-    animation: ObjectAnimationsEnum
+    animation: ObjectAnimationsEnum,
   ): AnimationClip | undefined {
     if (MeshLoader.Instance.animations.has(animation)) {
       return MeshLoader.Instance.animations.get(animation);
@@ -73,7 +73,7 @@ export default class MeshLoader {
 
     for (const key of Object.values(ObjectsMeshEnum)) {
       const mesh = objects.scene.getObjectByName(
-        key
+        key,
       ) as Object3D<Object3DEventMap>;
       if (mesh) {
         if (mesh.name.startsWith("ground")) {
@@ -116,7 +116,7 @@ export default class MeshLoader {
 
   public static createInstancedMeshFromGLTF(
     gltf: GLTF,
-    maxInstances: number = 100
+    maxInstances: number = 100,
   ): InstancedMesh[] {
     const instancedMeshes: InstancedMesh[] = [];
 
@@ -163,7 +163,7 @@ export default class MeshLoader {
 
         coloredGeometry.setAttribute(
           "color",
-          new BufferAttribute(colorArray, 3)
+          new BufferAttribute(colorArray, 3),
         );
         meshDataMap.set(key, { geometry: coloredGeometry, matrices: [] });
       }
@@ -185,7 +185,7 @@ export default class MeshLoader {
       const instancedMesh = new InstancedMesh(
         data.geometry,
         sharedMaterial,
-        maxInstances
+        maxInstances,
       );
 
       // Set matrices for each instance
@@ -206,7 +206,7 @@ export default class MeshLoader {
 
   public static createInstancedSceneFromGLTF(
     gltf: GLTF,
-    maxInstances: number = 100
+    maxInstances: number = 100,
   ): Object3D {
     const scene = new Object3D();
     scene.name = gltf.scene.name + "_instanced";
@@ -219,7 +219,7 @@ export default class MeshLoader {
     // Create instanced meshes and add them to the scene
     const instancedMeshes = this.createInstancedMeshFromGLTF(
       gltf,
-      maxInstances
+      maxInstances,
     );
     for (const instancedMesh of instancedMeshes) {
       scene.add(instancedMesh);
@@ -230,7 +230,7 @@ export default class MeshLoader {
 
   public static createInstancedMeshFromObject3D(
     object: Object3D,
-    maxInstances: number = 100
+    maxInstances: number = 100,
   ): InstancedMesh | undefined {
     // Find the first mesh in the object hierarchy
     let sourceMesh: Mesh | undefined;
@@ -276,7 +276,7 @@ export default class MeshLoader {
     const instancedMesh = new InstancedMesh(
       coloredGeometry,
       instancedMaterial,
-      maxInstances
+      maxInstances,
     );
 
     instancedMesh.count = 0;

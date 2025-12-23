@@ -165,7 +165,6 @@ export default class Game {
 
     this.money = 500;
 
-
     tutorialLevel.onLevelFinished = async () => {
       this.currentLevel = mainLevel;
       await mainLevel.startLevel();
