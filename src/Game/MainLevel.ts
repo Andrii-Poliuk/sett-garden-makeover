@@ -27,6 +27,7 @@ export default class MainLevel extends GameLevel {
 
   private dayCounter: number = 0;
   private gameIsWon: boolean = false;
+  private skipDayCyclePlaying: boolean = false;
 
   private static readonly rentMessages: string[] = [
     "Rent Time!",
@@ -106,6 +107,10 @@ export default class MainLevel extends GameLevel {
   }
 
   private async finishDay(): Promise<void> {
+    if (this.skipDayCyclePlaying) {
+      return;
+    }
+    this.skipDayCyclePlaying = true;
     this.disablePlacement();
     await Game.instance.dayNightController.setEvening();
     ConfirmationPopup.instance.showPopup("FINISH THE DAY?", async () => {
@@ -132,6 +137,7 @@ export default class MainLevel extends GameLevel {
 
       await Game.instance.dayNightController.setDay();
       this.dayCounter += 1;
+      this.skipDayCyclePlaying = false;
     });
   }
 
@@ -196,6 +202,7 @@ export default class MainLevel extends GameLevel {
       if (readyToHarvest) {
         crop.playShakeAnimation();
         crop.enableInteraction(async (_sender) => {
+          crop.disableInteraction();
           await this.harvestCrop(crop);
         });
       }

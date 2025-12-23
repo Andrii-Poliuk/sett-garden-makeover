@@ -285,6 +285,7 @@ export default class TutorialLevel extends GameLevel {
   }
 
   private async collectCorn(corn: Corn): Promise<void> {
+    corn.disableInteraction();
     const income = MoneyCost[MoneyCostType.CornHarvest];
     const cornPosition = corn.getWorldPosition(new Vector3());
     FloatingText.playEffect(income, cornPosition);
