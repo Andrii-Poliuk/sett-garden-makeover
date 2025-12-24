@@ -44,7 +44,7 @@ export default class LandPlacementMenu extends MenuBase {
     );
 
     this.cattlePenButton = new SpriteButton({
-      texture: assets.getTexture(PixiAsset.Cow),
+      texture: assets.getTexture(PixiAsset.Sheep),
       text: "Cattle Pen",
       onClick: () => this.onCattlePenClick?.(),
     });

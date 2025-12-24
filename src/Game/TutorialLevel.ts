@@ -68,177 +68,6 @@ export default class TutorialLevel extends GameLevel {
     await this.finishLevel();
   }
 
-  private async playFinalWords(): Promise<void> {
-    const cameraFarmFarView: CameraPositionData = {
-      position: new Vector3(-9.1, 30, 23.4),
-      target: new Vector3(3.8, -18, -13.4),
-    };
-    this.cameraPosition!.updatePosition(cameraFarmFarView);
-    this.cameraPosition!.lerpSpeed = 0.02;
-
-    Game.instance.toggleChickenGuide(true, true);
-    await DialogPopup.instance.showPopup(
-      "Good job!\nYou can continue without henholding",
-    );
-    Game.instance.UIScene.showGameControls(GameControls.SkipDay);
-    await DialogPopup.instance.showPopup(
-      "You can rest till morning\nby pressing Next Day button.\nOr plant more Crops",
-    );
-    await DialogPopup.instance.showPopup(
-      "Crops take 2 nights to mature.\nIf you get enough Cattle to cover Rent\nconsider your problems solved",
-    );
-    await DialogPopup.instance.showPopup(
-      "Be wary of Rent pay every morning\nIt was 300 greens I believe?\nGood luck!",
-    );
-    Game.instance.toggleChickenGuide(false);
-  }
-
-  private async playCropHarvesting(): Promise<void> {
-    const cameraCropHarvestPosition: CameraPositionData = {
-      position: new Vector3(0, 18.2, 12.3),
-      target: new Vector3(5.3, -10.5, -7),
-    };
-    this.cameraPosition!.updatePosition(cameraCropHarvestPosition);
-
-    await DialogPopup.instance.showPopup(
-      "Now, when the Sheep's put in place,\nyou can collect what's\nleft of your Harvest",
-    );
-    Game.instance.toggleChickenGuide(false);
-
-    this.corn.forEach((corn) => {
-      corn.playShakeAnimation();
-      corn.enableInteraction(async (_obj) => {
-        this.collectCorn(corn);
-        PixiAssetsLoader.instance.playSound(SoundAsset.Click);
-      });
-    });
-
-    await new Promise<void>((resolve) => {
-      this.gameQuestResolved = resolve;
-    });
-  }
-
-  private async playSheepEncounter(): Promise<void> {
-    const cameraStartPosition: CameraPositionData = {
-      position: new Vector3(0, 10.5, 14.5),
-      target: new Vector3(-10, -10.5, -7),
-    };
-    this.cameraPosition!.lerpSpeed = 0.03;
-    this.cameraPosition!.updatePosition(cameraStartPosition);
-
-    await DialogPopup.instance.showPopup("Oh no... Your sheep has run amok!");
-
-    const sheepSound = new SoundSource({
-      sound: SoundAsset.Sheep,
-      minInterval: 3,
-      maxInterval: 10,
-      volume: 0.4,
-    });
-    this.sheep!.soundSource = sheepSound;
-    sheepSound.start();
-
-    Game.instance.UIScene.showGameControls(GameControls.Money);
-    this.tickingDamage = MoneyCost[MoneyCostType.SheepDamage];
-
-    await DialogPopup.instance.showPopup(
-      "And it's already causing damage\nPlace a fence, quick!",
-    );
-    Game.instance.toggleChickenGuide(false);
-
-    Game.instance.UIScene.landPlacementMenu.setHintsVisible(false);
-    Game.instance.UIScene.showHomeMenu();
-    Game.instance.UIScene.homeMenu.setEnabled(false);
-    Game.instance.UIScene.homeMenu.setEnabled(true, HomeMenu.Land);
-    Game.instance.UIScene.landPlacementMenu.setEnabled(false);
-    Game.instance.UIScene.landPlacementMenu.setEnabled(
-      true,
-      LandPlacementMenu.CattlePen,
-    );
-    Game.instance.UIScene.landPlacementMenu.onCattlePenClick = () => {
-      this.createFencePlacement();
-      Game.instance.UIScene.landPlacementMenu.onCattlePenClick = undefined;
-      Game.instance.UIScene.landPlacementMenu.setEnabled(false);
-    };
-
-    await new Promise<void>((resolve) => {
-      this.gameQuestResolved = resolve;
-    });
-
-    this.targetSheep = await Game.instance.createInteractiveArea();
-    const interactiveAreas = this.fence!.getInteractiveAreas();
-    const area = interactiveAreas[1];
-    const position = area.getWorldPosition(new Vector3());
-    this.targetSheep?.position.set(position.x, 0, position.z);
-    this.targetSheep?.rotation.set(0, area.rotation.y, 0);
-    const sheepHighlight = new ObjectHighlight();
-    await sheepHighlight.init(ObjectsMeshEnum.Sheep);
-    this.targetSheep.enableInteractiveArea(sheepHighlight, async (sender) => {
-      sheepSound.stop();
-      sheepSound.minInterval = 15;
-      sheepSound.maxInterval = 90;
-      sheepSound.start();
-      await this.placeSheep(sender);
-      this.targetSheep?.disableInteractiveArea();
-      Game.instance.removeInteractiveArea(this.targetSheep!);
-      this.targetSheep = null;
-      this.gameQuestResolved?.();
-    });
-
-    await new Promise<void>((resolve) => {
-      this.gameQuestResolved = resolve;
-    });
-
-    this.tickingDamage = 0;
-
-    Game.instance.UIScene.showHomeMenu();
-    Game.instance.UIScene.homeMenu.setEnabled(false);
-
-    Game.instance.toggleChickenGuide(true, false);
-    await DialogPopup.instance.showPopup(
-      "Cattle in the Pens provide income every morning",
-    );
-    Game.instance.UIScene.landPlacementMenu.setHintsVisible(true);
-  }
-
-  private async playFarmTour(): Promise<void> {
-    const cameraFarmOverview: CameraPositionData = {
-      position: new Vector3(0, 14.5, 22),
-      target: new Vector3(0, -18, -20),
-    };
-    this.cameraPosition!.updatePosition(cameraFarmOverview);
-    this.cameraPosition!.lerpSpeed = 0.01;
-
-    Game.instance.toggleChickenGuide(true, true);
-    await DialogPopup.instance.showPopup(
-      "This is your Farm!\nSmall but cozy\nHowever...",
-    );
-    await DialogPopup.instance.showPopup(
-      "You still have to pay the rent\nand it could use\nsome management",
-    );
-
-    const cameraCornView: CameraPositionData = {
-      position: new Vector3(-3.9, 10.1, 3.5),
-      target: new Vector3(20, -12.9, -4.6),
-    };
-    this.cameraPosition!.lerpSpeed = 0.015;
-    this.cameraPosition!.updatePosition(cameraCornView);
-    Game.instance.toggleChickenGuide(true, false);
-    await DialogPopup.instance.showPopup(
-      "You've already got some grown Corn\nready to be picked for profit",
-    );
-
-    const cameraChickenView: CameraPositionData = {
-      position: new Vector3(2, 8.6, -3.2),
-      target: new Vector3(12.6, -18.6, -7),
-    };
-    this.cameraPosition!.lerpSpeed = 0.015;
-    this.cameraPosition!.updatePosition(cameraChickenView);
-    await DialogPopup.instance.showPopup(
-      "Animals are the source of daily income.\nIn your Fence already placed\nChickens and a Sheep",
-    );
-    await DialogPopup.instance.showPopup("By the way... Where's...");
-  }
-
   private async farmSetup(): Promise<void> {
     this.ground = await Game.instance.createGround();
     this.ground.position.set(10, 0, 0);
@@ -284,6 +113,177 @@ export default class TutorialLevel extends GameLevel {
     this.sheep.rotation.set(0, 0.36, 0);
     this.sheep.playAppearAnimation();
     this.sheep.playAction();
+  }
+
+  private async playFarmTour(): Promise<void> {
+    const cameraFarmOverview: CameraPositionData = {
+      position: new Vector3(0, 14.5, 22),
+      target: new Vector3(0, -18, -20),
+    };
+    this.cameraPosition!.updatePosition(cameraFarmOverview);
+    this.cameraPosition!.lerpSpeed = 0.01;
+
+    Game.instance.toggleChickenGuide(true, true);
+    await DialogPopup.instance.showPopup(
+      "This is your Farm!\nSmall but cozy\nHowever...",
+    );
+    await DialogPopup.instance.showPopup(
+      "You still have to pay the Rent\nand it could use\nsome management",
+    );
+
+    const cameraCornView: CameraPositionData = {
+      position: new Vector3(-3.9, 10.1, 3.5),
+      target: new Vector3(20, -12.9, -4.6),
+    };
+    this.cameraPosition!.lerpSpeed = 0.015;
+    this.cameraPosition!.updatePosition(cameraCornView);
+    Game.instance.toggleChickenGuide(true, false);
+    await DialogPopup.instance.showPopup(
+      "You've already got some grown Corn\nready to be picked for profit",
+    );
+
+    const cameraChickenView: CameraPositionData = {
+      position: new Vector3(2, 8.6, -3.2),
+      target: new Vector3(12.6, -18.6, -7),
+    };
+    this.cameraPosition!.lerpSpeed = 0.015;
+    this.cameraPosition!.updatePosition(cameraChickenView);
+    await DialogPopup.instance.showPopup(
+      "Animals are the source of daily income.\nYou have Chickens in the Pen already.\nBy the way... Where's...",
+    );
+  }
+
+  private async playSheepEncounter(): Promise<void> {
+    const cameraStartPosition: CameraPositionData = {
+      position: new Vector3(0, 10.5, 14.5),
+      target: new Vector3(-10, -10.5, -7),
+    };
+    this.cameraPosition!.lerpSpeed = 0.03;
+    this.cameraPosition!.updatePosition(cameraStartPosition);
+
+    await DialogPopup.instance.showPopup("Oh no... Your sheep has run amok!");
+
+    const sheepSound = new SoundSource({
+      sound: SoundAsset.Sheep,
+      minInterval: 3,
+      maxInterval: 10,
+      volume: 0.4,
+    });
+    this.sheep!.soundSource = sheepSound;
+    sheepSound.start();
+
+    Game.instance.UIScene.showGameControls(GameControls.Money);
+    this.tickingDamage = MoneyCost[MoneyCostType.SheepDamage];
+
+    await DialogPopup.instance.showPopup(
+      "And it's already causing damage\nto your Money (top right).\nPlace a Cattle Pen, quick!",
+    );
+    Game.instance.toggleChickenGuide(false);
+
+    Game.instance.UIScene.landPlacementMenu.setHintsVisible(false);
+    Game.instance.UIScene.showHomeMenu();
+    Game.instance.UIScene.homeMenu.setEnabled(false);
+    Game.instance.UIScene.homeMenu.setEnabled(true, HomeMenu.Land);
+    Game.instance.UIScene.landPlacementMenu.setEnabled(false);
+    Game.instance.UIScene.landPlacementMenu.setEnabled(
+      true,
+      LandPlacementMenu.CattlePen,
+    );
+    Game.instance.UIScene.landPlacementMenu.onCattlePenClick = () => {
+      this.createFencePlacement();
+      Game.instance.UIScene.landPlacementMenu.onCattlePenClick = undefined;
+      Game.instance.UIScene.landPlacementMenu.setEnabled(false);
+    };
+
+    await DialogPopup.instance.showPopup(
+      'Top left is your farm Menu.\nChoose "Land" and then "Cattle Pen".\nThe green highlight is where to place it.',
+    );
+
+    await new Promise<void>((resolve) => {
+      this.gameQuestResolved = resolve;
+    });
+
+    this.targetSheep = await Game.instance.createInteractiveArea();
+    const interactiveAreas = this.fence!.getInteractiveAreas();
+    const area = interactiveAreas[1];
+    const position = area.getWorldPosition(new Vector3());
+    this.targetSheep?.position.set(position.x, 0, position.z);
+    this.targetSheep?.rotation.set(0, area.rotation.y, 0);
+    const sheepHighlight = new ObjectHighlight();
+    await sheepHighlight.init(ObjectsMeshEnum.Sheep);
+    this.targetSheep.enableInteractiveArea(sheepHighlight, async (sender) => {
+      sheepSound.stop();
+      sheepSound.minInterval = 15;
+      sheepSound.maxInterval = 90;
+      sheepSound.start();
+      await this.placeSheep(sender);
+      this.targetSheep?.disableInteractiveArea();
+      Game.instance.removeInteractiveArea(this.targetSheep!);
+      this.targetSheep = null;
+      this.gameQuestResolved?.();
+    });
+
+    await new Promise<void>((resolve) => {
+      this.gameQuestResolved = resolve;
+    });
+
+    this.tickingDamage = 0;
+
+    Game.instance.UIScene.showHomeMenu();
+    Game.instance.UIScene.homeMenu.setEnabled(false);
+
+    Game.instance.toggleChickenGuide(true, false);
+    await DialogPopup.instance.showPopup(
+      "Cattle provide income every morning.\nIf you get enough Cattle to cover Rent,\nconsider your problems solved",
+    );
+    Game.instance.UIScene.landPlacementMenu.setHintsVisible(true);
+  }
+
+  private async playCropHarvesting(): Promise<void> {
+    const cameraCropHarvestPosition: CameraPositionData = {
+      position: new Vector3(0, 18.2, 12.3),
+      target: new Vector3(5.3, -10.5, -7),
+    };
+    this.cameraPosition!.updatePosition(cameraCropHarvestPosition);
+
+    await DialogPopup.instance.showPopup(
+      "Now, when the Sheep's put in place,\nyou can collect what's left of your Harvest.\nTap the Corn on the field to collect it.",
+    );
+    Game.instance.toggleChickenGuide(false);
+
+    this.corn.forEach((corn) => {
+      corn.playShakeAnimation();
+      corn.enableInteraction(async (_obj) => {
+        this.collectCorn(corn);
+        PixiAssetsLoader.instance.playSound(SoundAsset.Click);
+      });
+    });
+
+    await new Promise<void>((resolve) => {
+      this.gameQuestResolved = resolve;
+    });
+  }
+
+  private async playFinalWords(): Promise<void> {
+    const cameraFarmFarView: CameraPositionData = {
+      position: new Vector3(-9.1, 30, 23.4),
+      target: new Vector3(3.8, -18, -13.4),
+    };
+    this.cameraPosition!.updatePosition(cameraFarmFarView);
+    this.cameraPosition!.lerpSpeed = 0.02;
+
+    Game.instance.toggleChickenGuide(true, true);
+    Game.instance.UIScene.showGameControls(GameControls.SkipDay);
+    await DialogPopup.instance.showPopup(
+      'Good job!\nYou can rest till morning by pressing\n"Skip Day" in the top right corner.',
+    );
+    await DialogPopup.instance.showPopup(
+      "Or plant more Crops by using farm Menu.\nCrops can only be planted on Land\nand take 2 nights to fully grow.",
+    );
+    await DialogPopup.instance.showPopup(
+      "Be wary of Rent - it's due every morning!\nIt was 300 greens I believe?\nYou can continue without henholding.\nGood luck!",
+    );
+    Game.instance.toggleChickenGuide(false);
   }
 
   private async collectCorn(corn: Corn): Promise<void> {
